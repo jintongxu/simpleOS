@@ -1,0 +1,37 @@
+[
+{
+  "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/boot",
+  "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/boot.dir/boot.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/boot/boot.c",
+  "file": "/home/rafael/Documents/diy-x86os/start/start/source/boot/boot.c"
+},
+{
+  "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/loader",
+  "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/loader.dir/loader_16.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/loader/loader_16.c",
+  "file": "/home/rafael/Documents/diy-x86os/start/start/source/loader/loader_16.c"
+},
+{
+  "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/loader",
+  "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/loader.dir/loader_32.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/loader/loader_32.c",
+  "file": "/home/rafael/Documents/diy-x86os/start/start/source/loader/loader_32.c"
+},
+{
+  "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel",
+  "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/kernel.dir/cpu/cpu.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/cpu.c",
+  "file": "/home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/cpu.c"
+},
+{
+  "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel",
+  "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/kernel.dir/cpu/irq.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/irq.c",
+  "file": "/home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/irq.c"
+},
+{
+  "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel",
+  "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/kernel.dir/include/dev/time.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/include/dev/time.c",
+  "file": "/home/rafael/Documents/diy-x86os/start/start/source/kernel/include/dev/time.c"
+},
+{
+  "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel",
+  "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/kernel.dir/init/init.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/init/init.c",
+  "file": "/home/rafael/Documents/diy-x86os/start/start/source/kernel/init/init.c"
+}
+]

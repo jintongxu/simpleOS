@@ -1,0 +1,11 @@
+/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/rebuild_cache.dir
+/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/edit_cache.dir
+/home/rafael/Documents/diy-x86os/start/start/build/source/boot/CMakeFiles/rebuild_cache.dir
+/home/rafael/Documents/diy-x86os/start/start/build/source/boot/CMakeFiles/edit_cache.dir
+/home/rafael/Documents/diy-x86os/start/start/build/source/boot/CMakeFiles/boot.dir
+/home/rafael/Documents/diy-x86os/start/start/build/source/loader/CMakeFiles/rebuild_cache.dir
+/home/rafael/Documents/diy-x86os/start/start/build/source/loader/CMakeFiles/edit_cache.dir
+/home/rafael/Documents/diy-x86os/start/start/build/source/loader/CMakeFiles/loader.dir
+/home/rafael/Documents/diy-x86os/start/start/build/source/kernel/CMakeFiles/rebuild_cache.dir
+/home/rafael/Documents/diy-x86os/start/start/build/source/kernel/CMakeFiles/edit_cache.dir
+/home/rafael/Documents/diy-x86os/start/start/build/source/kernel/CMakeFiles/kernel.dir
