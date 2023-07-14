@@ -19,6 +19,8 @@ set(CMAKE_DEPENDS_CHECK_C
   "/home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/irq.c" "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.o"
   "/home/rafael/Documents/diy-x86os/start/start/source/kernel/include/dev/time.c" "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel/CMakeFiles/kernel.dir/include/dev/time.c.o"
   "/home/rafael/Documents/diy-x86os/start/start/source/kernel/init/init.c" "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel/CMakeFiles/kernel.dir/init/init.c.o"
+  "/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/klib.c" "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel/CMakeFiles/kernel.dir/tools/klib.c.o"
+  "/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/log.c" "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel/CMakeFiles/kernel.dir/tools/log.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

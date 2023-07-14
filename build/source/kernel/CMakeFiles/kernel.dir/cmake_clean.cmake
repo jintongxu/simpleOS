@@ -4,6 +4,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/kernel.dir/include/dev/time.c.o"
   "CMakeFiles/kernel.dir/init/init.c.o"
   "CMakeFiles/kernel.dir/init/start.S.o"
+  "CMakeFiles/kernel.dir/tools/klib.c.o"
+  "CMakeFiles/kernel.dir/tools/log.c.o"
   "kernel"
   "kernel.pdb"
 )

@@ -31,5 +31,15 @@ source/kernel/CMakeFiles/kernel.dir/init/init.c.o: ../source/kernel/include/cpu/
 source/kernel/CMakeFiles/kernel.dir/init/init.c.o: ../source/kernel/include/cpu/irq.h
 source/kernel/CMakeFiles/kernel.dir/init/init.c.o: ../source/kernel/include/dev/time.h
 source/kernel/CMakeFiles/kernel.dir/init/init.c.o: ../source/kernel/include/os_cfg.h
+source/kernel/CMakeFiles/kernel.dir/init/init.c.o: ../source/kernel/include/tools/log.h
 source/kernel/CMakeFiles/kernel.dir/init/init.c.o: ../source/kernel/init/init.c
+
+source/kernel/CMakeFiles/kernel.dir/tools/klib.c.o: ../source/comm/types.h
+source/kernel/CMakeFiles/kernel.dir/tools/klib.c.o: ../source/kernel/include/tools/klib.h
+source/kernel/CMakeFiles/kernel.dir/tools/klib.c.o: ../source/kernel/tools/klib.c
+
+source/kernel/CMakeFiles/kernel.dir/tools/log.c.o: ../source/comm/cpu_instr.h
+source/kernel/CMakeFiles/kernel.dir/tools/log.c.o: ../source/comm/types.h
+source/kernel/CMakeFiles/kernel.dir/tools/log.c.o: ../source/kernel/include/tools/log.h
+source/kernel/CMakeFiles/kernel.dir/tools/log.c.o: ../source/kernel/tools/log.c
 

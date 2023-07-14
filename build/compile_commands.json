@@ -33,5 +33,15 @@
   "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel",
   "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/kernel.dir/init/init.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/init/init.c",
   "file": "/home/rafael/Documents/diy-x86os/start/start/source/kernel/init/init.c"
+},
+{
+  "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel",
+  "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/kernel.dir/tools/klib.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/klib.c",
+  "file": "/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/klib.c"
+},
+{
+  "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel",
+  "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/kernel.dir/tools/log.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/log.c",
+  "file": "/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/log.c"
 }
 ]

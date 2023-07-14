@@ -242,6 +242,60 @@ init/start.S.o:
 	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/init/start.S.o
 .PHONY : init/start.S.o
 
+tools/klib.o: tools/klib.c.o
+
+.PHONY : tools/klib.o
+
+# target to build an object file
+tools/klib.c.o:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/tools/klib.c.o
+.PHONY : tools/klib.c.o
+
+tools/klib.i: tools/klib.c.i
+
+.PHONY : tools/klib.i
+
+# target to preprocess a source file
+tools/klib.c.i:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/tools/klib.c.i
+.PHONY : tools/klib.c.i
+
+tools/klib.s: tools/klib.c.s
+
+.PHONY : tools/klib.s
+
+# target to generate assembly for a file
+tools/klib.c.s:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/tools/klib.c.s
+.PHONY : tools/klib.c.s
+
+tools/log.o: tools/log.c.o
+
+.PHONY : tools/log.o
+
+# target to build an object file
+tools/log.c.o:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/tools/log.c.o
+.PHONY : tools/log.c.o
+
+tools/log.i: tools/log.c.i
+
+.PHONY : tools/log.i
+
+# target to preprocess a source file
+tools/log.c.i:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/tools/log.c.i
+.PHONY : tools/log.c.i
+
+tools/log.s: tools/log.c.s
+
+.PHONY : tools/log.s
+
+# target to generate assembly for a file
+tools/log.c.s:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/tools/log.c.s
+.PHONY : tools/log.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -264,6 +318,12 @@ help:
 	@echo "... init/init.i"
 	@echo "... init/init.s"
 	@echo "... init/start.o"
+	@echo "... tools/klib.o"
+	@echo "... tools/klib.i"
+	@echo "... tools/klib.s"
+	@echo "... tools/log.o"
+	@echo "... tools/log.i"
+	@echo "... tools/log.s"
 .PHONY : help
 
 

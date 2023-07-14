@@ -1,10 +1,10 @@
 Detecting C compiler ABI info failed to compile with the following output:
 Change Dir: /home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_86350/fast && /usr/bin/make -f CMakeFiles/cmTC_86350.dir/build.make CMakeFiles/cmTC_86350.dir/build
+Run Build Command(s):/usr/bin/make cmTC_c7225/fast && /usr/bin/make -f CMakeFiles/cmTC_c7225.dir/build.make CMakeFiles/cmTC_c7225.dir/build
 make[1]: Entering directory '/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_86350.dir/CMakeCCompilerABI.c.o
-/usr/bin/gcc   -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables    -v -o CMakeFiles/cmTC_86350.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.16/Modules/CMakeCCompilerABI.c
+Building C object CMakeFiles/cmTC_c7225.dir/CMakeCCompilerABI.c.o
+/usr/bin/gcc   -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables    -v -o CMakeFiles/cmTC_c7225.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.16/Modules/CMakeCCompilerABI.c
 Using built-in specs.
 COLLECT_GCC=/usr/bin/gcc
 OFFLOAD_TARGET_NAMES=nvptx-none:hsa
@@ -13,8 +13,8 @@ Target: x86_64-linux-gnu
 Configured with: ../src/configure -v --with-pkgversion='Ubuntu 9.4.0-1ubuntu1~20.04.1' --with-bugurl=file:///usr/share/doc/gcc-9/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++,gm2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-9 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-9-Av3uEd/gcc-9-9.4.0/debian/tmp-nvptx/usr,hsa --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
 Thread model: posix
 gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) 
-COLLECT_GCC_OPTIONS='-g' '-c' '-O0' '-m32' '-fno-pie' '-fno-stack-protector' '-fno-asynchronous-unwind-tables' '-v' '-o' 'CMakeFiles/cmTC_86350.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=i686'
- /usr/lib/gcc/x86_64-linux-gnu/9/cc1 -quiet -v -imultilib 32 -imultiarch i386-linux-gnu /usr/share/cmake-3.16/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -m32 -mtune=generic -march=i686 -auxbase-strip CMakeFiles/cmTC_86350.dir/CMakeCCompilerABI.c.o -g -O0 -version -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccNDvVwy.s
+COLLECT_GCC_OPTIONS='-g' '-c' '-O0' '-m32' '-fno-pie' '-fno-stack-protector' '-fno-asynchronous-unwind-tables' '-v' '-o' 'CMakeFiles/cmTC_c7225.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=i686'
+ /usr/lib/gcc/x86_64-linux-gnu/9/cc1 -quiet -v -imultilib 32 -imultiarch i386-linux-gnu /usr/share/cmake-3.16/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -m32 -mtune=generic -march=i686 -auxbase-strip CMakeFiles/cmTC_c7225.dir/CMakeCCompilerABI.c.o -g -O0 -version -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccD4oz2S.s
 GNU C17 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)
 	compiled by GNU C version 9.4.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22.1-GMP
 
@@ -34,15 +34,15 @@ GNU C17 (Ubuntu 9.4.0-1ubuntu1~20.04.1) version 9.4.0 (x86_64-linux-gnu)
 
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 Compiler executable checksum: c0c95c0b4209efec1c1892d5ff24030b
-COLLECT_GCC_OPTIONS='-g' '-c' '-O0' '-m32' '-fno-pie' '-fno-stack-protector' '-fno-asynchronous-unwind-tables' '-v' '-o' 'CMakeFiles/cmTC_86350.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=i686'
- as -v --32 -o CMakeFiles/cmTC_86350.dir/CMakeCCompilerABI.c.o /tmp/ccNDvVwy.s
+COLLECT_GCC_OPTIONS='-g' '-c' '-O0' '-m32' '-fno-pie' '-fno-stack-protector' '-fno-asynchronous-unwind-tables' '-v' '-o' 'CMakeFiles/cmTC_c7225.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=i686'
+ as -v --32 -o CMakeFiles/cmTC_c7225.dir/CMakeCCompilerABI.c.o /tmp/ccD4oz2S.s
 GNU assembler version 2.34 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.34
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/../../../i386-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib32/:/lib/i386-linux-gnu/:/lib/../lib32/:/usr/lib/i386-linux-gnu/:/usr/lib/../lib32/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../i386-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/i386-linux-gnu/:/lib/:/usr/lib/i386-linux-gnu/:/usr/lib/
-COLLECT_GCC_OPTIONS='-g' '-c' '-O0' '-m32' '-fno-pie' '-fno-stack-protector' '-fno-asynchronous-unwind-tables' '-v' '-o' 'CMakeFiles/cmTC_86350.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=i686'
-Linking C executable cmTC_86350
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_86350.dir/link.txt --verbose=1
-/usr/bin/gcc -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables    -v -rdynamic CMakeFiles/cmTC_86350.dir/CMakeCCompilerABI.c.o  -o cmTC_86350 
+COLLECT_GCC_OPTIONS='-g' '-c' '-O0' '-m32' '-fno-pie' '-fno-stack-protector' '-fno-asynchronous-unwind-tables' '-v' '-o' 'CMakeFiles/cmTC_c7225.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=i686'
+Linking C executable cmTC_c7225
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c7225.dir/link.txt --verbose=1
+/usr/bin/gcc -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables    -v -rdynamic CMakeFiles/cmTC_c7225.dir/CMakeCCompilerABI.c.o  -o cmTC_c7225 
 Using built-in specs.
 COLLECT_GCC=/usr/bin/gcc
 OFFLOAD_TARGET_NAMES=nvptx-none:hsa
@@ -53,8 +53,8 @@ Thread model: posix
 gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/9/../../../i386-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib32/:/lib/i386-linux-gnu/:/lib/../lib32/:/usr/lib/i386-linux-gnu/:/usr/lib/../lib32/:/usr/lib/gcc/x86_64-linux-gnu/9/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../i386-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/9/../../../:/lib/i386-linux-gnu/:/lib/:/usr/lib/i386-linux-gnu/:/usr/lib/
-COLLECT_GCC_OPTIONS='-g' '-c' '-O0' '-m32' '-fno-pie' '-fno-stack-protector' '-fno-asynchronous-unwind-tables' '-v' '-rdynamic' '-o' 'cmTC_86350' '-mtune=generic' '-march=i686'
-gcc: warning: CMakeFiles/cmTC_86350.dir/CMakeCCompilerABI.c.o: linker input file unused because linking not done
+COLLECT_GCC_OPTIONS='-g' '-c' '-O0' '-m32' '-fno-pie' '-fno-stack-protector' '-fno-asynchronous-unwind-tables' '-v' '-rdynamic' '-o' 'cmTC_c7225' '-mtune=generic' '-march=i686'
+gcc: warning: CMakeFiles/cmTC_c7225.dir/CMakeCCompilerABI.c.o: linker input file unused because linking not done
 make[1]: Leaving directory '/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp'
 
 
@@ -63,8 +63,8 @@ Cannot copy output executable
 to destination specified by COPY_FILE:
   '/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/3.16.3/CMakeDetermineCompilerABI_C.bin'
 Unable to find the executable at any of:
-  /home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp/cmTC_86350
-  /home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp/Debug/cmTC_86350
-  /home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp/Development/cmTC_86350
+  /home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp/cmTC_c7225
+  /home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp/Debug/cmTC_c7225
+  /home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp/Development/cmTC_c7225
 
 

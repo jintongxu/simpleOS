@@ -161,7 +161,7 @@ source/boot/CMakeFiles/boot.dir/clean:
 source/loader/CMakeFiles/loader.dir/all:
 	$(MAKE) -f source/loader/CMakeFiles/loader.dir/build.make source/loader/CMakeFiles/loader.dir/depend
 	$(MAKE) -f source/loader/CMakeFiles/loader.dir/build.make source/loader/CMakeFiles/loader.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=10,11,12,13 "Built target loader"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=12,13,14,15 "Built target loader"
 .PHONY : source/loader/CMakeFiles/loader.dir/all
 
 # Build rule for subdir invocation for target.
@@ -188,12 +188,12 @@ source/loader/CMakeFiles/loader.dir/clean:
 source/kernel/CMakeFiles/kernel.dir/all:
 	$(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/depend
 	$(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=4,5,6,7,8,9 "Built target kernel"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=4,5,6,7,8,9,10,11 "Built target kernel"
 .PHONY : source/kernel/CMakeFiles/kernel.dir/all
 
 # Build rule for subdir invocation for target.
 source/kernel/CMakeFiles/kernel.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles 8
 	$(MAKE) -f CMakeFiles/Makefile2 source/kernel/CMakeFiles/kernel.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles 0
 .PHONY : source/kernel/CMakeFiles/kernel.dir/rule
