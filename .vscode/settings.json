@@ -11,6 +11,7 @@
         "_default_fcntl.h": "c",
         "loader.h": "c",
         "elf.h": "c",
-        "cpu_instr.h": "c"
+        "cpu_instr.h": "c",
+        "klib.h": "c"
     },
 }

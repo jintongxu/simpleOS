@@ -110,6 +110,40 @@ int kernel_memcmp(void * d1, void * d2, int size) {
 
 
 
+/**
+ * 格式化字符串
+ */
+void kernel_vsprintf(char * buffer, const char * fmt, va_list args) {
+    enum {NORMAL, READ_FMT} state = NORMAL;
+    char ch;
+    char * curr = buffer;
+    while ((ch = *fmt++)) {
+        switch (state) {
+            // 普通字符
+            case NORMAL:
+                if (ch == '%') {
+                    state = READ_FMT;
+                } else {
+                    *curr++ = ch;
+                }
+                break;
+            // 格式化控制字符，只支持部分
+            case READ_FMT:
+                if (ch == 's') {
+                    const char * str = va_arg(args, char *);
+                    int len = kernel_strlen(str);
+                    while (len--) {
+                        *curr++ = *str++;
+                    }
+                }
+                state = NORMAL;
+                break;
+        }
+    }
+}
+
+
+
 
 
 

@@ -6,13 +6,31 @@
 
 #IncludeRegexTransform: 
 
+../source/comm/cpu_instr.h
+types.h
 ../source/comm/types.h
 
-../source/kernel/include/tools/klib.h
+../source/comm/types.h
 
-/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/klib.c
+../source/kernel/include/os_cfg.h
+
+../source/kernel/include/tools/klib.h
+stdarg.h
+-
 comm/types.h
-/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/comm/types.h
+../source/kernel/include/tools/comm/types.h
+
+../source/kernel/include/tools/log.h
+
+/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/log.c
+stdarg.h
+-
+comm/cpu_instr.h
+/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/comm/cpu_instr.h
 tools/klib.h
 /home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/tools/klib.h
+tools/log.h
+/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/tools/log.h
+os_cfg.h
+/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/os_cfg.h
 

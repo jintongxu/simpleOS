@@ -41,5 +41,7 @@ source/kernel/CMakeFiles/kernel.dir/tools/klib.c.o
 source/kernel/CMakeFiles/kernel.dir/tools/log.c.o
  ../source/comm/cpu_instr.h
  ../source/comm/types.h
+ ../source/kernel/include/os_cfg.h
+ ../source/kernel/include/tools/klib.h
  ../source/kernel/include/tools/log.h
  /home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/log.c
