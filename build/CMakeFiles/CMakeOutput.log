@@ -1,7 +1,7 @@
 The system is: Linux - 5.15.0-76-generic - x86_64
 Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
 Compiler: /usr/bin/gcc 
-Build flags: -g;-c;-O0;-m32;-fno-pie;-fno-stack-protector;-fno-asynchronous-unwind-tables
+Build flags: -g;-c;-O0;-m32;;-fno-pie;-fno-stack-protector;-fno-asynchronous-unwind-tables
 Id flags:  
 
 The output was:
@@ -15,14 +15,14 @@ The C compiler identification is GNU, found in "/home/rafael/Documents/diy-x86os
 Determining if the C compiler works passed with the following output:
 Change Dir: /home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_db94d/fast && /usr/bin/make -f CMakeFiles/cmTC_db94d.dir/build.make CMakeFiles/cmTC_db94d.dir/build
+Run Build Command(s):/usr/bin/make cmTC_4d2fb/fast && /usr/bin/make -f CMakeFiles/cmTC_4d2fb.dir/build.make CMakeFiles/cmTC_4d2fb.dir/build
 make[1]: Entering directory '/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_db94d.dir/testCCompiler.c.o
-/usr/bin/gcc   -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables    -o CMakeFiles/cmTC_db94d.dir/testCCompiler.c.o   -c /home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp/testCCompiler.c
-Linking C executable cmTC_db94d
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_db94d.dir/link.txt --verbose=1
-/usr/bin/gcc -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables     -rdynamic CMakeFiles/cmTC_db94d.dir/testCCompiler.c.o  -o cmTC_db94d 
-gcc: warning: CMakeFiles/cmTC_db94d.dir/testCCompiler.c.o: linker input file unused because linking not done
+Building C object CMakeFiles/cmTC_4d2fb.dir/testCCompiler.c.o
+/usr/bin/gcc   -g -c -O0 -m32  -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables    -o CMakeFiles/cmTC_4d2fb.dir/testCCompiler.c.o   -c /home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_4d2fb
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4d2fb.dir/link.txt --verbose=1
+/usr/bin/gcc -g -c -O0 -m32  -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables     -rdynamic CMakeFiles/cmTC_4d2fb.dir/testCCompiler.c.o  -o cmTC_4d2fb 
+gcc: warning: CMakeFiles/cmTC_4d2fb.dir/testCCompiler.c.o: linker input file unused because linking not done
 make[1]: Leaving directory '/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles/CMakeTmp'
 
 

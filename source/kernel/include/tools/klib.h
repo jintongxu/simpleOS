@@ -18,4 +18,15 @@ void kernel_itoa(char * buf, int num, int base);
 void kernel_sprintf(char * buffer, const char * fmt, ...);
 void kernel_vsprintf(char * buffer, const char * fmt, va_list args);
 
+// 当定义了RELEASE的时候取消所有ASSERT
+#ifndef RELEASE
+
+#define ASSERT(expr)    \
+    if (!(expr)) pannic(__FILE__, __LINE__, __func__, #expr)  // #expr是将ASSERT中的内容转换为字符串
+ void pannic(const char * file, int line, const char * func, const char * cond);
+
+#else
+#define ASSERT(expr)        ((void)0)
+#endif
+
 #endif

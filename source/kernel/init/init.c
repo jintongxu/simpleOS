@@ -5,12 +5,16 @@
 #include "os_cfg.h"
 #include "dev/time.h"
 #include "tools/log.h"
+#include "tools/klib.h"
 
 
 static boot_info_t * init_boot_info;
 
 void kernel_init (boot_info_t * boot_info) {
-    init_boot_info = boot_info;
+    ASSERT(boot_info->ram_region_count != 0);
+    ASSERT(3 < 2);
+
+
     cpu_init();
 
     log_init();
@@ -22,6 +26,7 @@ void init_main (void) {
     log_printf("Kernel is running....");
     log_printf("Version: %s", OS_VERSION);
     log_printf("%d %d %x %c", 1234, -12345, 0x123456, 'a');
+
     
 
     int a = 3 / 0;

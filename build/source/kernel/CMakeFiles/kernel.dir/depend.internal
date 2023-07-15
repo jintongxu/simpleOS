@@ -33,11 +33,14 @@ source/kernel/CMakeFiles/kernel.dir/init/init.c.o
  ../source/kernel/include/cpu/irq.h
  ../source/kernel/include/dev/time.h
  ../source/kernel/include/os_cfg.h
+ ../source/kernel/include/tools/klib.h
  ../source/kernel/include/tools/log.h
  /home/rafael/Documents/diy-x86os/start/start/source/kernel/init/init.c
 source/kernel/CMakeFiles/kernel.dir/tools/klib.c.o
+ ../source/comm/cpu_instr.h
  ../source/comm/types.h
  ../source/kernel/include/tools/klib.h
+ ../source/kernel/include/tools/log.h
  /home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/klib.c
 source/kernel/CMakeFiles/kernel.dir/tools/log.c.o
  ../source/comm/cpu_instr.h

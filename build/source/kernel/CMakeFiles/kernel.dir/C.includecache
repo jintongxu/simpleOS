@@ -12,27 +12,21 @@ types.h
 
 ../source/comm/types.h
 
-../source/kernel/include/cpu/cpu.h
+../source/kernel/include/tools/klib.h
+stdarg.h
+-
 comm/types.h
-../source/kernel/include/cpu/comm/types.h
-
-../source/kernel/include/cpu/irq.h
-comm/types.h
-../source/kernel/include/cpu/comm/types.h
-
-../source/kernel/include/os_cfg.h
+../source/kernel/include/tools/comm/types.h
 
 ../source/kernel/include/tools/log.h
 
-/home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/irq.c
-cpu/irq.h
-/home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/cpu/irq.h
-cpu/cpu.h
-/home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/cpu/cpu.h
-comm/cpu_instr.h
-/home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/comm/cpu_instr.h
-os_cfg.h
-/home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/os_cfg.h
+/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/klib.c
+comm/types.h
+/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/comm/types.h
+tools/klib.h
+/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/tools/klib.h
 tools/log.h
-/home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/tools/log.h
+/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/tools/log.h
+comm/cpu_instr.h
+/home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/comm/cpu_instr.h
 

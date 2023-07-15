@@ -9,7 +9,7 @@ ASM_DEFINES =
 
 ASM_INCLUDES = -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include 
 
-C_FLAGS = -g -c -O0 -m32 -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables  
+C_FLAGS = -g -c -O0 -m32  -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables  
 
 C_DEFINES = 
 
