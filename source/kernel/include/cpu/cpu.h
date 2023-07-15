@@ -30,6 +30,17 @@ typedef struct _gate_desc_t {
 #define  GATE_DPL0              (0 << 13)
 #define  GATE_DPL3              (3 << 13)
 
+typedef struct _tss_t {
+    uint32_t pre_link;
+    uint32_t esp0, ss0, esp1, ss1, esp2, ss2;
+    uint32_t cr3;
+    uint32_t eip, eflags, eax, ecx, edx, ebx, esp, ebp, esi, edi;
+    uint32_t es, cs, ss, ds, fs, gs;
+    uint32_t idt;
+    uint32_t iomap;
+}tss_t;
+
+
 #pragma pack()
 
 #define SEG_G       (1 << 15)

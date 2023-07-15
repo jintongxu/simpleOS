@@ -11,9 +11,6 @@
 static boot_info_t * init_boot_info;
 
 void kernel_init (boot_info_t * boot_info) {
-    ASSERT(boot_info->ram_region_count != 0);
-    ASSERT(3 < 2);
-
 
     cpu_init();
 
@@ -22,14 +19,24 @@ void kernel_init (boot_info_t * boot_info) {
     time_init();
 }
 
+void init_task_entry (void) {
+    int count = 0;
+    for (;;) {
+        log_printf("int task %d", count++);
+    }
+}
+
 void init_main (void) {
     log_printf("Kernel is running....");
     log_printf("Version: %s", OS_VERSION);
     log_printf("%d %d %x %c", 1234, -12345, 0x123456, 'a');
 
-    
 
-    int a = 3 / 0;
-    // irq_enable_global();
-    for (;;) {}
+    int count = 0;
+    for (;;) {
+        log_printf("int main %d", count++);
+    }
+
+    init_task_entry();
+
 }
