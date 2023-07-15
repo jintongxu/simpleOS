@@ -15,6 +15,7 @@ source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.o: ../source/comm/types.h
 source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.o: ../source/kernel/include/cpu/cpu.h
 source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.o: ../source/kernel/include/cpu/irq.h
 source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.o: ../source/kernel/include/os_cfg.h
+source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.o: ../source/kernel/include/tools/log.h
 source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.o: ../source/kernel/cpu/irq.c
 
 source/kernel/CMakeFiles/kernel.dir/include/dev/time.c.o: ../source/comm/cpu_instr.h

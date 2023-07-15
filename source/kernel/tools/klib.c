@@ -194,6 +194,7 @@ void kernel_vsprintf(char * buffer, const char * fmt, va_list args) {
                         *curr++ = *str++;
                     }
                 }
+
                 state = NORMAL;
                 break;
         }

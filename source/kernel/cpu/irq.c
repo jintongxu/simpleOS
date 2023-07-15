@@ -2,6 +2,7 @@
 #include "cpu/cpu.h"
 #include "comm/cpu_instr.h"
 #include "os_cfg.h"
+#include "tools/log.h"
 
 #define IDT_TABLE_NR        128
 
@@ -9,10 +10,32 @@ void exception_handler_unknown (void);
 
 static gate_desc_t idt_table[IDT_TABLE_NR];
 
+static void dump_core_regs (exception_frame_t * frame) {
+	log_printf("IRQ: %d, error code: %d", frame->num, frame->error_code);
+	log_printf("CS: %d\n\rDS: %d\n\rES: %d\n\rFS: %d\n\rGS:%d",
+		frame->cs, frame->ds, frame->es, frame->fs, frame->gs
+	);
+	log_printf("EAX: 0x%x\n\r"
+		"EBX: 0x%x\n\r"
+		"ECX: 0x%x\n\r"
+		"EDX: 0x%x\n\r"
+		"EDI: 0x%x\n\r"
+		"ESI: 0x%x\n\r"
+		"EBP: 0x%x\n\r"
+		"ESP: 0x%x\n\r",
+		frame->eax, frame->ebx, frame->ecx, frame->edx,
+		frame->edi, frame->esi, frame->ebp, frame->esp);
+
+	log_printf("EIP: 0x%x\n\rEFLAGS:0x%x\n\r", frame->eip, frame->eflags);
+
+
+}
+
 static void do_default_handler (exception_frame_t * frame, char * message) {
-    for (;;) {
-		hlt();
-    }
+	log_printf("---------------------------------");
+	log_printf("IRQ/Exception happend: %s", message);
+	dump_core_regs(frame);
+
 }
 void do_handler_unknown (exception_frame_t * frame) {
     do_default_handler(frame, "unknown exception");        // 默认值放到最后面

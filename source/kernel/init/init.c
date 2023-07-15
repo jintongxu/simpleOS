@@ -24,8 +24,7 @@ void init_main (void) {
     log_printf("%d %d %x %c", 1234, -12345, 0x123456, 'a');
     
 
-
-    // int a = 3 / 0;
+    int a = 3 / 0;
     // irq_enable_global();
     for (;;) {}
 }
