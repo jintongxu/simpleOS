@@ -14,4 +14,6 @@
         "cpu_instr.h": "c",
         "klib.h": "c"
     },
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "aiXcoder.showTrayIcon": true,
 }

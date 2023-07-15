@@ -1,5 +1,6 @@
 #include "comm/boot_info.h"
 #include "comm/cpu_instr.h"
+#include "comm/cpu_instr.h"
 #include "cpu/cpu.h"
 #include "cpu/irq.h"
 #include "os_cfg.h"
@@ -28,6 +29,7 @@ void init_task_entry (void) {
     int count = 0;
     for (;;) {
         log_printf("int task %d", count++);
+        task_switch_from_to(&init_task, &first_task);
     }
 }
 
@@ -37,12 +39,13 @@ void init_main (void) {
     log_printf("%d %d %x %c", 1234, -12345, 0x123456, 'a');
 
     task_init(&init_task, (uint32_t)init_task_entry, (uint32_t)&init_task_stack[1024]);
-    task_init(&first_task, 0, 0);
+    task_init(&first_task, 0, 0);  // 后面两个参数为0：first_task跑起来后已经运行，不需要从tss中加载初始化的值，因此里面的值无所谓，后面切换的时候也会保存状态。
+    write_tr(first_task.tss_sel);  // 对任务寄存器tr进行初始化
 
     int count = 0;
     for (;;) {
         log_printf("int main %d", count++);
-
+        task_switch_from_to(&first_task, &init_task);
     }
 
     init_task_entry();
