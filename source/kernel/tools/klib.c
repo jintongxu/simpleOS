@@ -107,7 +107,51 @@ int kernel_memcmp(void * d1, void * d2, int size) {
     return 0;
 }
 
+void kernel_itoa(char * buf, int num, int base) {
+    // 转换字符索引[-15, -14, ...-1, 0, 1, ...., 14, 15]
+    static const char * num2ch = {"FEDCBA9876543210123456789ABCDEF"};
+    char * p = buf;
+    int old_num = num;
 
+    // 仅支持部分进制
+    if ((base != 2) && (base != 8) && (base != 10) && (base != 16)) {
+        *p = '\0';
+        return;
+    }
+
+    if ((num < 0) && (base == 10)) {
+        *p++ = '-';
+    }
+
+    // 一位一位的转换
+    do {
+        char ch = num2ch[num % base + 15];
+        *p++ = ch;
+        num /= base;
+    }while(num);
+
+    *p-- = '\0';
+
+    // 将转换结果逆序，生成最终的结果
+    char * start = (old_num > 0) ? buf : buf + 1;
+    while (start < p) {
+        char ch = *start;
+        *start = *p;
+        *p-- = ch;
+        start++;
+    }
+}
+
+/**
+ *  格式化字符串到缓存中
+ */
+void kernel_sprintf(char * buffer, const char * fmt, ...) {
+    va_list args;
+
+    va_start(args, fmt);
+    kernel_vsprintf(buffer, fmt, args);
+    va_end(args);
+}
 
 
 /**
@@ -129,7 +173,21 @@ void kernel_vsprintf(char * buffer, const char * fmt, va_list args) {
                 break;
             // 格式化控制字符，只支持部分
             case READ_FMT:
-                if (ch == 's') {
+                if (ch == 'd') {
+                    int num = va_arg(args, int);
+                    kernel_itoa(curr, num, 10);
+                    curr += kernel_strlen(curr);
+
+                } else if (ch == 'x') {
+                    int num = va_arg(args, int);
+                    kernel_itoa(curr, num, 16);
+                    curr += kernel_strlen(curr);
+
+                } else if (ch == 'c') {
+                    char c = va_arg(args, int);
+                    *curr++ = c;
+                    
+                } else if (ch == 's') {
                     const char * str = va_arg(args, char *);
                     int len = kernel_strlen(str);
                     while (len--) {
@@ -141,7 +199,6 @@ void kernel_vsprintf(char * buffer, const char * fmt, va_list args) {
         }
     }
 }
-
 
 
 

@@ -21,6 +21,7 @@ void kernel_init (boot_info_t * boot_info) {
 void init_main (void) {
     log_printf("Kernel is running....");
     log_printf("Version: %s", OS_VERSION);
+    log_printf("%d %d %x %c", 1234, -12345, 0x123456, 'a');
     
 
 

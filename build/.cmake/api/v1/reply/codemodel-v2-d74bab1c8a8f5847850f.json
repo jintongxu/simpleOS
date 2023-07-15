@@ -62,7 +62,7 @@
 					]
 				}
 			],
-			"name" : "Debug",
+			"name" : "",
 			"projects" : 
 			[
 				{
@@ -120,21 +120,21 @@
 				{
 					"directoryIndex" : 1,
 					"id" : "boot::@a4fbfdde3044a49ad01d",
-					"jsonFile" : "target-boot-Debug-62534783131ea9a68288.json",
+					"jsonFile" : "target-boot-97a7ae3fa0e6d802b31b.json",
 					"name" : "boot",
 					"projectIndex" : 1
 				},
 				{
 					"directoryIndex" : 3,
 					"id" : "kernel::@483af936ae9a949d521e",
-					"jsonFile" : "target-kernel-Debug-2e24b254b75c828e3a49.json",
+					"jsonFile" : "target-kernel-d8e90d4c337c64f19038.json",
 					"name" : "kernel",
 					"projectIndex" : 3
 				},
 				{
 					"directoryIndex" : 2,
 					"id" : "loader::@346703cd72729101d3c6",
-					"jsonFile" : "target-loader-Debug-a738f50ec79736186c8d.json",
+					"jsonFile" : "target-loader-fa72bdc628692cfac693.json",
 					"name" : "loader",
 					"projectIndex" : 2
 				}
