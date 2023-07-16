@@ -96,3 +96,42 @@ void task_set_ready(task_t * task) {
 void task_set_block (task_t * task) {
     list_remove(&task_manager.ready_list, &task->run_node);
 }
+
+
+// 返回下一个的进程(就绪队列头部的进程)
+task_t * task_next_run (void) {
+    list_node_t * task_node = list_first(&task_manager.ready_list);
+    return list_node_parent(task_node, task_t, run_node);
+}
+
+
+task_t * task_current (void) {
+    return task_manager.curr_task;
+}
+
+// 让进程让出CPU
+int sys_sched_yield() {
+    if (list_count(&task_manager.ready_list) > 1) {
+        task_t * curr_task = task_current();
+
+        task_set_block(curr_task);
+        task_set_ready(curr_task);    // 再加入的时候，是加入队列的尾部
+
+        task_dispatch();
+    }
+
+    // 如果就绪队列里面就1个进程。
+    return 0;
+}
+
+
+void task_dispatch (void) {
+    task_t * to = task_next_run();
+    if (to != task_manager.curr_task) {
+        task_t * from = task_current();
+        task_manager.curr_task = to;
+        to->state = TASK_RUNNING;
+
+        task_switch_from_to(from, to);
+    }
+}

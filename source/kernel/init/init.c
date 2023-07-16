@@ -32,7 +32,7 @@ void init_task_entry (void) {
     int count = 0;
     for (;;) {
         log_printf("int task %d", count++);
-        task_switch_from_to(&init_task, task_first_task());
+        sys_sched_yield();  // 让出CPU
     }
 }
 
@@ -128,8 +128,9 @@ void init_main (void) {
 
     int count = 0;
     for (;;) {
-        log_printf("int main %d", count++);
-        task_switch_from_to(task_first_task(), &init_task);
+        log_printf("first main %d", count++);
+        sys_sched_yield();  // 让出CPU
+
     }
 
     init_task_entry();
