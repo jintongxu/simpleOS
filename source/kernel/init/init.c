@@ -8,6 +8,7 @@
 #include "tools/log.h"
 #include "tools/klib.h"
 #include "core/task.h"
+#include "tools/list.h"
 
 
 static boot_info_t * init_boot_info;
@@ -33,7 +34,15 @@ void init_task_entry (void) {
     }
 }
 
+void list_test() {
+    list_t list;
+
+    list_init(&list);
+}
+
 void init_main (void) {
+    list_test();
+
     log_printf("Kernel is running....");
     log_printf("Version: %s", OS_VERSION);
     log_printf("%d %d %x %c", 1234, -12345, 0x123456, 'a');
