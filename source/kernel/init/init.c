@@ -66,6 +66,36 @@ void list_test() {
     log_printf("list: first=0x%x, last=0x%x, count=%d",
         list_first(&list), list_last(&list), list_count(&list));
 
+
+    // 头部删除测试
+    for (int i = 0; i < 5; i ++ ) {
+        list_node_t * node = list_remove_first(&list);
+        log_printf("remove first from list: %d, 0x%x", i, (uint32_t)node);
+    }
+
+    log_printf("list: first=0x%x, last=0x%x, count=%d",
+        list_first(&list), list_last(&list), list_count(&list));
+    
+    // remove node 删除指定节点
+    for (int i = 0; i < 5; i ++) {
+        list_node_t * node = nodes + i;
+
+        log_printf("insert first to list: %d, 0x%x", i, (uint32_t)node);
+        list_insert_last(&list, node);
+    }
+
+    log_printf("list: first=0x%x, last=0x%x, count=%d",
+        list_first(&list), list_last(&list), list_count(&list));
+
+    for (int i = 0; i < 5; i ++ ) {
+        list_node_t * node = nodes + i;
+        log_printf("remove first from list: %d, 0x%x", i, (uint32_t)node);
+        list_remove(&list, node);
+    }
+
+    log_printf("list: first=0x%x, last=0x%x, count=%d",
+        list_first(&list), list_last(&list), list_count(&list));
+
 }
 
 void init_main (void) {

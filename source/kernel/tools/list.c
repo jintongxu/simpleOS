@@ -36,3 +36,50 @@ void list_insert_last (list_t * list, list_node_t * node) {
     list->count++;
 
 }
+
+
+list_node_t * list_remove_first (list_t * list) {
+    if (list_is_empty(list)) {
+        return (list_node_t *)0;
+    } 
+
+    list_node_t * remove_node = list->first;
+    list->first = remove_node->next;
+    if (list->first == (list_node_t *)0) {  // 假如只有一个节点
+        list->last = (list_node_t *)0;
+    } else {
+        remove_node->next->pre = (list_node_t *)0;   // 有超过一个节点
+    }
+
+    remove_node->pre = remove_node->next = (list_node_t * )0;
+
+    list->count--;
+
+    return remove_node;
+
+}
+
+list_node_t * list_remove (list_t * list, list_node_t * node) {
+    if (node == list->first) {  // 如果删除的点是头节点，直接置空
+        list->first = node->next;
+    }
+
+    if (node == list->last) {    // 删除的点是尾节点
+        list->last = node->pre;
+    }
+
+    if (node->pre) {
+        node->pre->next = node->next;
+    }
+
+    if (node->next) {
+        node->next->pre = node->pre;
+    }
+
+    node->pre = node->next = (list_node_t *)0;
+    list->count--;
+
+    return node;
+
+
+}
