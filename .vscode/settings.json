@@ -12,7 +12,8 @@
         "loader.h": "c",
         "elf.h": "c",
         "cpu_instr.h": "c",
-        "klib.h": "c"
+        "klib.h": "c",
+        "list.h": "c"
     },
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "aiXcoder.showTrayIcon": true,
