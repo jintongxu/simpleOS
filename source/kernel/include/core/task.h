@@ -6,6 +6,7 @@
 #include "tools/list.h"
 
 #define TASK_NAME_SIZE      32
+#define TASK_TIME_SLICE_DEFAULT         10
 
 typedef struct _task_t {
     // uint32_t * stack;
@@ -17,6 +18,9 @@ typedef struct _task_t {
         TASK_READY,
         TASK_WAITTING,   // 等待时间
     }state;
+
+    int time_ticks;      // 设置计数器
+    int slice_ticks;
 
     char name[TASK_NAME_SIZE];
 
@@ -30,6 +34,8 @@ typedef struct _task_t {
 
 int task_init (task_t * task, const char * name, uint32_t entry, uint32_t esp);
 void task_switch_from_to (task_t * from, task_t * to);
+void task_time_tick(void);
+
 
 typedef struct _task_manager_t {
     task_t * curr_task;

@@ -10,7 +10,9 @@ static uint32_t sys_tick;
 void do_handler_time (exception_frame_t * frame) {
     sys_tick++;
 
-    pic_send_eoi(IRQ0_TIMER);
+    pic_send_eoi(IRQ0_TIMER);    // 告诉系统可以进行下一个进程了
+    task_time_tick();       // 做有关任务定时方面的处理
+
 }
 static void init_pit (void) {
 

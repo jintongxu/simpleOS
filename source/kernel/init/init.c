@@ -32,7 +32,6 @@ void init_task_entry (void) {
     int count = 0;
     for (;;) {
         log_printf("int task %d", count++);
-        sys_sched_yield();  // 让出CPU
     }
 }
 
@@ -125,11 +124,10 @@ void init_main (void) {
     // write_tr(first_task.tss_sel);  // 对任务寄存器tr进行初始化
 
 
-
+    irq_enable_global();
     int count = 0;
     for (;;) {
         log_printf("first main %d", count++);
-        sys_sched_yield();  // 让出CPU
 
     }
 
