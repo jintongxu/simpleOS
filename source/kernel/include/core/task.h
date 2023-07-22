@@ -19,6 +19,7 @@ typedef struct _task_t {
         TASK_WAITTING,   // 等待时间
     }state;
 
+    int sleep_ticks;
     int time_ticks;      // 设置计数器
     int slice_ticks;
 
@@ -42,8 +43,10 @@ typedef struct _task_manager_t {
 
     list_t ready_list;  // 就绪队列
     list_t task_list;   // 保存所有已经创建好的进程
+    list_t sleep_list;   // 睡眠队列
 
     task_t first_task;
+    task_t idle_task;
 }task_manager_t;
 
 
@@ -56,6 +59,8 @@ int sys_sched_yield(void);
 void task_dispatch (void);
 task_t * task_current (void);
 
-
+void task_set_sleep (task_t * task, uint32_t ticks);   // 将进程加入睡眠队列
+void task_set_wakeup (task_t * task);       // 将进程从睡眠队列移除
+void sys_sleep (uint32_t ms);
 
 #endif
