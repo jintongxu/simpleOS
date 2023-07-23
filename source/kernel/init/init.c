@@ -33,8 +33,7 @@ static sem_t sem;
 void init_task_entry (void) {
     int count = 0;
     for (;;) {
-        sem_wait(&sem);
-        
+    
         log_printf("int task %d", count++);
     }
 }
@@ -134,9 +133,7 @@ void init_main (void) {
     int count = 0;
     for (;;) {
         log_printf("first main %d", count++);
-        sem_notify(&sem);
-
-        sys_sleep(1000);
+    
     }
 
     init_task_entry();

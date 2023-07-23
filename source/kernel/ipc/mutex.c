@@ -3,14 +3,14 @@
 
 
 
-void mutex_init (mutex_t mutex) {
+void mutex_init (mutex_t * mutex) {
     mutex->locked_count = 0;
     mutex->owner = (task_t *)0;
     list_init(&mutex->wait_list);
 }
 
 // 对互斥锁进行上锁
-void mutex_lock (mutex_t mutex) {
+void mutex_lock (mutex_t * mutex) {
     irq_state_t state = irq_enter_protection();
 
     task_t * curr = task_current();
@@ -29,7 +29,7 @@ void mutex_lock (mutex_t mutex) {
 }
 
 // 对互斥锁解锁
-void mutex_unlock (mutex_t mutex) {
+void mutex_unlock (mutex_t * mutex) {
     irq_state_t state = irq_enter_protection();
 
     task_t * curr = task_current();
@@ -38,8 +38,8 @@ void mutex_unlock (mutex_t mutex) {
             mutex->owner = (task_t *)0;
 
             if (list_count(&mutex->wait_list)) {
-                list_node_t * node = list_remove_first(&mutex->wait_list)
-                task_t * task = list_node_parent(task_node, task_t, wait_node);
+                list_node_t * node = list_remove_first(&mutex->wait_list);
+                task_t * task = list_node_parent(node, task_t, wait_node);
                 task_set_ready(task);
 
                 mutex->locked_count = 1;
