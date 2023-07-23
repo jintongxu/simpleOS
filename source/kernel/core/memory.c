@@ -1,5 +1,8 @@
 #include "core/memory.h"
 #include "tools/log.h"
+#include "tools/klib.h"
+
+static addr_alloc_t paddr_alloc;
 
 static void addr_alloc_init (addr_alloc_t * alloc, uint8_t * bits,
     uint32_t start, uint32_t size, uint32_t page_size) {
@@ -36,21 +39,45 @@ static void addr_free_page (addr_alloc_t * alloc, uint32_t addr, int page_count)
     mutex_unlock(&alloc->mutex);
 }
 
+
+void show_mem_info (boot_info_t * boot_info) {
+    log_printf("mem region:");
+    for (int i = 0; i < boot_info->ram_region_count; i ++ ) {
+        log_printf("[%d]: 0x%x - 0x%x", i,
+        boot_info->ram_region_cfg[i].start,
+        boot_info->ram_region_cfg[i].size);
+    }
+
+    log_printf("\n");
+
+}
+
+static uint32_t total_mem_size (boot_info_t * boot_info) {
+    uint32_t mem_size = 0;
+    for (int i = 0; i < boot_info->ram_region_count; i++) {
+        mem_size += boot_info->ram_region_cfg[i].size;
+    }
+    return mem_size;
+}
+
 void memory_init (boot_info_t * boot_info) {
-    addr_alloc_t addr_alloc;
+    extern uint8_t * mem_free_start;
 
-    uint8_t bits[8];
+    log_printf("mem init");
 
-    addr_alloc_init(&addr_alloc, bits, 0x1000, 64*4096, 4096);
-    for (int i = 0; i < 32; i++) {
-        uint32_t addr = addr_alloc_page(&addr_alloc, 2);
-        log_printf("alloc addr: 0x%x", addr);
-    }
+    show_mem_info(boot_info);
 
-    uint32_t addr = 0x1000;
-    for (int i = 0; i < 32; i++) {
-        addr_free_page(&addr_alloc, addr, 2);
-        addr += 8192;
-    }
+    uint8_t * mem_free = (uint8_t *)&mem_free_start;
+
+    uint32_t mem_up1MB_free = total_mem_size(boot_info) - MEM_EXT_START;
+    // 将 mem_up1MB_free 转换成 MEM_PAGE_SIZE 的整数倍 （即将整个内存分成相同MEM_PAGE_SIZE大小的页）
+    mem_up1MB_free = down2(mem_up1MB_free, MEM_PAGE_SIZE);
+    log_printf("free memory: 0x%x, size: 0x%x", MEM_EXT_START, mem_up1MB_free);
+
+    addr_alloc_init(&paddr_alloc, mem_free, MEM_EXT_START, mem_up1MB_free, MEM_PAGE_SIZE);
+    mem_free += bitmap_byte_count(paddr_alloc.size / MEM_PAGE_SIZE);
+
+    // 到这里，mem_free应该比EBDA地址要小
+    ASSERT(mem_free < (uint8_t *)MEM_EBDA_START);
 
 }
