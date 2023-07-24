@@ -66,6 +66,25 @@ static uint32_t reload_elf_file (uint8_t * file_buffer) {
 static void die(int code) {
     for (;;) {}
 }
+
+#define PDE_P       (1 << 0)
+#define PDE_W       (1 << 1)
+#define PDE_PS      (1 << 7)
+#define CR4_PSE     (1 << 4)
+#define CR0_PG      (1 << 31)
+// 开启分页机制
+void enable_page_mode(void) {
+    static uint32_t page_dir[1024] __attribute__((aligned(4096))) = {    // 以4KB方式对齐
+        [0] = PDE_P | PDE_W | PDE_PS | 0
+    };
+
+    uint32_t cr4 = read_cr4();
+    write_cr4(cr4 | CR4_PSE);
+
+    write_cr3((uint32_t)page_dir);
+    write_cr0(read_cr0() | CR0_PG);
+}
+
 void load_kernel (void) {
     read_disk(100, 500, (uint8_t *)SYS_KERNEL_LOAD_ADDR);
 
@@ -73,6 +92,9 @@ void load_kernel (void) {
     if (kernel_entry == 0) {
         die(-1);
     }
+
+    // 打开分页机制
+    enable_page_mode();
 
     // 将参数传递到init/start.S的_start处
     ((void (*)(boot_info_t *))kernel_entry)(&boot_info);
