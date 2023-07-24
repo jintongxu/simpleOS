@@ -21,6 +21,13 @@ typedef struct _addr_alloc_t {
 
 }addr_alloc_t;
 
+typedef struct _memory_map_t {
+    void * vstart;    // 线性地址
+    void * vend;
+    void * pstart;    // 物理地址中
+    uint32_t perm;      // 特权属性
+}memory_map_t;
+
 void memory_init (boot_info_t * boot_info);
 
 

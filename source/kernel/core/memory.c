@@ -52,6 +52,29 @@ void show_mem_info (boot_info_t * boot_info) {
 
 }
 
+void create_kernel_table(void) {
+    extern uint8_t s_text[], e_text[], s_data[];
+    extern uint8_t kernel_base[];
+
+    static memory_map_t kernel_map[] ={
+        {kernel_base,      s_text,     kernel_base,         0},
+        {s_text, e_text, s_text,         0},
+        {s_data, (void *)MEM_EBDA_START, s_data, 0},
+    };
+
+    for (int i = 0; i < sizeof(kernel_map) / sizeof(memory_map_t); i++ ) {
+        memory_map_t * map = kernel_map + i;
+
+        uint32_t vstart = down2((uint32_t)map->vstart, MEM_PAGE_SIZE);
+        uint32_t vend = up2((uint32_t)map->vend, MEM_PAGE_SIZE);
+        int page_count = (vend - vstart) / MEM_PAGE_SIZE;
+
+        //
+
+    }
+}
+
+
 static uint32_t total_mem_size (boot_info_t * boot_info) {
     uint32_t mem_size = 0;
     for (int i = 0; i < boot_info->ram_region_count; i++) {
@@ -79,5 +102,7 @@ void memory_init (boot_info_t * boot_info) {
 
     // 到这里，mem_free应该比EBDA地址要小
     ASSERT(mem_free < (uint8_t *)MEM_EBDA_START);
+
+    create_kernel_table();
 
 }
