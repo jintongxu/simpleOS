@@ -55,6 +55,54 @@ void show_mem_info (boot_info_t * boot_info) {
 
 }
 
+pte_t * find_pte (pde_t * page_dir, uint32_t vaddr, int alloc) {
+    pte_t * page_table;
+    pde_t * pde = page_dir + pde_index(vaddr);
+
+    if (pde->present) {
+        page_table = (pte_t *)pde_paddr(pde);
+    } else {
+        if (alloc == 0) {
+            return (pte_t *)0;
+        }
+        
+        // 如果没找到分配一个新的空间页
+        uint32_t pg_paddr = addr_alloc_page(&paddr_alloc, 1);
+        if (pg_paddr == 0) {
+            // 如果分配失败
+            return (pte_t *)0;
+        }
+
+        pde->v = pg_paddr | PDE_P;
+
+        page_table = (pte_t *)pg_paddr;
+        kernel_memset(page_table, 0, MEM_PAGE_SIZE);        // 将表项初始化为0
+    }
+
+    return page_table + pte_index(vaddr);
+}
+
+int memory_create_map (pde_t * page_dir, uint32_t vaddr, uint32_t paddr, int count, uint32_t perm) {
+    for (int i = 0; i < count; i++ ) {
+        log_printf("create map: v-0x%x, p-0x%x, perm:0x%x", vaddr, paddr, perm);
+        pte_t * pte = find_pte(page_dir, vaddr, 1);
+        if (pte == (pte_t *)0) {
+            log_printf("create pte failed.pte==0");
+            return -1;
+        }
+
+
+        log_printf("pte addr:0x%x", (uint32_t)pte);
+
+        ASSERT(pte->present == 0);
+        pte->v = paddr | perm | PTE_P;
+
+        vaddr += MEM_PAGE_SIZE;
+        paddr += MEM_PAGE_SIZE;
+
+    }
+}
+
 void create_kernel_table(void) {
     extern uint8_t s_text[], e_text[], s_data[];
     extern uint8_t kernel_base[];
@@ -70,9 +118,10 @@ void create_kernel_table(void) {
 
         uint32_t vstart = down2((uint32_t)map->vstart, MEM_PAGE_SIZE);
         uint32_t vend = up2((uint32_t)map->vend, MEM_PAGE_SIZE);
+        uint32_t paddr = down2((uint32_t)map->pstart, MEM_PAGE_SIZE);
         int page_count = (vend - vstart) / MEM_PAGE_SIZE;
 
-        //
+        memory_create_map(kernel_page_dir, vstart, (uint32_t)paddr, page_count, map->perm);
 
     }
 }
@@ -107,5 +156,5 @@ void memory_init (boot_info_t * boot_info) {
     ASSERT(mem_free < (uint8_t *)MEM_EBDA_START);
 
     create_kernel_table();
-
+    mmu_set_page_dir((uint32_t)kernel_page_dir);
 }
