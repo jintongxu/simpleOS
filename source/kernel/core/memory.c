@@ -73,7 +73,7 @@ pte_t * find_pte (pde_t * page_dir, uint32_t vaddr, int alloc) {
             return (pte_t *)0;
         }
 
-        pde->v = pg_paddr | PDE_P;
+        pde->v = pg_paddr | PDE_P | PDE_W | PDE_U;
 
         page_table = (pte_t *)pg_paddr;
         kernel_memset(page_table, 0, MEM_PAGE_SIZE);        // 将表项初始化为0
@@ -84,15 +84,15 @@ pte_t * find_pte (pde_t * page_dir, uint32_t vaddr, int alloc) {
 
 int memory_create_map (pde_t * page_dir, uint32_t vaddr, uint32_t paddr, int count, uint32_t perm) {
     for (int i = 0; i < count; i++ ) {
-        log_printf("create map: v-0x%x, p-0x%x, perm:0x%x", vaddr, paddr, perm);
+        // log_printf("create map: v-0x%x, p-0x%x, perm:0x%x", vaddr, paddr, perm);
         pte_t * pte = find_pte(page_dir, vaddr, 1);
         if (pte == (pte_t *)0) {
-            log_printf("create pte failed.pte==0");
+            // log_printf("create pte failed.pte==0");
             return -1;
         }
 
 
-        log_printf("pte addr:0x%x", (uint32_t)pte);
+        // log_printf("pte addr:0x%x", (uint32_t)pte);
 
         ASSERT(pte->present == 0);
         pte->v = paddr | perm | PTE_P;
@@ -108,9 +108,9 @@ void create_kernel_table(void) {
     extern uint8_t kernel_base[];
 
     static memory_map_t kernel_map[] ={
-        {kernel_base,      s_text,     kernel_base,         0},
+        {kernel_base,      s_text,     kernel_base,     PTE_W},
         {s_text, e_text, s_text,         0},
-        {s_data, (void *)MEM_EBDA_START, s_data, 0},
+        {s_data, (void *)MEM_EBDA_START, s_data, PTE_W},
     };
 
     for (int i = 0; i < sizeof(kernel_map) / sizeof(memory_map_t); i++ ) {

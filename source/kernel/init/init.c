@@ -15,6 +15,7 @@
 
 static boot_info_t * init_boot_info;
 
+
 void kernel_init (boot_info_t * boot_info) {
 
     cpu_init();
