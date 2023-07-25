@@ -36,14 +36,14 @@ static uint32_t addr_alloc_page (addr_alloc_t * alloc, int page_count) {
 static void addr_free_page (addr_alloc_t * alloc, uint32_t addr, int page_count) {
     mutex_lock(&alloc->mutex);
 
-    uint32_t pg_index = (addr - alloc->start) / alloc->page_size;
-    bitmap_set_bit(&alloc->bitmap, pg_index, page_count, 0);
+    uint32_t pg_indx = (addr - alloc->start) / alloc->page_size;
+    bitmap_set_bit(&alloc->bitmap, pg_indx, page_count, 0);
 
     mutex_unlock(&alloc->mutex);
 }
 
 
-void show_mem_info (boot_info_t * boot_info) {
+static void show_mem_info (boot_info_t * boot_info) {
     log_printf("mem region:");
     for (int i = 0; i < boot_info->ram_region_count; i ++ ) {
         log_printf("[%d]: 0x%x - 0x%x", i,
@@ -75,7 +75,7 @@ pte_t * find_pte (pde_t * page_dir, uint32_t vaddr, int alloc) {
 
         pde->v = pg_paddr | PDE_P | PDE_W | PDE_U;
 
-        page_table = (pte_t *)pg_paddr;
+        page_table = (pte_t *)(pg_paddr);
         kernel_memset(page_table, 0, MEM_PAGE_SIZE);        // 将表项初始化为0
     }
 
@@ -110,8 +110,12 @@ void create_kernel_table(void) {
     static memory_map_t kernel_map[] ={
         {kernel_base,      s_text,     kernel_base,     PTE_W},
         {s_text, e_text, s_text,         0},
-        {s_data, (void *)MEM_EBDA_START, s_data, PTE_W},
+        {s_data, (void *)(MEM_EBDA_START - 1), s_data, PTE_W},
+        {(void *)(MEM_EXT_START), (void *)MEM_EXT_END, (void *)MEM_EXT_START, PTE_W},
     };
+
+    // 清空页目录表
+    kernel_memset(kernel_page_dir, 0, sizeof(kernel_page_dir));
 
     for (int i = 0; i < sizeof(kernel_map) / sizeof(memory_map_t); i++ ) {
         memory_map_t * map = kernel_map + i;
@@ -134,6 +138,23 @@ static uint32_t total_mem_size (boot_info_t * boot_info) {
     }
     return mem_size;
 }
+
+uint32_t memory_create_uvm (void) {
+    pde_t * page_dir = (pde_t *)addr_alloc_page(&paddr_alloc, 1);
+    if (page_dir == 0) {
+        return 0;
+    }
+
+    // 操作系统和进程共享内存
+    kernel_memset((void *)page_dir, 0, MEM_PAGE_SIZE);      // 对第一级表进行清空
+    uint32_t user_pde_start = pde_index(MEMORY_TASK_BASE);
+    for (int i = 0; i < user_pde_start; i++) {
+        page_dir[i].v = kernel_page_dir[i].v;
+    }
+
+    return (uint32_t)page_dir;
+}
+
 
 void memory_init (boot_info_t * boot_info) {
     extern uint8_t * mem_free_start;

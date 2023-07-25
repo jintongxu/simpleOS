@@ -7,17 +7,19 @@
 #include "comm/boot_info.h"
 
 #define MEM_EBDA_START              0x00080000
-#define         MEM_EXT_START       (1024*1024)     // 1MB
-#define         MEM_PAGE_SIZE       4096    // 4KB
+#define MEM_EXT_START               (1024*1024)     // 1MB
+#define MEM_PAGE_SIZE               4096    // 4KB
+#define MEMORY_TASK_BASE            0x80000000
+#define MEM_EXT_END                 (127 * 1024 * 1024 - 1)
 
 // 内存块
 typedef struct _addr_alloc_t {
     mutex_t mutex;
     bitmap_t bitmap;
 
+    uint32_t page_size;
     uint32_t start;
     uint32_t size;
-    uint32_t page_size;
 
 }addr_alloc_t;
 
@@ -29,6 +31,6 @@ typedef struct _memory_map_t {
 }memory_map_t;
 
 void memory_init (boot_info_t * boot_info);
-
+uint32_t memory_create_uvm (void);
 
 #endif
