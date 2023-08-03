@@ -5,6 +5,8 @@
 #include "tools/log.h"
 #include "comm/cpu_instr.h"
 #include "cpu/irq.h"
+#include "cpu/mmu.h"
+#include "core/memory.h"
 
 static uint32_t idle_task_stack[IDLE_TASK_SIZE];
 static task_manager_t task_manager;
@@ -84,9 +86,24 @@ void task_switch_from_to (task_t * from, task_t * to) {
 }
 
 void task_first_init (void) {
-    task_init(&task_manager.first_task, "fist task" ,0, 0);  
+    void first_task_entry (void);
+    extern uint8_t s_first_task[], e_first_task[];  // 拷贝代码区域起始和结束区域
+
+    uint32_t copy_size = (uint32_t)(e_first_task - s_first_task);
+    uint32_t alloc_size = 10 * MEM_PAGE_SIZE;       // 分配了十个物理页
+    ASSERT(copy_size < alloc_size);
+
+    uint32_t first_start = (uint32_t)first_task_entry;
+
+    task_init(&task_manager.first_task, "fist task" , first_start, 0);  
     write_tr(task_manager.first_task.tss_sel);
     task_manager.curr_task = &task_manager.first_task; 
+
+    mmu_set_page_dir(task_manager.first_task.tss.cr3);
+
+
+    memory_alloc_page_for(first_start, alloc_size, PTE_P | PTE_W);
+    kernel_memcpy((void *)first_start,(void *)s_first_task, copy_size);
 }
 
 task_t * task_first_task (void) {
