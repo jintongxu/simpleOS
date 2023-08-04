@@ -125,6 +125,60 @@ kernel/fast:
 	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/build
 .PHONY : kernel/fast
 
+core/memory.o: core/memory.c.o
+
+.PHONY : core/memory.o
+
+# target to build an object file
+core/memory.c.o:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/core/memory.c.o
+.PHONY : core/memory.c.o
+
+core/memory.i: core/memory.c.i
+
+.PHONY : core/memory.i
+
+# target to preprocess a source file
+core/memory.c.i:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/core/memory.c.i
+.PHONY : core/memory.c.i
+
+core/memory.s: core/memory.c.s
+
+.PHONY : core/memory.s
+
+# target to generate assembly for a file
+core/memory.c.s:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/core/memory.c.s
+.PHONY : core/memory.c.s
+
+core/task.o: core/task.c.o
+
+.PHONY : core/task.o
+
+# target to build an object file
+core/task.c.o:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/core/task.c.o
+.PHONY : core/task.c.o
+
+core/task.i: core/task.c.i
+
+.PHONY : core/task.i
+
+# target to preprocess a source file
+core/task.c.i:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/core/task.c.i
+.PHONY : core/task.c.i
+
+core/task.s: core/task.c.s
+
+.PHONY : core/task.s
+
+# target to generate assembly for a file
+core/task.c.s:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/core/task.c.s
+.PHONY : core/task.c.s
+
 cpu/cpu.o: cpu/cpu.c.o
 
 .PHONY : cpu/cpu.o
@@ -206,6 +260,42 @@ include/dev/time.c.s:
 	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/include/dev/time.c.s
 .PHONY : include/dev/time.c.s
 
+init/first_task.o: init/first_task.c.o
+
+.PHONY : init/first_task.o
+
+# target to build an object file
+init/first_task.c.o:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o
+.PHONY : init/first_task.c.o
+
+init/first_task.i: init/first_task.c.i
+
+.PHONY : init/first_task.i
+
+# target to preprocess a source file
+init/first_task.c.i:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/init/first_task.c.i
+.PHONY : init/first_task.c.i
+
+init/first_task.s: init/first_task.c.s
+
+.PHONY : init/first_task.s
+
+# target to generate assembly for a file
+init/first_task.c.s:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/init/first_task.c.s
+.PHONY : init/first_task.c.s
+
+init/first_task_entry.o: init/first_task_entry.S.o
+
+.PHONY : init/first_task_entry.o
+
+# target to build an object file
+init/first_task_entry.S.o:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/init/first_task_entry.S.o
+.PHONY : init/first_task_entry.S.o
+
 init/init.o: init/init.c.o
 
 .PHONY : init/init.o
@@ -242,6 +332,87 @@ init/start.S.o:
 	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/init/start.S.o
 .PHONY : init/start.S.o
 
+ipc/mutex.o: ipc/mutex.c.o
+
+.PHONY : ipc/mutex.o
+
+# target to build an object file
+ipc/mutex.c.o:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/ipc/mutex.c.o
+.PHONY : ipc/mutex.c.o
+
+ipc/mutex.i: ipc/mutex.c.i
+
+.PHONY : ipc/mutex.i
+
+# target to preprocess a source file
+ipc/mutex.c.i:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/ipc/mutex.c.i
+.PHONY : ipc/mutex.c.i
+
+ipc/mutex.s: ipc/mutex.c.s
+
+.PHONY : ipc/mutex.s
+
+# target to generate assembly for a file
+ipc/mutex.c.s:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/ipc/mutex.c.s
+.PHONY : ipc/mutex.c.s
+
+ipc/sem.o: ipc/sem.c.o
+
+.PHONY : ipc/sem.o
+
+# target to build an object file
+ipc/sem.c.o:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/ipc/sem.c.o
+.PHONY : ipc/sem.c.o
+
+ipc/sem.i: ipc/sem.c.i
+
+.PHONY : ipc/sem.i
+
+# target to preprocess a source file
+ipc/sem.c.i:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/ipc/sem.c.i
+.PHONY : ipc/sem.c.i
+
+ipc/sem.s: ipc/sem.c.s
+
+.PHONY : ipc/sem.s
+
+# target to generate assembly for a file
+ipc/sem.c.s:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/ipc/sem.c.s
+.PHONY : ipc/sem.c.s
+
+tools/bitmap.o: tools/bitmap.c.o
+
+.PHONY : tools/bitmap.o
+
+# target to build an object file
+tools/bitmap.c.o:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/tools/bitmap.c.o
+.PHONY : tools/bitmap.c.o
+
+tools/bitmap.i: tools/bitmap.c.i
+
+.PHONY : tools/bitmap.i
+
+# target to preprocess a source file
+tools/bitmap.c.i:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/tools/bitmap.c.i
+.PHONY : tools/bitmap.c.i
+
+tools/bitmap.s: tools/bitmap.c.s
+
+.PHONY : tools/bitmap.s
+
+# target to generate assembly for a file
+tools/bitmap.c.s:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/tools/bitmap.c.s
+.PHONY : tools/bitmap.c.s
+
 tools/klib.o: tools/klib.c.o
 
 .PHONY : tools/klib.o
@@ -268,6 +439,33 @@ tools/klib.s: tools/klib.c.s
 tools/klib.c.s:
 	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/tools/klib.c.s
 .PHONY : tools/klib.c.s
+
+tools/list.o: tools/list.c.o
+
+.PHONY : tools/list.o
+
+# target to build an object file
+tools/list.c.o:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/tools/list.c.o
+.PHONY : tools/list.c.o
+
+tools/list.i: tools/list.c.i
+
+.PHONY : tools/list.i
+
+# target to preprocess a source file
+tools/list.c.i:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/tools/list.c.i
+.PHONY : tools/list.c.i
+
+tools/list.s: tools/list.c.s
+
+.PHONY : tools/list.s
+
+# target to generate assembly for a file
+tools/list.c.s:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/tools/list.c.s
+.PHONY : tools/list.c.s
 
 tools/log.o: tools/log.c.o
 
@@ -305,6 +503,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... kernel"
+	@echo "... core/memory.o"
+	@echo "... core/memory.i"
+	@echo "... core/memory.s"
+	@echo "... core/task.o"
+	@echo "... core/task.i"
+	@echo "... core/task.s"
 	@echo "... cpu/cpu.o"
 	@echo "... cpu/cpu.i"
 	@echo "... cpu/cpu.s"
@@ -314,13 +518,29 @@ help:
 	@echo "... include/dev/time.o"
 	@echo "... include/dev/time.i"
 	@echo "... include/dev/time.s"
+	@echo "... init/first_task.o"
+	@echo "... init/first_task.i"
+	@echo "... init/first_task.s"
+	@echo "... init/first_task_entry.o"
 	@echo "... init/init.o"
 	@echo "... init/init.i"
 	@echo "... init/init.s"
 	@echo "... init/start.o"
+	@echo "... ipc/mutex.o"
+	@echo "... ipc/mutex.i"
+	@echo "... ipc/mutex.s"
+	@echo "... ipc/sem.o"
+	@echo "... ipc/sem.i"
+	@echo "... ipc/sem.s"
+	@echo "... tools/bitmap.o"
+	@echo "... tools/bitmap.i"
+	@echo "... tools/bitmap.s"
 	@echo "... tools/klib.o"
 	@echo "... tools/klib.i"
 	@echo "... tools/klib.s"
+	@echo "... tools/list.o"
+	@echo "... tools/list.i"
+	@echo "... tools/list.s"
 	@echo "... tools/log.o"
 	@echo "... tools/log.i"
 	@echo "... tools/log.s"

@@ -6,3 +6,5 @@
 
 #IncludeRegexTransform: 
 
+/home/rafael/Documents/diy-x86os/start/start/source/kernel/init/first_task_entry.S
+
