@@ -73,7 +73,7 @@ pte_t * find_pte (pde_t * page_dir, uint32_t vaddr, int alloc) {
             return (pte_t *)0;
         }
 
-        pde->v = pg_paddr | PDE_P | PDE_W | PDE_U;
+        pde->v = pg_paddr | PTE_P | PTE_W | PDE_U;
 
         page_table = (pte_t *)(pg_paddr);
         kernel_memset(page_table, 0, MEM_PAGE_SIZE);        // 将表项初始化为0
@@ -205,6 +205,32 @@ int memory_alloc_for_page_dir (uint32_t page_dir, uint32_t vaddr, uint32_t size,
     return 0;
 }
 
+// 给进程分配地址页     
 int memory_alloc_page_for (uint32_t addr, uint32_t size, int perm) {
     return memory_alloc_for_page_dir(task_current()->tss.cr3, addr, size, perm);
 }
+
+// 分配一页物理内存
+uint32_t memory_alloc_page (void) {
+    uint32_t addr = addr_alloc_page(&paddr_alloc, 1);
+    return addr;    // 这返回了个物理内存
+}
+
+static pde_t * curr_page_dir (void) {
+    return (pde_t *)(task_current()->tss.cr3);
+}
+
+// 释放地址
+void memory_free_page (uint32_t addr) {
+    if (addr < MEMORY_TASK_BASE) {
+        // 如果每超过80000000，因为没有虚拟，所以直接删除就行了。
+        addr_free_page(&paddr_alloc, addr, 1);
+    } else {
+        // 超过了，还要解除了映射关系
+        pte_t * pte = find_pte(curr_page_dir(), addr, 0);
+        ASSERT((pte == (pte_t *)0) && pte->present);
+
+        addr_free_page(&paddr_alloc, pte_paddr(pte), 1);
+        pte->v = 0;
+    }
+} 

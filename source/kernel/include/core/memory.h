@@ -12,6 +12,7 @@
 #define MEMORY_TASK_BASE            0x80000000
 #define MEM_EXT_END                 (127 * 1024 * 1024 - 1)
 
+
 // 内存块
 typedef struct _addr_alloc_t {
     mutex_t mutex;
@@ -34,4 +35,7 @@ void memory_init (boot_info_t * boot_info);
 uint32_t memory_create_uvm (void);
 
 int memory_alloc_page_for (uint32_t addr, uint32_t size, int perm);
+uint32_t memory_alloc_page (void);               // 分配一页内存
+void memory_free_page (uint32_t addr);          // 释放地址
+
 #endif

@@ -37,8 +37,16 @@ void move_to_first_task (void) {
 
     tss_t * tss = &(curr->tss);
     __asm__ __volatile__(
-        "jmp *%[ip]"::[ip]"r"(tss->eip)
-    );
+         // 模拟中断返回，切换入第1个可运行应用进程
+        // 不过这里并不直接进入到进程的入口，而是先设置好段寄存器，再跳过去
+        "push %[ss]\n\t"			// SS
+        "push %[esp]\n\t"			// ESP
+        "push %[eflags]\n\t"           // EFLAGS
+        "push %[cs]\n\t"			// CS
+        "push %[eip]\n\t"		    // ip
+        "iret\n\t"::[ss]"r"(tss->ss),  [esp]"r"(tss->esp), [eflags]"r"(tss->eflags),
+        [cs]"r"(tss->cs), [eip]"r"(tss->eip));
+    
 }
 
 void init_main (void) {
