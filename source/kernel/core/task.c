@@ -41,13 +41,14 @@ static int tss_init (task_t * task, int flag ,uint32_t entry, uint32_t esp) {
     }
     
     task->tss.eip = entry;
-    task->tss.esp =  esp;
+    task->tss.esp = esp ? esp : kernel_stack + MEM_PAGE_SIZE;
     task->tss.esp0 = kernel_stack + MEM_PAGE_SIZE;
     task->tss.ss = data_sel;
     task->tss.ss0 = KERNEL_SELECTOR_DS;
-    task->tss.es = task->tss.ds = task->tss.fs = task->tss.gs = data_sel;
+    task->tss.es = task->tss.ds = task->tss.ss = task->tss.fs = task->tss.gs = data_sel;
     task->tss.cs = code_sel;
     task->tss.eflags = EFLGAGS_IF | EFLGAGS_DEFAULT;
+    task->tss.iomap = 0;
     
     uint32_t page_dir = memory_create_uvm();
     if (page_dir == 0) {
@@ -69,7 +70,11 @@ tss_init_failed:
 int task_init (task_t * task, const char * name, int flag ,uint32_t entry, uint32_t esp) {
     ASSERT(task != (task_t *)0);
 
-    tss_init(task, flag ,entry, esp);
+    int err = tss_init(task, flag, entry, esp);
+    if (err < 0) {
+        log_printf("init task failed.\n");
+        return err;
+    }
 
     kernel_strncpy(task->name, name, TASK_NAME_SIZE);
     task->state = TASK_CREATED;
@@ -117,8 +122,8 @@ void task_first_init (void) {
 
     uint32_t first_start = (uint32_t)first_task_entry;
 
-    task_init(&task_manager.first_task, "fist task" , 0 ,first_start, first_start + alloc_size);  
-    write_tr(task_manager.first_task.tss_sel);
+    task_init(&task_manager.first_task, "first task" , 0 ,first_start, first_start + alloc_size);  
+    // write_tr(task_manager.first_task.tss_sel);
     task_manager.curr_task = &task_manager.first_task; 
 
     mmu_set_page_dir(task_manager.first_task.tss.cr3);
@@ -126,6 +131,9 @@ void task_first_init (void) {
 
     memory_alloc_page_for(first_start, alloc_size, PTE_P | PTE_W | PTE_U);
     kernel_memcpy((void *)first_start,(void *)s_first_task, copy_size);
+
+    // 写TR寄存器，指示当前运行的第一个任务
+    write_tr(task_manager.first_task.tss_sel);
 }
 
 task_t * task_first_task (void) {
@@ -141,13 +149,13 @@ static void idle_task_entry (void) {
 void task_manager_init (void) {
     int sel = gdt_alloc_desc();
     segment_desc_set(sel, 0x00000000, 0xFFFFFFFF, 
-        SEG_P_PRESENT | SEG_DPL3 | SEG_S_NORMAL | SEG_TYPE_DATA | SEG_TYPE_RW | SEG_G
+        SEG_P_PRESENT | SEG_DPL3 | SEG_S_NORMAL | SEG_TYPE_DATA | SEG_TYPE_RW | SEG_D
     );
     task_manager.app_data_sel = sel;
 
     sel = gdt_alloc_desc();
     segment_desc_set(sel, 0x00000000, 0xFFFFFFFF, 
-        SEG_P_PRESENT | SEG_DPL3 | SEG_S_NORMAL | SEG_TYPE_CODE | SEG_TYPE_RW | SEG_G
+        SEG_P_PRESENT | SEG_DPL3 | SEG_S_NORMAL | SEG_TYPE_CODE | SEG_TYPE_RW | SEG_D
     );
     task_manager.app_code_sel = sel;
 
