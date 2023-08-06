@@ -28,6 +28,10 @@ comm/types.h
 comm/cpu_instr.h
 /home/rafael/Documents/diy-x86os/start/start/source/loader/comm/cpu_instr.h
 
+/home/rafael/Documents/diy-x86os/start/start/source/loader/loader_16.c
+loader.h
+/home/rafael/Documents/diy-x86os/start/start/source/loader/loader.h
+
 /home/rafael/Documents/diy-x86os/start/start/source/loader/loader_32.c
 loader.h
 /home/rafael/Documents/diy-x86os/start/start/source/loader/loader.h

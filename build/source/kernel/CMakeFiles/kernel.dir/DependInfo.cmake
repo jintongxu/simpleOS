@@ -17,6 +17,7 @@ set(CMAKE_ASM_TARGET_INCLUDE_PATH
   )
 set(CMAKE_DEPENDS_CHECK_C
   "/home/rafael/Documents/diy-x86os/start/start/source/kernel/core/memory.c" "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel/CMakeFiles/kernel.dir/core/memory.c.o"
+  "/home/rafael/Documents/diy-x86os/start/start/source/kernel/core/syscall.c" "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel/CMakeFiles/kernel.dir/core/syscall.c.o"
   "/home/rafael/Documents/diy-x86os/start/start/source/kernel/core/task.c" "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel/CMakeFiles/kernel.dir/core/task.c.o"
   "/home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/cpu.c" "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.o"
   "/home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/irq.c" "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.o"

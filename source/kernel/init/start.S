@@ -44,7 +44,7 @@ exception_handler_\name:
     .endif
 
     push $\num
-    pusha
+    pushal
     push %ds
     push %es
     push %fs
@@ -59,7 +59,7 @@ exception_handler_\name:
     pop %fs
     pop %es
     pop %ds
-    popa
+    popal
     
     add $(2*4), %esp
 
@@ -94,8 +94,8 @@ exception_handler time, 0x20, 0
     .text
     .global simple_switch
 simple_switch:
-    mov 4(%esp), %eax
-    mov 8(%esp), %edx
+    movl 4(%esp), %eax
+    movl 8(%esp), %edx
 
     push %ebp
     push %ebx
@@ -113,7 +113,30 @@ simple_switch:
     ret
 
     .global exception_handler_syscall
+    .extern do_handler_syscall
 exception_handler_syscall:
+    pusha
+    push %ds
+    push %es
+    push %fs
+    push %gs
+    pushf
+
+    mov %esp, %eax
+    push %eax
+    call do_handler_syscall
+    add $4, %esp
+
+
+    popf
+    pop %gs
+    pop %fs
+    pop %es
+    pop %ds
+    popa
+
+
+
     retf $(5*4)
 
 

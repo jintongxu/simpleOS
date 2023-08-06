@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/kernel.dir/core/memory.c.o"
+  "CMakeFiles/kernel.dir/core/syscall.c.o"
   "CMakeFiles/kernel.dir/core/task.c.o"
   "CMakeFiles/kernel.dir/cpu/cpu.c.o"
   "CMakeFiles/kernel.dir/cpu/irq.c.o"

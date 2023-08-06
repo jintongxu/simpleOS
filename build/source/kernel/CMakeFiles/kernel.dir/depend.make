@@ -20,6 +20,14 @@ source/kernel/CMakeFiles/kernel.dir/core/memory.c.o: ../source/kernel/include/to
 source/kernel/CMakeFiles/kernel.dir/core/memory.c.o: ../source/kernel/include/tools/log.h
 source/kernel/CMakeFiles/kernel.dir/core/memory.c.o: ../source/kernel/core/memory.c
 
+source/kernel/CMakeFiles/kernel.dir/core/syscall.c.o: ../source/comm/types.h
+source/kernel/CMakeFiles/kernel.dir/core/syscall.c.o: ../source/kernel/include/core/syscall.h
+source/kernel/CMakeFiles/kernel.dir/core/syscall.c.o: ../source/kernel/include/core/task.h
+source/kernel/CMakeFiles/kernel.dir/core/syscall.c.o: ../source/kernel/include/cpu/cpu.h
+source/kernel/CMakeFiles/kernel.dir/core/syscall.c.o: ../source/kernel/include/tools/list.h
+source/kernel/CMakeFiles/kernel.dir/core/syscall.c.o: ../source/kernel/include/tools/log.h
+source/kernel/CMakeFiles/kernel.dir/core/syscall.c.o: ../source/kernel/core/syscall.c
+
 source/kernel/CMakeFiles/kernel.dir/core/task.c.o: ../source/comm/boot_info.h
 source/kernel/CMakeFiles/kernel.dir/core/task.c.o: ../source/comm/cpu_instr.h
 source/kernel/CMakeFiles/kernel.dir/core/task.c.o: ../source/comm/types.h
@@ -38,6 +46,7 @@ source/kernel/CMakeFiles/kernel.dir/core/task.c.o: ../source/kernel/core/task.c
 
 source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.o: ../source/comm/cpu_instr.h
 source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.o: ../source/comm/types.h
+source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.o: ../source/kernel/include/core/syscall.h
 source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.o: ../source/kernel/include/core/task.h
 source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.o: ../source/kernel/include/cpu/cpu.h
 source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.o: ../source/kernel/include/cpu/irq.h
@@ -61,9 +70,12 @@ source/kernel/CMakeFiles/kernel.dir/include/dev/time.c.o: ../source/kernel/inclu
 source/kernel/CMakeFiles/kernel.dir/include/dev/time.c.o: ../source/kernel/include/os_cfg.h
 source/kernel/CMakeFiles/kernel.dir/include/dev/time.c.o: ../source/kernel/include/dev/time.c
 
+source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o: ../source/applib/lib_syscall.h
 source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o: ../source/comm/types.h
+source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o: ../source/kernel/include/core/syscall.h
 source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o: ../source/kernel/include/core/task.h
 source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o: ../source/kernel/include/cpu/cpu.h
+source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o: ../source/kernel/include/os_cfg.h
 source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o: ../source/kernel/include/tools/list.h
 source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o: ../source/kernel/include/tools/log.h
 source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o: ../source/kernel/init/first_task.c

@@ -21,6 +21,11 @@
 },
 {
   "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel",
+  "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32  -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/kernel.dir/core/syscall.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/core/syscall.c",
+  "file": "/home/rafael/Documents/diy-x86os/start/start/source/kernel/core/syscall.c"
+},
+{
+  "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel",
   "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32  -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/kernel.dir/core/task.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/core/task.c",
   "file": "/home/rafael/Documents/diy-x86os/start/start/source/kernel/core/task.c"
 },
@@ -38,6 +43,11 @@
   "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel",
   "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32  -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/kernel.dir/include/dev/time.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/include/dev/time.c",
   "file": "/home/rafael/Documents/diy-x86os/start/start/source/kernel/include/dev/time.c"
+},
+{
+  "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel",
+  "command": "/usr/bin/gcc  -I/home/rafael/Documents/diy-x86os/start/start/source -I/home/rafael/Documents/diy-x86os/start/start/source/kernel/include  -g -c -O0 -m32  -fno-pie -fno-stack-protector -fno-asynchronous-unwind-tables -g   -o CMakeFiles/kernel.dir/init/first_task.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/init/first_task.c",
+  "file": "/home/rafael/Documents/diy-x86os/start/start/source/kernel/init/first_task.c"
 },
 {
   "directory": "/home/rafael/Documents/diy-x86os/start/start/build/source/kernel",

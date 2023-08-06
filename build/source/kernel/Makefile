@@ -152,6 +152,33 @@ core/memory.c.s:
 	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/core/memory.c.s
 .PHONY : core/memory.c.s
 
+core/syscall.o: core/syscall.c.o
+
+.PHONY : core/syscall.o
+
+# target to build an object file
+core/syscall.c.o:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/core/syscall.c.o
+.PHONY : core/syscall.c.o
+
+core/syscall.i: core/syscall.c.i
+
+.PHONY : core/syscall.i
+
+# target to preprocess a source file
+core/syscall.c.i:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/core/syscall.c.i
+.PHONY : core/syscall.c.i
+
+core/syscall.s: core/syscall.c.s
+
+.PHONY : core/syscall.s
+
+# target to generate assembly for a file
+core/syscall.c.s:
+	cd /home/rafael/Documents/diy-x86os/start/start/build && $(MAKE) -f source/kernel/CMakeFiles/kernel.dir/build.make source/kernel/CMakeFiles/kernel.dir/core/syscall.c.s
+.PHONY : core/syscall.c.s
+
 core/task.o: core/task.c.o
 
 .PHONY : core/task.o
@@ -506,6 +533,9 @@ help:
 	@echo "... core/memory.o"
 	@echo "... core/memory.i"
 	@echo "... core/memory.s"
+	@echo "... core/syscall.o"
+	@echo "... core/syscall.i"
+	@echo "... core/syscall.s"
 	@echo "... core/task.o"
 	@echo "... core/task.i"
 	@echo "... core/task.s"

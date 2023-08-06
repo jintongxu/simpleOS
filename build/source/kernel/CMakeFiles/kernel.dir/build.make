@@ -75,9 +75,22 @@ source/kernel/CMakeFiles/kernel.dir/core/memory.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/kernel.dir/core/memory.c.s"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/rafael/Documents/diy-x86os/start/start/source/kernel/core/memory.c -o CMakeFiles/kernel.dir/core/memory.c.s
 
+source/kernel/CMakeFiles/kernel.dir/core/syscall.c.o: source/kernel/CMakeFiles/kernel.dir/flags.make
+source/kernel/CMakeFiles/kernel.dir/core/syscall.c.o: ../source/kernel/core/syscall.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object source/kernel/CMakeFiles/kernel.dir/core/syscall.c.o"
+	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/kernel.dir/core/syscall.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/core/syscall.c
+
+source/kernel/CMakeFiles/kernel.dir/core/syscall.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/kernel.dir/core/syscall.c.i"
+	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/rafael/Documents/diy-x86os/start/start/source/kernel/core/syscall.c > CMakeFiles/kernel.dir/core/syscall.c.i
+
+source/kernel/CMakeFiles/kernel.dir/core/syscall.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/kernel.dir/core/syscall.c.s"
+	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/rafael/Documents/diy-x86os/start/start/source/kernel/core/syscall.c -o CMakeFiles/kernel.dir/core/syscall.c.s
+
 source/kernel/CMakeFiles/kernel.dir/core/task.c.o: source/kernel/CMakeFiles/kernel.dir/flags.make
 source/kernel/CMakeFiles/kernel.dir/core/task.c.o: ../source/kernel/core/task.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object source/kernel/CMakeFiles/kernel.dir/core/task.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object source/kernel/CMakeFiles/kernel.dir/core/task.c.o"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/kernel.dir/core/task.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/core/task.c
 
 source/kernel/CMakeFiles/kernel.dir/core/task.c.i: cmake_force
@@ -90,7 +103,7 @@ source/kernel/CMakeFiles/kernel.dir/core/task.c.s: cmake_force
 
 source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.o: source/kernel/CMakeFiles/kernel.dir/flags.make
 source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.o: ../source/kernel/cpu/cpu.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.o"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/kernel.dir/cpu/cpu.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/cpu.c
 
 source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.i: cmake_force
@@ -103,7 +116,7 @@ source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.s: cmake_force
 
 source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.o: source/kernel/CMakeFiles/kernel.dir/flags.make
 source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.o: ../source/kernel/cpu/irq.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.o"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/kernel.dir/cpu/irq.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/cpu/irq.c
 
 source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.i: cmake_force
@@ -116,7 +129,7 @@ source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.s: cmake_force
 
 source/kernel/CMakeFiles/kernel.dir/include/dev/time.c.o: source/kernel/CMakeFiles/kernel.dir/flags.make
 source/kernel/CMakeFiles/kernel.dir/include/dev/time.c.o: ../source/kernel/include/dev/time.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object source/kernel/CMakeFiles/kernel.dir/include/dev/time.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object source/kernel/CMakeFiles/kernel.dir/include/dev/time.c.o"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/kernel.dir/include/dev/time.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/include/dev/time.c
 
 source/kernel/CMakeFiles/kernel.dir/include/dev/time.c.i: cmake_force
@@ -129,7 +142,7 @@ source/kernel/CMakeFiles/kernel.dir/include/dev/time.c.s: cmake_force
 
 source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o: source/kernel/CMakeFiles/kernel.dir/flags.make
 source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o: ../source/kernel/init/first_task.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object source/kernel/CMakeFiles/kernel.dir/init/first_task.c.o"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/kernel.dir/init/first_task.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/init/first_task.c
 
 source/kernel/CMakeFiles/kernel.dir/init/first_task.c.i: cmake_force
@@ -142,12 +155,12 @@ source/kernel/CMakeFiles/kernel.dir/init/first_task.c.s: cmake_force
 
 source/kernel/CMakeFiles/kernel.dir/init/first_task_entry.S.o: source/kernel/CMakeFiles/kernel.dir/flags.make
 source/kernel/CMakeFiles/kernel.dir/init/first_task_entry.S.o: ../source/kernel/init/first_task_entry.S
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building ASM object source/kernel/CMakeFiles/kernel.dir/init/first_task_entry.S.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building ASM object source/kernel/CMakeFiles/kernel.dir/init/first_task_entry.S.o"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(ASM_DEFINES) $(ASM_INCLUDES) $(ASM_FLAGS) -o CMakeFiles/kernel.dir/init/first_task_entry.S.o -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/init/first_task_entry.S
 
 source/kernel/CMakeFiles/kernel.dir/init/init.c.o: source/kernel/CMakeFiles/kernel.dir/flags.make
 source/kernel/CMakeFiles/kernel.dir/init/init.c.o: ../source/kernel/init/init.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object source/kernel/CMakeFiles/kernel.dir/init/init.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building C object source/kernel/CMakeFiles/kernel.dir/init/init.c.o"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/kernel.dir/init/init.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/init/init.c
 
 source/kernel/CMakeFiles/kernel.dir/init/init.c.i: cmake_force
@@ -160,7 +173,7 @@ source/kernel/CMakeFiles/kernel.dir/init/init.c.s: cmake_force
 
 source/kernel/CMakeFiles/kernel.dir/ipc/mutex.c.o: source/kernel/CMakeFiles/kernel.dir/flags.make
 source/kernel/CMakeFiles/kernel.dir/ipc/mutex.c.o: ../source/kernel/ipc/mutex.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building C object source/kernel/CMakeFiles/kernel.dir/ipc/mutex.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building C object source/kernel/CMakeFiles/kernel.dir/ipc/mutex.c.o"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/kernel.dir/ipc/mutex.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/ipc/mutex.c
 
 source/kernel/CMakeFiles/kernel.dir/ipc/mutex.c.i: cmake_force
@@ -173,7 +186,7 @@ source/kernel/CMakeFiles/kernel.dir/ipc/mutex.c.s: cmake_force
 
 source/kernel/CMakeFiles/kernel.dir/ipc/sem.c.o: source/kernel/CMakeFiles/kernel.dir/flags.make
 source/kernel/CMakeFiles/kernel.dir/ipc/sem.c.o: ../source/kernel/ipc/sem.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building C object source/kernel/CMakeFiles/kernel.dir/ipc/sem.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building C object source/kernel/CMakeFiles/kernel.dir/ipc/sem.c.o"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/kernel.dir/ipc/sem.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/ipc/sem.c
 
 source/kernel/CMakeFiles/kernel.dir/ipc/sem.c.i: cmake_force
@@ -186,7 +199,7 @@ source/kernel/CMakeFiles/kernel.dir/ipc/sem.c.s: cmake_force
 
 source/kernel/CMakeFiles/kernel.dir/tools/bitmap.c.o: source/kernel/CMakeFiles/kernel.dir/flags.make
 source/kernel/CMakeFiles/kernel.dir/tools/bitmap.c.o: ../source/kernel/tools/bitmap.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building C object source/kernel/CMakeFiles/kernel.dir/tools/bitmap.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building C object source/kernel/CMakeFiles/kernel.dir/tools/bitmap.c.o"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/kernel.dir/tools/bitmap.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/bitmap.c
 
 source/kernel/CMakeFiles/kernel.dir/tools/bitmap.c.i: cmake_force
@@ -199,7 +212,7 @@ source/kernel/CMakeFiles/kernel.dir/tools/bitmap.c.s: cmake_force
 
 source/kernel/CMakeFiles/kernel.dir/tools/klib.c.o: source/kernel/CMakeFiles/kernel.dir/flags.make
 source/kernel/CMakeFiles/kernel.dir/tools/klib.c.o: ../source/kernel/tools/klib.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building C object source/kernel/CMakeFiles/kernel.dir/tools/klib.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building C object source/kernel/CMakeFiles/kernel.dir/tools/klib.c.o"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/kernel.dir/tools/klib.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/klib.c
 
 source/kernel/CMakeFiles/kernel.dir/tools/klib.c.i: cmake_force
@@ -212,7 +225,7 @@ source/kernel/CMakeFiles/kernel.dir/tools/klib.c.s: cmake_force
 
 source/kernel/CMakeFiles/kernel.dir/tools/list.c.o: source/kernel/CMakeFiles/kernel.dir/flags.make
 source/kernel/CMakeFiles/kernel.dir/tools/list.c.o: ../source/kernel/tools/list.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building C object source/kernel/CMakeFiles/kernel.dir/tools/list.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building C object source/kernel/CMakeFiles/kernel.dir/tools/list.c.o"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/kernel.dir/tools/list.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/list.c
 
 source/kernel/CMakeFiles/kernel.dir/tools/list.c.i: cmake_force
@@ -225,7 +238,7 @@ source/kernel/CMakeFiles/kernel.dir/tools/list.c.s: cmake_force
 
 source/kernel/CMakeFiles/kernel.dir/tools/log.c.o: source/kernel/CMakeFiles/kernel.dir/flags.make
 source/kernel/CMakeFiles/kernel.dir/tools/log.c.o: ../source/kernel/tools/log.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building C object source/kernel/CMakeFiles/kernel.dir/tools/log.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building C object source/kernel/CMakeFiles/kernel.dir/tools/log.c.o"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && /usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/kernel.dir/tools/log.c.o   -c /home/rafael/Documents/diy-x86os/start/start/source/kernel/tools/log.c
 
 source/kernel/CMakeFiles/kernel.dir/tools/log.c.i: cmake_force
@@ -240,6 +253,7 @@ source/kernel/CMakeFiles/kernel.dir/tools/log.c.s: cmake_force
 kernel_OBJECTS = \
 "CMakeFiles/kernel.dir/init/start.S.o" \
 "CMakeFiles/kernel.dir/core/memory.c.o" \
+"CMakeFiles/kernel.dir/core/syscall.c.o" \
 "CMakeFiles/kernel.dir/core/task.c.o" \
 "CMakeFiles/kernel.dir/cpu/cpu.c.o" \
 "CMakeFiles/kernel.dir/cpu/irq.c.o" \
@@ -259,6 +273,7 @@ kernel_EXTERNAL_OBJECTS =
 
 source/kernel/kernel: source/kernel/CMakeFiles/kernel.dir/init/start.S.o
 source/kernel/kernel: source/kernel/CMakeFiles/kernel.dir/core/memory.c.o
+source/kernel/kernel: source/kernel/CMakeFiles/kernel.dir/core/syscall.c.o
 source/kernel/kernel: source/kernel/CMakeFiles/kernel.dir/core/task.c.o
 source/kernel/kernel: source/kernel/CMakeFiles/kernel.dir/cpu/cpu.c.o
 source/kernel/kernel: source/kernel/CMakeFiles/kernel.dir/cpu/irq.c.o
@@ -274,7 +289,7 @@ source/kernel/kernel: source/kernel/CMakeFiles/kernel.dir/tools/list.c.o
 source/kernel/kernel: source/kernel/CMakeFiles/kernel.dir/tools/log.c.o
 source/kernel/kernel: source/kernel/CMakeFiles/kernel.dir/build.make
 source/kernel/kernel: source/kernel/CMakeFiles/kernel.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Linking C executable kernel"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/rafael/Documents/diy-x86os/start/start/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Linking C executable kernel"
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/kernel.dir/link.txt --verbose=$(VERBOSE)
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && objcopy -S kernel.elf /home/rafael/Documents/diy-x86os/start/start/../../image/kernel.elf
 	cd /home/rafael/Documents/diy-x86os/start/start/build/source/kernel && objdump -x -d -S -m i386 /home/rafael/Documents/diy-x86os/start/start/build/source/kernel/kernel.elf > kernel_dis.txt
