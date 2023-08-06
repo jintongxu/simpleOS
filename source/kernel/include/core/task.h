@@ -21,6 +21,8 @@ typedef struct _task_t {
         TASK_WAITTING,   // 等待时间
     }state;
 
+    int pid;
+
     int sleep_ticks;
     int time_ticks;      // 设置计数器
     int slice_ticks;
@@ -67,6 +69,8 @@ task_t * task_current (void);
 
 void task_set_sleep (task_t * task, uint32_t ticks);   // 将进程加入睡眠队列
 void task_set_wakeup (task_t * task);       // 将进程从睡眠队列移除
+
 void sys_sleep (uint32_t ms);
+int sys_getpid (void);
 
 #endif

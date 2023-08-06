@@ -27,10 +27,12 @@ static inline int sys_call (syscall_args_t * args) {
             "push %[arg1]\n\t"
             "push %[arg0]\n\t"
             "push %[id]\n\t"
-            "lcalll *(%[a])\n\n"::
-            [arg3]"r"(args->arg3), [arg2]"r"(args->arg2), [arg1]"r"(args->arg1),
+            "lcalll *(%[a])"
+            :"=a"(ret)
+            : [arg3]"r"(args->arg3), [arg2]"r"(args->arg2), [arg1]"r"(args->arg1),
             [arg0]"r"(args->arg0), [id]"r"(args->id),
             [a]"r"(addr));
+    return ret;
 }
 
 static inline int msleep(int ms) {
@@ -45,5 +47,12 @@ static inline int msleep(int ms) {
     return sys_call(&args);
 }
 
+// 获取进程id
+static inline int getpid (void) {
+    syscall_args_t args;
+    args.id = SYS_getpid;
+
+    return sys_call(&args);
+}
 
 #endif

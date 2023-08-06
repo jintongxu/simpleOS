@@ -4,6 +4,7 @@
 #include "comm/types.h"
 
 #define   SYS_sleep     0
+#define   SYS_getpid    1
 
 #define SYSCALL_PARAM_COUNT         5
 
