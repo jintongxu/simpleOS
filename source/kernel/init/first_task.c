@@ -6,7 +6,7 @@ int first_task_main (void) {
     int pid = getpid();
     
     for(;;) {
-        // log_printf("first task");
+        print_msg("task id=%d", pid);
         // sys_sleep(1000);
         msleep(1000);
     }

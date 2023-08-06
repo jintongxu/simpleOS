@@ -55,4 +55,14 @@ static inline int getpid (void) {
     return sys_call(&args);
 }
 
+// 临时调试用的
+static inline void print_msg (const char * fmt, int arg) {
+    syscall_args_t args;
+    args.id = SYS_printmsg;
+    args.arg0 = (int)fmt;
+    args.arg1 = arg;
+
+    sys_call(&args);
+}
+
 #endif
