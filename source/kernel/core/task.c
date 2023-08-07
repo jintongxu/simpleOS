@@ -7,6 +7,7 @@
 #include "cpu/irq.h"
 #include "cpu/mmu.h"
 #include "core/memory.h"
+#include "core/syscall.h"
 
 static uint32_t idle_task_stack[IDLE_TASK_SIZE];
 static task_manager_t task_manager;
@@ -106,6 +107,22 @@ int task_init (task_t * task, const char * name, int flag ,uint32_t entry, uint3
 
     
     return 0;
+}
+
+void task_uninit (task_t * task) {
+    if (task->tss_sel) {
+        gdt_free_sel(task->tss_sel);
+    }
+
+    if (task->tss.esp0) {
+        memory_free_page(task->tss.esp - MEM_PAGE_SIZE);
+    }
+
+    if (task->tss.cr3) {
+
+    }
+
+    kernel_memset(task, 0, sizeof(task_t));
 }
 
 void simple_switch (uint32_t **from, uint32_t * to);
@@ -304,31 +321,6 @@ void task_set_wakeup (task_t * task) {
     list_remove(&task_manager.sleep_list, &task->run_node);
 }
 
-void sys_sleep (uint32_t ms) {
-    irq_state_t state = irq_enter_protection();
-
-    task_set_block(task_manager.curr_task);
-
-    task_set_sleep(task_manager.curr_task, (ms + (OS_TICKS_MS - 1))/ OS_TICKS_MS);
-
-    task_dispatch();
-
-    irq_leave_protection(state);
-
-}
-
-
-int sys_getpid (void) {
-    task_t * task = task_current();
-    return task->pid;
-}
-
-// 创建子进程
-int sys_fork (void) {
-    return -1;
-}
-
-
 // 分配 task 结构
 static task_t * alloc_task (void) {
     task_t * task = (task_t *)0;
@@ -354,6 +346,76 @@ static void free_task (task_t * task) {
     task->name[0] = '\0';
     mutex_unlock(&task_table_mutex);
 }
+
+
+
+void sys_sleep (uint32_t ms) {
+    irq_state_t state = irq_enter_protection();
+
+    task_set_block(task_manager.curr_task);
+
+    task_set_sleep(task_manager.curr_task, (ms + (OS_TICKS_MS - 1))/ OS_TICKS_MS);
+
+    task_dispatch();
+
+    irq_leave_protection(state);
+
+}
+
+
+int sys_getpid (void) {
+    task_t * task = task_current();
+    return task->pid;
+}
+
+// 创建子进程
+int sys_fork (void) {
+    task_t * parent_task = task_current();
+
+    task_t * child_task = alloc_task();
+    if (child_task == (task_t *)0) {
+        goto fork_failed;
+    }
+    
+    syscall_frame_t * frame = (syscall_frame_t *)(parent_task->tss.esp0 - sizeof(syscall_frame_t));
+
+    int err = task_init(child_task, parent_task->name, 0, frame->eip, frame->esp + sizeof(uint32_t) * SYSCALL_PARAM_COUNT);
+
+    if (err < 0) {
+        goto fork_failed;
+    }
+
+    tss_t * tss = &child_task->tss;
+    tss->eax = 0;
+    tss->ebx = frame->ebx;
+    tss->ecx = frame->ecx;
+    tss->edx = frame->edx;
+    tss->esi = frame->esi;
+    tss->edi = frame->edi;
+    tss->ebp = frame->ebp;
+
+    tss->cs = frame->cs;
+    tss->ds = frame->ds;
+    tss->es = frame->es;
+    tss->fs = frame->fs;
+    tss->gs = frame->gs;
+    tss->eflags = frame->eflags;
+
+    child_task->parent = parent_task;
+
+    // 指向的页表
+    tss->cr3 = parent_task->tss.cr3;
+
+    return child_task->pid;
+
+fork_failed:
+    if (child_task) {
+        task_uninit(child_task);
+        free_task(child_task);
+    }
+    return -1;
+}
+
 
 
 
