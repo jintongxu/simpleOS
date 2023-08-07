@@ -72,5 +72,6 @@ void task_set_wakeup (task_t * task);       // 将进程从睡眠队列移除
 
 void sys_sleep (uint32_t ms);
 int sys_getpid (void);
+int sys_fork (void);
 
 #endif

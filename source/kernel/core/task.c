@@ -317,6 +317,10 @@ int sys_getpid (void) {
     return task->pid;
 }
 
+// 创建子进程
+int sys_fork (void) {
+    return -1;
+}
 
 
 
