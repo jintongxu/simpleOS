@@ -1,6 +1,1 @@
-/home/rafael/Documents/diy-x86os/start/start/build
-/build
-*.o
-*.txt
-*.log
-*.cmake
+build
