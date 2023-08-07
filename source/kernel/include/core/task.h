@@ -22,6 +22,7 @@ typedef struct _task_t {
     }state;
 
     int pid;
+    struct _task_t * parent;
 
     int sleep_ticks;
     int time_ticks;      // 设置计数器

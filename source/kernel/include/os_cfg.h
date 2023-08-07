@@ -16,4 +16,6 @@
 
 #define OS_VERSION      "1.0.0"
 
+#define TASK_NR         128
+
 #endif
