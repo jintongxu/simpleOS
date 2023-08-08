@@ -73,4 +73,19 @@ static inline int fork () {
     return sys_call(&args);
 }
 
+/* 
+    运行另外一个指定的程序。它会把新程序加载到当前进程的内存空间内，
+    当前的进程会被丢弃，它的堆、栈和所有的段数据都会被新进程相应的部分代替,
+    然后会从新程序的初始化代码和 main 函数开始运行。同时，进程的 ID 将保持不变.
+*/
+static inline int execve(const char * name, char * const * argv, char * const * env) {
+    syscall_args_t args;
+    args.id = SYS_execve;
+    args.arg0 = (int)name;
+    args.arg1 = (int)argv;
+    args.arg3 = (int)env;
+
+    return sys_call(&args);
+}
+
 #endif

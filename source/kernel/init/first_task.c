@@ -14,6 +14,9 @@ int first_task_main (void) {
         print_msg("create child proc failed.\n", 0);
     } else if (pid == 0) {
         print_msg("child: %d\n", count);
+
+        char * argv[] = {"arg0", "arg1", "arg2", "arg3"};
+        execve("/shell.elf", argv, (char **)0);
     } else {
         print_msg("child task id=%d\n", pid);
         print_msg("parent: %d\n", count);
