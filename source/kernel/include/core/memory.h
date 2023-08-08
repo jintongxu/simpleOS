@@ -12,6 +12,9 @@
 #define MEMORY_TASK_BASE            0x80000000
 #define MEM_EXT_END                 (127 * 1024 * 1024 - 1)
 
+#define MEM_TASK_STACK_TOP          0xE0000000
+#define MEM_TASK_STACK_SIZE         (MEM_PAGE_SIZE * 500)
+
 
 // 内存块
 typedef struct _addr_alloc_t {
