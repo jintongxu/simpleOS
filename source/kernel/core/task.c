@@ -94,7 +94,6 @@ int task_init (task_t * task, const char * name, int flag ,uint32_t entry, uint3
 
     irq_state_t state = irq_enter_protection();
     task->pid = (uint32_t)task;
-    task_set_ready(task);
     list_insert_last(&task_manager.task_list, &task->all_node);
     irq_leave_protection(state);
     // uint32_t * pesp = (uint32_t *)esp;
@@ -112,6 +111,19 @@ int task_init (task_t * task, const char * name, int flag ,uint32_t entry, uint3
     return 0;
 }
 
+/**
+ * @brief 启动任务
+ */
+void task_start(task_t * task) {
+    irq_state_t state = irq_enter_protection();
+    task_set_ready(task);
+    irq_leave_protection(state);
+} 
+
+
+/**
+ * @brief 任务任务初始时分配的各项资源
+ */
 void task_uninit (task_t * task) {
     if (task->tss_sel) {
         gdt_free_sel(task->tss_sel);
@@ -159,6 +171,7 @@ void task_first_init (void) {
 
     // 写TR寄存器，指示当前运行的第一个任务
     write_tr(task_manager.first_task.tss_sel);
+    task_start(&task_manager.first_task);
 }
 
 task_t * task_first_task (void) {
@@ -199,6 +212,7 @@ void task_manager_init (void) {
         (uint32_t)idle_task_entry,
         (uint32_t)(idle_task_stack + IDLE_TASK_SIZE)
     );
+    task_start(&task_manager.idle_task);
 }
 
 void task_set_ready(task_t * task) {
@@ -412,6 +426,7 @@ int sys_fork (void) {
         goto fork_failed;
     }
 
+    task_start(child_task);
     return child_task->pid;
 
 fork_failed:
