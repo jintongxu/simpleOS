@@ -11,6 +11,7 @@
 #include "comm/elf.h"
 #include "fs/fs.h"
 
+
 static uint32_t idle_task_stack[IDLE_TASK_SIZE];
 static task_manager_t task_manager;
 static task_t task_table[TASK_NR];
@@ -473,7 +474,7 @@ static uint32_t load_elf_file (task_t * task, const char * name, uint32_t page_d
     }
 
     // 读取elf文件头
-    int cnt = sys_read(file, (char *)&elf_hdr, sizeof(elf_hdr));
+    int cnt = sys_read(file, (char *)&elf_hdr, sizeof(Elf32_Ehdr));
     if (cnt < sizeof(Elf32_Ehdr)) {
         log_printf("elf hdr too small. size=%d", cnt);
         goto load_failed;
@@ -496,7 +497,7 @@ static uint32_t load_elf_file (task_t * task, const char * name, uint32_t page_d
         }    
         
         // 读取程序头表项内容
-        cnt = sys_read(file, (char *)&elf_phdr, sizeof(elf_phdr));
+        cnt = sys_read(file, (char *)&elf_phdr, sizeof(Elf32_Phdr));
         if (cnt < sizeof(elf_phdr)) {
             log_printf("read file failed.");
             goto load_failed;
@@ -528,6 +529,29 @@ load_failed:
 }
 
 
+// 参数的拷贝
+static int copy_args(char * to, uint32_t page_dir, int argc, char **argv) {
+    task_args_t task_args;
+    task_args.argc = argc;
+    task_args.argv = (char **)(to + sizeof(task_args_t));
+
+    char * dest_arg = to + sizeof(task_args_t) + sizeof(char *) * argc;
+    char ** dest_arg_tb = (char **)memory_get_paddr(page_dir, (uint32_t)(to + sizeof(task_args_t)));
+    for (int i = 0; i < argc; i++) {
+        char * from = argv[i];
+        int len = kernel_strlen(from) + 1;      // 获取字符串长度
+        int err = memory_copy_uvm_data((uint32_t)dest_arg, page_dir, (uint32_t)from, len);
+        ASSERT(err >= 0);
+
+        dest_arg_tb[i] = dest_arg;
+        dest_arg += len;
+
+    }
+
+    return memory_copy_uvm_data((uint32_t)to, page_dir, (uint32_t)&task_args, sizeof(task_args));      // 从用户虚拟地址中拷贝数据
+}
+
+
 /* 
     运行另外一个指定的程序。它会把新程序加载到当前进程的内存空间内，
     当前的进程会被丢弃，它的堆、栈和所有的段数据都会被新进程相应的部分代替,
@@ -539,6 +563,7 @@ load_failed:
 int sys_execve (char * name, char **argv, char ** env) {
     task_t * task = task_current();
 
+    kernel_strncpy(task->name, get_file_name(name), TASK_NAME_SIZE);
     uint32_t old_page_dir = task->tss.cr3;
 
     uint32_t new_page_dir = memory_create_uvm();
@@ -551,11 +576,20 @@ int sys_execve (char * name, char **argv, char ** env) {
         goto exec_failed;
     }
 
-    uint32_t stack_top = MEM_TASK_STACK_TOP;
+    uint32_t stack_top = MEM_TASK_STACK_TOP - MEM_TASK_ARG_SIZE;        // 预留空间给参数等
     int err = memory_alloc_for_page_dir(
         new_page_dir, MEM_TASK_STACK_TOP - MEM_TASK_STACK_SIZE,
         MEM_TASK_STACK_SIZE, PTE_P | PTE_U | PTE_W
     );
+    if (err < 0) {
+        goto exec_failed;
+    }
+
+    // 参数个数
+    int argc = strings_count(argv);
+
+    // 拷贝参数
+    err = copy_args((char *)stack_top, new_page_dir, argc, argv);
     if (err < 0) {
         goto exec_failed;
     }

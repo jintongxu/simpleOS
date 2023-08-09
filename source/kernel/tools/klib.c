@@ -3,6 +3,38 @@
 #include "tools/log.h"
 #include "comm/cpu_instr.h"
 
+// 计算参数个数
+int strings_count (char ** start) {
+    int count = 0;
+
+    if (start) {
+        while (*start++) {
+            count++;
+        }
+    }
+
+    return count;
+} 
+
+
+// 获取路径中文件名
+// 例如 /a/c/c/d 取d
+char * get_file_name (char * name) {
+    char * s = name;
+
+    while(*s != '\0') {
+        s ++;
+    }
+
+    while((*s != '/') && (*s != '\\') && (s >= name)) {
+        s--;
+    }
+
+    return s+1;
+
+}
+
+
 // 字符串复制
 void kernel_strcpy(char * dest, const char * src) {
     if (!dest || !src) {

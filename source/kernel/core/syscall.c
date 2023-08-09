@@ -17,17 +17,19 @@ static const syscall_handler_t sys_table[] = {
 };
 
 void do_handler_syscall (syscall_frame_t * frame) {
+	// 超出边界，返回错误
     if (frame->func_id < sizeof(sys_table) / sizeof(sys_table[0])) {
-        syscall_handler_t handler = sys_table[frame->func_id];
-        if (handler) {
-            int ret = handler(frame->arg0, frame->arg1, frame->arg2, frame->arg3);
-            frame->eax = ret;
+		// 查表取得处理函数，然后调用处理
+		syscall_handler_t handler = sys_table[frame->func_id];
+		if (handler) {
+			int ret = handler(frame->arg0, frame->arg1, frame->arg2, frame->arg3);
+			frame->eax = ret;  // 设置系统调用的返回值，由eax传递
             return;
-        }
-    }
+		}
+	}
 
-
-    task_t * task = task_current();
-    log_printf("task: %s, Unknown syscall: %d", task->name, frame->func_id);
-    frame->eax = -1;
+	// 不支持的系统调用，打印出错信息
+	task_t * task = task_current();
+	log_printf("task: %s, Unknown syscall: %d", task->name,  frame->func_id);
+    frame->eax = -1;  // 设置系统调用的返回值，由eax传递
 }

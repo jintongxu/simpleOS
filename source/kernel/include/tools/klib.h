@@ -42,4 +42,7 @@ void kernel_vsprintf(char * buffer, const char * fmt, va_list args);
 #define ASSERT(expr)        ((void)0)
 #endif
 
+int strings_count (char ** start);  // 计算参数个数
+char * get_file_name (char * name);            // 获取路径中文件名
+
 #endif
