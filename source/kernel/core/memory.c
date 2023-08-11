@@ -366,5 +366,47 @@ int memory_copy_uvm_data (uint32_t to, uint32_t page_dir, uint32_t from, uint32_
 }
 
 char * sys_sbrk(int incr) {
-    return (char *)0;
+    task_t * task = task_current();
+    char * pre_heap_end = (char *)task->heap_end;
+
+    int pre_inc = incr;
+
+    ASSERT(incr >= 0);
+    if (incr == 0) {
+        log_printf("sbrk(0); end=0x%x", pre_heap_end);
+        return pre_heap_end;
+    }
+
+    uint32_t start = task->heap_end;
+    uint32_t end = start + incr;
+
+    // 取在一页中的便宜量
+    int start_offset = start % MEM_PAGE_SIZE;
+    if (start_offset) {
+        // 如果不是从0开始的
+        if (start_offset + incr <= MEM_PAGE_SIZE) {
+            // 如果分配的没超过一页，直接在这页分配就行了。
+            task->heap_end = end;
+            return pre_heap_end;
+        } else {
+            // 如果分配的超过了一页
+            uint32_t curr_size = MEM_PAGE_SIZE - start_offset;  // 当前页剩下没分配的内存
+            start += curr_size;
+            incr -= curr_size;
+        }
+    }
+
+    // 如果还有没分配的字节量
+    if (incr) {
+        uint32_t curr_size = end - start;
+        int err = memory_alloc_page_for(start, curr_size, PTE_P | PTE_U | PTE_W);
+        if (err < 0) {
+            log_printf("sbrk: alloc mem failed.");
+            return (char *)-1;
+        }
+    }
+
+    log_printf("sbrk(%d): end=0x%x", pre_inc, end);
+    task->heap_end = end;
+    return (char *)pre_heap_end;
 }
