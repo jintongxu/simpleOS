@@ -3,6 +3,7 @@
 #include "comm/boot_info.h"
 #include "comm/cpu_instr.h"
 #include "sys/stat.h"
+#include "dev/console.h"
 
 
 static uint8_t TEMP_ADDR[100*1024];
@@ -61,6 +62,9 @@ int sys_read(int file, char * ptr, int len) {
 }
 
 int sys_write(int file, char * ptr, int len) {
+    if (file == 1) {
+        console_write(0, ptr, len);
+    }
     return -1;
 }
 
