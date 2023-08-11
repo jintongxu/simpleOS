@@ -19,7 +19,7 @@ _start:
 	mov %ax, %ss
 	mov %ax, %es
 	mov %ax, %fs
-	mov %ax, %gs
+	mov %ax, %gs 
 
 	# _start位置是0x7c00，自动的
 	mov $_start, %esp
