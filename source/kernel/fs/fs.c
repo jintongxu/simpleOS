@@ -2,6 +2,8 @@
 #include "tools/klib.h"
 #include "comm/boot_info.h"
 #include "comm/cpu_instr.h"
+#include "sys/stat.h"
+
 
 static uint8_t TEMP_ADDR[100*1024];
 static uint8_t * temp_pos;   // 当前位置指针
@@ -74,4 +76,13 @@ int sys_lseek(int file, int ptr, int dir) {
 
 int sys_close(int file) {
     return 0;
+}
+
+int sys_isatty(int file) {
+    return -1;
+}
+
+
+int sys_fstat(int file, struct stat * st) {
+    return -1;
 }

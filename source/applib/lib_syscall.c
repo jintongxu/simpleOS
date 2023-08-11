@@ -128,3 +128,29 @@ int lseek (int file, int ptr, int dir) {
     args.arg2 = (int)dir;
     return sys_call(&args);
 }
+
+
+int isatty (int file) {
+    syscall_args_t args;
+    args.id = SYS_isatty;
+    args.arg0 = (int)file;
+  
+    return sys_call(&args);
+}
+
+int fstat (int file, struct stat * st) {
+    syscall_args_t args;
+    args.id = SYS_fstat;
+    args.arg0 = (int)file;
+    args.arg1 = (int)st;
+  
+    return sys_call(&args);
+}
+
+void * sbrk (ptrdiff_t incr) {
+    syscall_args_t args;
+    args.id = SYS_sbrk;
+    args.arg0 = (int)incr;
+  
+    return (void *)sys_call(&args);
+}
