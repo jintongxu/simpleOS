@@ -11,6 +11,7 @@
 #include "tools/list.h"
 #include "ipc/sem.h"
 #include "core/memory.h"
+#include "dev/console.h"
 
 
 static boot_info_t * init_boot_info;
@@ -20,6 +21,7 @@ void kernel_init (boot_info_t * boot_info) {
 
     cpu_init();
     log_init();
+    console_init();
 
     
     memory_init(boot_info);
