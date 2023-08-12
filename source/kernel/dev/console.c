@@ -106,6 +106,34 @@ static void clear_display (console_t * console) {
     }
 }
 
+// 向左移动光标
+static int move_backword (console_t * console, int n) {
+    int status = -1;
+
+    for (int i = 0; i < n; i++) {
+        if (console->cursor_col > 0) {
+            // 非列超始处,可回退
+            console->cursor_col--;
+            status = 0;
+        } else if (console->cursor_row > 0) {
+            // 列起始处，但非首行，可回腿
+            console->cursor_row--;
+            console->cursor_col = console->display_cols - 1;
+            status = 0;
+        }
+    }
+
+    return status;
+}
+
+// 向后擦除一个字符
+static void erase_backword (console_t * console) {
+    if (move_backword(console, 1) == 0) {
+        show_char(console, ' ');
+        move_backword(console, 1);
+    }
+}
+
 int console_init (void) {
     for (int i = 0; i < CONSOLE_NR; i++) {
         console_t * console = console_buf + i;
@@ -132,12 +160,23 @@ int console_write (int console, char * data, int size) {
     for (len = 0; len < size; len++) {
         char ch = *data++;
         switch (ch) {
+            case 0x7F:
+                erase_backword(c);    // 往回删除一个字符
+                break;
+            case '\b':
+                move_backword(c, 1);        // 光标向左移动一位
+                break;
+            case '\r':
+                move_to_col0(c);
+                break;
             case '\n':
                 move_to_col0(c);      // 将光标移动到第零列
                 move_next_line(c);    // 将光标移动到下一行
                 break;
             default:
-                show_char(c, ch);
+                if ((ch >= ' ') && (ch <= '~')) {
+                    show_char(c, ch);
+                }
                 break;
         }
        
