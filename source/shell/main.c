@@ -10,15 +10,16 @@ int main(int argc, char ** argv) {
     sbrk(4096*5 + 1234);
     
     printf("Hello from shell\n");
+    printf("OsTest\n");
     for (int i = 0; i < argc; i++) {
-        print_msg("arg: %s", (int)argv[i]);
+        printf("arg: %s\n", argv[i]);
     }
 
     fork();
     yield();
 
     for (;;) {
-        print_msg("shell pid=%d", getpid());
+        printf("shell pid=%d\n", getpid());
         msleep(1000);
     }
 }
