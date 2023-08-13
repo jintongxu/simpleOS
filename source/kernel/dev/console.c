@@ -170,7 +170,15 @@ void restore_cursor (console_t * console) {
 }
 
 
+static void clear_esc_param (console_t  * console) {
+    kernel_memset(console->esc_param, 0, sizeof(console->esc_param));
+    console->curr_param_index = 0;
+}
+
+
 //  写入以ESC开头的序列
+//  ESC(\033) 7 8
+//  ESC [pn:pn1
 static void write_esc (console_t * console, char c) {
     switch (c)
     {
@@ -181,6 +189,10 @@ static void write_esc (console_t * console, char c) {
     case '8':
         restore_cursor(console);
         console->write_state = CONSOLE_WRITE_NORMAL;
+        break;
+    case '[':
+        clear_esc_param(console);       // 对参数列表进行清空
+        console->write_state = CONSOLE_WRITE_SQUARE;
         break;
     default:
         console->write_state = CONSOLE_WRITE_NORMAL;
@@ -216,6 +228,53 @@ static void write_normal (console_t * console, char c) {
     }
 }
 
+// 设置字体颜色
+static void set_font_style (console_t * console) {
+    static const color_t color_table[] = {
+        COLOR_Black, COLOR_Red, COLOR_Green, COLOR_Yellow,
+        COLOR_Blue, COLOR_Magenta, COLOR_Cyan, COLOR_White,
+    };
+
+    for (int i = 0; i <= console->curr_param_index; i++) {
+        int param = console->esc_param[i];
+        if ((param >= 30) && (param <= 37)) {
+            // 设置前景色
+            console->foreground = color_table[param - 30];
+        } else if ((param >= 40) && (param <= 47)) {
+            // 设置背景色
+            console->background = color_table[param - 40];
+        } else if (param == 39) {
+            // 默认的
+            console->foreground = COLOR_White;
+        } else if (param == 49) {
+            console->background = COLOR_Black;
+        }
+    }
+}
+
+// 处理ESC [Pn;Pn 开头的字符串
+static void write_esc_square (console_t * console, char c) {
+    if ((c >= '0') && (c <= '9')) {
+        int *parm = &console->esc_param[console->curr_param_index];
+        *parm = *parm * 10 + c - '0';
+    } else if ((c == ';') && (console->curr_param_index < ESC_PARAM_MAX)) {
+        console->curr_param_index++;
+    } else {
+        switch (c)
+        {
+        case 'm':
+            // m 代表对颜色进行处理
+            set_font_style(console);
+            break;
+        default:
+            break;
+        }
+
+        console->write_state = CONSOLE_WRITE_NORMAL;
+    }
+}
+
+
 int console_write (int console, char * data, int size) {
     console_t * c = console_buf + console;
     int len;
@@ -228,6 +287,9 @@ int console_write (int console, char * data, int size) {
                 break;
             case CONSOLE_WRITE_ESC:
                 write_esc(c, ch);
+                break;
+            case CONSOLE_WRITE_SQUARE:
+                write_esc_square(c, ch);
                 break;
             default:
                 break;

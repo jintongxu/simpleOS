@@ -12,7 +12,8 @@ int main(int argc, char ** argv) {
     printf("abef\b\b\b\bcd\n");     // cdef  \b 是光标左移1位，
     printf("abcd\x7f;fg\n");        // abc;fg
     printf("\0337Hello, world!\0338123\n");   // 123lo,world
-    
+    printf("\033[31;42mHello,world!\033[39;49m123");
+
 
     printf("Hello from shell\n");
     printf("OsTest\n");

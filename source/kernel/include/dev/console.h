@@ -9,6 +9,7 @@
 #define CONSOLE_COL_MAX     80   
 
 #define ASCII_ESC       0x1b            // \033
+#define ESC_PARAM_MAX   10
 
 typedef enum _color_t {
     COLOR_Black = 0,
@@ -40,10 +41,13 @@ typedef union  _disp_char_t {
 }disp_char_t;
 
 // 描述控制台
+// ESC 7, 8
+// ESC(\033) [p0:p1 m
 typedef struct _console_t {
     enum {
         CONSOLE_WRITE_NORMAL, // 正在写普通字符
         CONSOLE_WRITE_ESC,      // 正在写 ESC 开头序列
+        CONSOLE_WRITE_SQUARE,   // 对方括号进行处理
     }write_state;
 
     disp_char_t * disp_base;
@@ -52,6 +56,8 @@ typedef struct _console_t {
     color_t foreground, background; // 颜色
 
     int old_cursor_col, old_cursor_row;     // 保存光标位置
+    int esc_param[ESC_PARAM_MAX];
+    int curr_param_index;   // 当前保存参数的位置，用于esc_param[ESC_PARAM_MAX]这个数组里面的索引
 
 }console_t;
 
