@@ -146,10 +146,73 @@ int console_init (void) {
         int cursor_pos = read_cursor_pos();
         console->cursor_row = cursor_pos / console->display_cols;
         console->cursor_col = cursor_pos / console->display_cols;
+        console->old_cursor_col = console->cursor_col;
+        console->old_cursor_row = console->cursor_row;
+        console->write_state = CONSOLE_WRITE_NORMAL;
      
         console->disp_base = (disp_char_t *)CONSOLE_DISP_ADDR + i * (CONSOLE_COL_MAX * CONSOLE_ROW_MAX);
 
         // clear_display(console);
+    }
+}
+
+
+// 保存光标
+void save_cursor (console_t * console) {
+    console->old_cursor_col = console->cursor_col;
+    console->old_cursor_row = console->cursor_row;
+}
+
+// 恢复光标
+void restore_cursor (console_t * console) {
+    console->cursor_col = console->old_cursor_col;
+    console->cursor_row = console->old_cursor_row;
+}
+
+
+//  写入以ESC开头的序列
+static void write_esc (console_t * console, char c) {
+    switch (c)
+    {
+    case '7':
+        save_cursor(console);
+        console->write_state = CONSOLE_WRITE_NORMAL;
+        break;
+    case '8':
+        restore_cursor(console);
+        console->write_state = CONSOLE_WRITE_NORMAL;
+        break;
+    default:
+        console->write_state = CONSOLE_WRITE_NORMAL;
+        break;
+    }
+}
+
+
+// 普通状态下的字符的写入处理
+static void write_normal (console_t * console, char c) {
+    switch (c) {
+        case ASCII_ESC:
+            console->write_state = CONSOLE_WRITE_ESC;
+            break;
+        case 0x7F:
+            erase_backword(console);    // 往回删除一个字符
+            break;
+        case '\b':
+            move_backword(console, 1);        // 光标向左移动一位
+            break;
+        case '\r':
+            move_to_col0(console);
+            break;
+        case '\n':
+            move_to_col0(console);      // 将光标移动到第零列
+            move_next_line(console);    // 将光标移动到下一行
+            break;
+        default:
+            if ((c >= ' ') && (c <= '~')) {
+                show_char(console, c);
+            }
+            break;
     }
 }
 
@@ -159,24 +222,14 @@ int console_write (int console, char * data, int size) {
 
     for (len = 0; len < size; len++) {
         char ch = *data++;
-        switch (ch) {
-            case 0x7F:
-                erase_backword(c);    // 往回删除一个字符
+        switch (c->write_state) {
+            case CONSOLE_WRITE_NORMAL:
+                write_normal(c, ch);
                 break;
-            case '\b':
-                move_backword(c, 1);        // 光标向左移动一位
-                break;
-            case '\r':
-                move_to_col0(c);
-                break;
-            case '\n':
-                move_to_col0(c);      // 将光标移动到第零列
-                move_next_line(c);    // 将光标移动到下一行
+            case CONSOLE_WRITE_ESC:
+                write_esc(c, ch);
                 break;
             default:
-                if ((ch >= ' ') && (ch <= '~')) {
-                    show_char(c, ch);
-                }
                 break;
         }
        

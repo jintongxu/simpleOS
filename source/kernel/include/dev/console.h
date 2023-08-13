@@ -8,6 +8,8 @@
 #define CONSOLE_ROW_MAX     25
 #define CONSOLE_COL_MAX     80   
 
+#define ASCII_ESC       0x1b            // \033
+
 typedef enum _color_t {
     COLOR_Black = 0,
     COLOR_Blue,
@@ -39,10 +41,18 @@ typedef union  _disp_char_t {
 
 // 描述控制台
 typedef struct _console_t {
+    enum {
+        CONSOLE_WRITE_NORMAL, // 正在写普通字符
+        CONSOLE_WRITE_ESC,      // 正在写 ESC 开头序列
+    }write_state;
+
     disp_char_t * disp_base;
     int cursor_row, cursor_col; // 光标所在的行和列
     int display_rows, display_cols;
     color_t foreground, background; // 颜色
+
+    int old_cursor_col, old_cursor_row;     // 保存光标位置
+
 }console_t;
 
 
