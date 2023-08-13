@@ -32,15 +32,16 @@ static int update_cursor_pos (console_t * console) {
 }
 
 // 擦除操作
-static void erase_rows  (console_t * console, int start, int end) {
+static void erase_rows (console_t * console, int start, int end) {
     volatile disp_char_t * disp_start = console->disp_base + console->display_cols * start;
     volatile disp_char_t * disp_end = console->disp_base + console->display_cols * (end + 1);
-    while(disp_start < disp_end) {
+
+    while (disp_start < disp_end) {
         disp_start->c = ' ';
         disp_start->foreground = console->foreground;
         disp_start->background = console->background;
 
-        disp_start ++;
+        disp_start++;
     }
 }
 
@@ -252,24 +253,95 @@ static void set_font_style (console_t * console) {
     }
 }
 
+
+// 光标向 左 移动
+static void move_left (console_t * console, int n) {
+    if (n == 0) {
+        n = 1;
+    }
+
+    int col = console->cursor_col - n;
+    console->cursor_col = (col >= 0) ? col : 0;   // 判断是否超过左边边界
+}
+
+
+// 光标向 右 移动
+static void move_right (console_t * console, int n) {
+    if (n == 0) {
+        n = 1;
+    }
+
+    int col = console->cursor_col + n;
+    // 如果列超出右边界了
+    if (col >= console->display_cols) {
+        console->cursor_col = console->display_cols - 1;
+    } else {
+        console->cursor_col = col;
+    }
+}
+
+
+// 移动光标
+static void move_cursor (console_t * console) {
+    console->cursor_row = console->esc_param[0];
+    console->cursor_col = console->esc_param[1];
+}
+
+
+// 擦除字符操作
+static void erase_in_display(console_t * console) {
+	if (console->curr_param_index <= 0) {
+		return;
+	}
+
+	int param = console->esc_param[0];
+	if (param == 2) {
+		// 擦除整个屏幕
+		erase_rows(console, 0, console->display_rows - 1);
+        console->cursor_col = console->cursor_row = 0;
+	}
+}
+
+
 // 处理ESC [Pn;Pn 开头的字符串
 static void write_esc_square (console_t * console, char c) {
-    if ((c >= '0') && (c <= '9')) {
-        int *parm = &console->esc_param[console->curr_param_index];
-        *parm = *parm * 10 + c - '0';
-    } else if ((c == ';') && (console->curr_param_index < ESC_PARAM_MAX)) {
+     // 接收参数
+    if ((c >= '0') && (c <= '9'))
+    {
+        // 解析当前参数
+        int *param = &console->esc_param[console->curr_param_index];
+        *param = *param * 10 + c - '0';
+    }
+    else if ((c == ';') && console->curr_param_index < ESC_PARAM_MAX)
+    {
+        // 参数结束，继续处理下一个参数
         console->curr_param_index++;
-    } else {
+    }
+    else
+    {
+        // 结束上一字符的处理
+        console->curr_param_index++;
+
+        // 已经接收到所有的字符，继续处理
         switch (c)
         {
-        case 'm':
-            // m 代表对颜色进行处理
+        case 'm': // 设置字符属性
             set_font_style(console);
             break;
-        default:
+        case 'D': // 光标左移n个位置 ESC [Pn D
+            move_left(console, console->esc_param[0]);
+            break;
+        case 'C':
+            move_right(console, console->esc_param[0]);
+            break;
+        case 'H':
+        case 'f':
+            move_cursor(console);
+            break;
+        case 'J':
+            erase_in_display(console);
             break;
         }
-
         console->write_state = CONSOLE_WRITE_NORMAL;
     }
 }
