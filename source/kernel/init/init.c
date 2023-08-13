@@ -12,6 +12,7 @@
 #include "ipc/sem.h"
 #include "core/memory.h"
 #include "dev/console.h"
+#include "dev/kbd.h"
 
 
 static boot_info_t * init_boot_info;
@@ -31,6 +32,7 @@ void kernel_init (boot_info_t * boot_info) {
     time_init();
     task_manager_init();
 
+    kbd_init(); // 键盘初始化
 }
 
 void move_to_first_task (void) {
