@@ -13,7 +13,9 @@
         "elf.h": "c",
         "cpu_instr.h": "c",
         "klib.h": "c",
-        "list.h": "c"
+        "list.h": "c",
+        "kbd.h": "c",
+        "irq.h": "c"
     },
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "aiXcoder.showTrayIcon": true,
