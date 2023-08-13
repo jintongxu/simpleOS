@@ -101,6 +101,26 @@ static void do_normal_key (uint8_t raw_code) {
                 kbd_state.caps_lock = ~kbd_state.caps_lock;
             }
             break;
+        case KEY_ALT:
+            kbd_state.lalt_press = is_make;
+            break;
+        case KEY_CTRL:
+            kbd_state.lctrl_press = is_make;
+            break;
+        // 功能键：写入键盘缓冲区，由应用自行决定如何处理
+        case KEY_F1:
+        case KEY_F2:
+        case KEY_F3:
+        case KEY_F4:
+        case KEY_F5:
+        case KEY_F6:
+        case KEY_F7:
+        case KEY_F8:
+        case KEY_F9:
+        case KEY_F10:
+        case KEY_F11:
+        case KEY_F12:
+            break;
         default:
             if (is_make) {
                 if (kbd_state.rshift_press || kbd_state.lshift_press) {
@@ -128,8 +148,32 @@ static void do_normal_key (uint8_t raw_code) {
 }
 
 
+static void do_e0_key (uint8_t raw_code) {
+    char key = get_key(raw_code);
+    int is_make = is_make_code(raw_code);
+
+    switch (key)
+    {
+    case KEY_CTRL:
+        kbd_state.rctrl_press = is_make;
+        break;
+    case KEY_ALT:
+        kbd_state.ralt_press = is_make;
+        break;
+    default:
+        break;
+    }
+}
+
+
 // 按键中断处理程序
 void do_handler_kbd (exception_frame_t * frame) {
+    static enum {
+        NORMAL,
+        BEGIN_E0,
+        BEGIN_E1,
+    }recv_state = NORMAL;
+
     uint32_t status = inb(KBD_PORT_STAT);
     if (!(status & KBD_STAT_RECV_READY)) {
         pic_send_eoi(IRQ1_KEYBOARD);
@@ -137,11 +181,29 @@ void do_handler_kbd (exception_frame_t * frame) {
     }
 
     uint8_t raw_code = inb(KBD_PORT_DATA);
-    do_normal_key(raw_code);
-
-    
-
     pic_send_eoi(IRQ0_TIMER);
 
+
+    if (raw_code == KEY_E0) {
+        recv_state = BEGIN_E0;
+    } else if (raw_code == KEY_E1) {
+        recv_state = BEGIN_E1;
+    } else {
+        switch (recv_state)
+        {
+        case NORMAL:
+            do_normal_key(raw_code);
+            break;
+        case BEGIN_E0:
+            do_e0_key(raw_code);
+            recv_state = NORMAL;
+            break;
+        case BEGIN_E1:
+            recv_state = NORMAL;
+            break;
+        default:
+            break;
+        }
+    }
 
 }
