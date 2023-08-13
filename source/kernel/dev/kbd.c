@@ -96,6 +96,11 @@ static void do_normal_key (uint8_t raw_code) {
         case KEY_LSHIFT:
             kbd_state.lshift_press = is_make ? 1 : 0;
             break;
+        case KEY_CAPS:      // // 大小写键，设置大小写状态
+            if (is_make) {
+                kbd_state.caps_lock = ~kbd_state.caps_lock;
+            }
+            break;
         default:
             if (is_make) {
                 if (kbd_state.rshift_press || kbd_state.lshift_press) {
@@ -103,6 +108,18 @@ static void do_normal_key (uint8_t raw_code) {
                 } else {
                     key = map_table[key].normal;
                 }
+
+                // 根据caps再进行一次字母的大小写转换
+                if (kbd_state.caps_lock) {
+                    if ((key >= 'A') && (key <= 'Z')) {
+                        // 大写转小写
+                        key = key - 'A' + 'a';
+                    } else if ((key >= 'a') && (key <= 'z')) {
+                        // 小写转大小
+                        key = key - 'a' + 'A';
+                }
+            }
+
 
                 log_printf("key: %c", key);
             }

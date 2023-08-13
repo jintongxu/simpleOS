@@ -5,6 +5,8 @@
 
 #define KEY_RSHIFT      0x36
 #define KEY_LSHIFT      0x2A
+#define KEY_CAPS        0x3A
+
 
 typedef struct _key_map_t {
     uint8_t normal;     // 普通功能 normal是没有shift键按下，或者没有numlock按下时默认的键值
@@ -13,6 +15,8 @@ typedef struct _key_map_t {
 
 
 typedef struct _kbd_state_t {
+
+    int caps_lock : 1;
     int lshift_press : 1;
     int rshift_press : 1;
 }kbd_state_t;
