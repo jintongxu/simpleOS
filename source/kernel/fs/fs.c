@@ -4,6 +4,7 @@
 #include "comm/cpu_instr.h"
 #include "sys/stat.h"
 #include "dev/console.h"
+#include "tools/log.h"
 
 
 static uint8_t TEMP_ADDR[100*1024];
@@ -63,7 +64,9 @@ int sys_read(int file, char * ptr, int len) {
 
 int sys_write(int file, char * ptr, int len) {
     if (file == 1) {
-        console_write(0, ptr, len);
+        // console_write(0, ptr, len);
+        ptr[len] = '\0';
+        log_printf("%s", ptr);
     }
     return -1;
 }
