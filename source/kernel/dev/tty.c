@@ -1,6 +1,7 @@
 #include "dev/tty.h"
 #include "dev/dev.h"
 
+static tty_t  tty_devs[TTY_NR];
 
 int tty_open (device_t * dev) {
     return 0;
