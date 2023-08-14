@@ -33,5 +33,11 @@ typedef struct _dev_desc_t {
 }dev_desc_t;
 
 
+int dev_open (int major, int minor, void * data);            // 打开指定的设备
+int dev_read (int dev_id, int addr, char * buf, int size);      // 读取指定字节的数据
+int dev_write (int dev_id, int addr, char * buf, int size);     // 写指定字节的数据
+int dev_control (int dev_id, int cmd, int arg0, int arg1);      // 发送控制命令
+void dev_close (int dev_id);            // 关闭设备
+
 
 #endif

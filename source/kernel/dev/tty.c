@@ -24,7 +24,7 @@ void tty_close (device_t * dev) {
 
 
 // 设备描述表: 描述一个设备所具备的特性
-dev_device_t dev_tty_desc = {
+dev_desc_t dev_tty_desc = {
     .name = "tty",
     .major = DEV_TTY,
     .open = tty_open,
@@ -32,4 +32,4 @@ dev_device_t dev_tty_desc = {
     .write = tty_write,
     .control = tty_control,
     .close = tty_close,
-}
+};
