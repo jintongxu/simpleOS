@@ -69,9 +69,20 @@ static const key_map_t map_table[256] = {
 
 // 键盘初始化
 void kbd_init (void) {
-    kernel_memset(&kbd_state, 0, sizeof(kbd_state));
-    irq_install(IRQ1_KEYBOARD, (irq_handler_t)exception_handler_kbd);
-    irq_enable(IRQ1_KEYBOARD);
+    static int inited = 0;
+    
+    // 如果没有进行初始化过
+    if (!inited) {
+        kernel_memset(&kbd_state, 0, sizeof(kbd_state));
+        irq_install(IRQ1_KEYBOARD, (irq_handler_t)exception_handler_kbd);
+        irq_enable(IRQ1_KEYBOARD);
+
+        inited = 1;
+    }
+
+
+
+   
 }
 
 // 判断按下的

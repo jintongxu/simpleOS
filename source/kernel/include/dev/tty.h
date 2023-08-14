@@ -18,7 +18,9 @@ typedef struct _tty_t {
     char obuf[TTY_OBUF_SIZE];
     tty_fifo_t ofifo;
     char ibuf[TTY_IBUF_SIZE];
-    tty_fifo_t ifofo;
+    tty_fifo_t ififo;
+
+    int console_idx;
 }tty_t;
 
 
