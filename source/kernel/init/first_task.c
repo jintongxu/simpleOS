@@ -2,8 +2,10 @@
 #include "tools/log.h"
 #include "applib/lib_syscall.h"
 #include "stddef.h"
+#include "dev/tty.h"
 
 int first_task_main (void) {
+#if 0
     int pid = getpid();
     
     int count = 3;
@@ -22,6 +24,26 @@ int first_task_main (void) {
         print_msg("child task id=%d\n", pid);
         print_msg("parent: %d\n", count);
     }
+#endif
+    // 创建 8 个进程运行 shell，将 tty 设备号传给shell，
+    // 解决其他屏幕不回显问题
+    for (int i = 0; i < TTY_NR; i++) {
+        int pid = fork();
+        if (pid < 0) {
+            print_msg("create shell failed.", 0);
+            break;
+        } else if (pid == 0) {
+            char tty_num[5] = "tty:?";
+            tty_num[4] = i + '0';
+            char * argv[] = {tty_num, (char *)0, NULL};
+            execve("/shell.elf", argv, (char **)0);
+            while(1) {
+                msleep(1000);
+            }
+        }
+
+    }
+
 
     for(;;) {
         // print_msg("task id=%d", pid);

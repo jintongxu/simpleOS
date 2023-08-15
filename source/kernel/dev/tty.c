@@ -29,11 +29,13 @@ void tty_fifo_init (tty_fifo_t * fifo, char * buf, int size) {
 
 // 往buf中写一字节数据
 int tty_fifo_put (tty_fifo_t *fifo, char c) {
+    irq_state_t state = irq_enter_protection();
     if (fifo->count >= fifo->size) {
+        irq_leave_protection(state);
         return -1;
     }
     
-    irq_state_t state = irq_enter_protection();
+    
     fifo->buf[fifo->write++] = c;
     if (fifo->write >= fifo->size) {
         // 如果超过表的长度就从头开始，因为是循环队列
@@ -48,11 +50,13 @@ int tty_fifo_put (tty_fifo_t *fifo, char c) {
 
 // 从buf中读取
 int tty_fifo_get (tty_fifo_t *fifo, char * c) {
+    irq_state_t state = irq_enter_protection();
     if (fifo->count <= 0) {
+        irq_leave_protection(state);
         return -1;
     }
 
-    irq_state_t state = irq_enter_protection();
+    
     *c = fifo->buf[fifo->read++];
     if (fifo->read >= fifo->size) {
         // 如果超过表的长度就从头开始，因为是循环队列
