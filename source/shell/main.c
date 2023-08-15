@@ -3,6 +3,7 @@
 
 
 int main(int argc, char ** argv) {
+#if 0
     sbrk(0);
     sbrk(100);
     sbrk(200);
@@ -23,15 +24,13 @@ int main(int argc, char ** argv) {
     printf("\033[32;25;39m123\n");  // ESC [pn m, Hello,world红色，其余绿色 
 
     printf("\033[2J\n");   // clear screen
+#endif
+    open("tty:0", 0);
 
     printf("Hello from shell\n");
     printf("OsTest\n");
-    for (int i = 0; i < argc; i++) {
-        printf("arg: %s\n", argv[i]);
-    }
 
-    fork();
-    yield();
+
 
     for (;;) {
         printf("shell pid=%d\n", getpid());
