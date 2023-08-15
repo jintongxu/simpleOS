@@ -20,5 +20,6 @@ int sys_isatty(int file);
 int sys_fstat(int file, struct stat * st);
 char * sys_sbrk(int incr);
 
+int sys_dup (int file);
 
 #endif

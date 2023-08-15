@@ -25,11 +25,13 @@ int main(int argc, char ** argv) {
 
     printf("\033[2J\n");   // clear screen
 #endif
-    open("tty:0", 0);
+    open("tty:0", 0);           // int fd = 0   stdin 三个都是指向同一个tty设备，tty0，只是在进程的 文件表中，fd不一样。  => tty0
+    dup(0);                     // int fd = 1   stdout  => tty0
+    dup(0);                     // int fd = 2   stdeer  => tty0
 
     printf("Hello from shell\n");
     printf("OsTest\n");
-
+    fprintf(stderr, "error");
 
     for (;;) {
         gets(cmd_buf);
