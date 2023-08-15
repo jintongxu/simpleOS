@@ -9,6 +9,8 @@
 */
 struct stat;
 
+void fs_init (void);    // 对文件系统的初始化
+
 int sys_open(const char * name, int flags, ...);
 int sys_read(int file, char * ptr, int len);
 int sys_write(int file, char * ptr, int len);

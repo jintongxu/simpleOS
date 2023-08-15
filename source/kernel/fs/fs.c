@@ -5,6 +5,7 @@
 #include "sys/stat.h"
 #include "dev/console.h"
 #include "tools/log.h"
+#include "fs/file.h"
 
 
 static uint8_t TEMP_ADDR[100*1024];
@@ -92,4 +93,10 @@ int sys_isatty(int file) {
 
 int sys_fstat(int file, struct stat * st) {
     return -1;
+}
+
+
+// 文件系统的初始化操作
+void fs_init (void) {
+    file_table_init();
 }
