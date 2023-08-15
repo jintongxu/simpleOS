@@ -4,9 +4,11 @@
 #include "comm/types.h"
 #include "cpu/cpu.h"
 #include "tools/list.h"
+#include "fs/file.h"
 
 #define TASK_NAME_SIZE      32
 #define TASK_TIME_SLICE_DEFAULT         10
+#define TASK_OFILE_NR       128
 
 #define TASK_FLAGS_SYSTEM       (1 << 0)
 
@@ -35,6 +37,8 @@ typedef struct _task_t {
     int time_ticks;      // 设置计数器
     int slice_ticks;
 
+    file_t * file_table[TASK_OFILE_NR];      // 记录进程打开了哪些文件
+
     char name[TASK_NAME_SIZE];
 
     list_node_t run_node;
@@ -49,6 +53,10 @@ typedef struct _task_t {
 int task_init (task_t * task, const char * name, int flag,uint32_t entry, uint32_t esp);
 void task_switch_from_to (task_t * from, task_t * to);
 void task_time_tick(void);
+
+file_t * task_file (int fd);            // 根据进程的 file_table 找到对应的文件描述符
+int task_alloc_fd (file_t * file);      // 在进程中分配文件id--进程打开的文件  在进程的 file_table 找到空闲的
+void task_remove_fd (int fd);           // 释放进程绑定的文件id
 
 
 typedef struct _task_manager_t {
