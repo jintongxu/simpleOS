@@ -1,7 +1,7 @@
 #include "lib_syscall.h"
 #include "stdio.h"
 
-
+char cmd_buf[256];
 int main(int argc, char ** argv) {
 #if 0
     sbrk(0);
@@ -31,9 +31,12 @@ int main(int argc, char ** argv) {
     printf("OsTest\n");
 
 
-
     for (;;) {
-        printf("shell pid=%d\n", getpid());
-        msleep(1000);
+        gets(cmd_buf);
+        puts(cmd_buf);
+
+        // printf("shell pid=%d\n", getpid());
+        // msleep(1000);
+
     }
 }

@@ -15,7 +15,8 @@
         "klib.h": "c",
         "list.h": "c",
         "kbd.h": "c",
-        "irq.h": "c"
+        "irq.h": "c",
+        "tty.h": "c"
     },
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "aiXcoder.showTrayIcon": true,

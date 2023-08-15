@@ -3,6 +3,7 @@
 #include "tools/log.h"
 #include "dev/kbd.h"
 #include "dev/console.h"
+#include "cpu/irq.h"
 
 static tty_t  tty_devs[TTY_NR];
 
@@ -30,13 +31,16 @@ int tty_fifo_put (tty_fifo_t *fifo, char c) {
     if (fifo->count >= fifo->size) {
         return -1;
     }
-
+    
+    irq_state_t state = irq_enter_protection();
     fifo->buf[fifo->write++] = c;
     if (fifo->write >= fifo->size) {
         // 如果超过表的长度就从头开始，因为是循环队列
         fifo->write = 0;
     }
     fifo->count++;
+    irq_leave_protection(state);
+
     return 0;
 
 }
@@ -47,12 +51,14 @@ int tty_fifo_get (tty_fifo_t *fifo, char * c) {
         return -1;
     }
 
+    irq_state_t state = irq_enter_protection();
     *c = fifo->buf[fifo->read++];
     if (fifo->read >= fifo->size) {
         // 如果超过表的长度就从头开始，因为是循环队列
         fifo->read = 0;
     }
     fifo->count--;  // 因为取出一个数据就要减1
+    irq_leave_protection(state);
     return 0;
 }
 
@@ -67,6 +73,8 @@ int tty_open (device_t * dev) {
     tty_fifo_init (&tty->ofifo, tty->obuf, TTY_OBUF_SIZE);
     sem_init(&tty->osem, TTY_OBUF_SIZE);
     tty_fifo_init (&tty->ififo, tty->ibuf, TTY_IBUF_SIZE);
+    sem_init(&tty->isem, 0);
+    tty->iflags = TTY_INCLR | TTY_IECHO;
     tty->oflags = TTY_OCRLF;
     tty->console_idx = idx;
 
@@ -75,10 +83,6 @@ int tty_open (device_t * dev) {
 
 
     return 0;
-}
-
-int tty_read (device_t * dev, int addr, char * buf, int size) {
-    return size;
 }
 
 int tty_write (device_t * dev, int addr, char * buf, int size) {
@@ -117,14 +121,76 @@ int tty_write (device_t * dev, int addr, char * buf, int size) {
 
     }
 
-    return size;
+    return len;
 }
+
+int tty_read (device_t * dev, int addr, char * buf, int size) {
+    if (size < 0) {
+        return -1;
+    }
+
+    tty_t * tty = get_tty(dev);
+    char * pbuf = buf;
+    int len = 0;
+
+    // 不断读取，直到遇到文件结束符或者行结束符
+    while(len < size) {
+        // 等待可用的数据
+        sem_wait(&tty->isem);
+
+        // 取出数据
+        char ch;
+        tty_fifo_get(&tty->ififo, &ch);
+        switch (ch)
+        {
+        case '\n':
+            if ((tty->iflags & TTY_INCLR) && (len < size - 1)) {
+                *pbuf++ = '\r';
+                len++;
+            }
+            *pbuf++= '\n';
+            len++;
+            break;
+        default:
+            *pbuf++ = ch;
+            len++;
+            break;
+        }
+
+
+        // 设置回显--输入后实时显示在屏幕上
+        if (tty->iflags & TTY_IECHO) {
+            tty_write(dev, 0, &ch, 1);
+        }
+
+        if ((ch == '\n') || (ch == '\r')) {
+            break;
+        }
+    }
+
+    return len;
+}
+
+
 
 int tty_control (device_t * dev, int cmd, int arg0, int arg1) {
     return 0;
 }
 
 void tty_close (device_t * dev) {
+
+}
+
+void tty_in(int idx, char ch) {
+    tty_t * tty = tty_devs + idx;
+
+    if (sem_count(&tty->isem) >= TTY_IBUF_SIZE) {
+        // 说明缓存数据已满
+        return;
+    }
+
+    tty_fifo_put(&tty->ififo, ch);
+    sem_notify(&tty->isem);
 
 }
 
