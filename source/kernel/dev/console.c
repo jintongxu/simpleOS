@@ -21,8 +21,9 @@ static int read_cursor_pos (void) {
 
 // 更新鼠标的位置
 static int update_cursor_pos (console_t * console) {
-    uint16_t pos = console->cursor_row * console->display_cols + console->cursor_col;
+    uint16_t pos = (console - console_buf) * console->cursor_row * console->display_cols;
 
+    pos += console->cursor_row * console->display_cols + console->cursor_col;
 
     outb(0x3D4, 0xF);
     outb(0x3d5, (uint8_t)(pos & 0xFF));
@@ -393,4 +394,27 @@ int console_write (tty_t * tty) {
 
 void console_close (int console) {
     
+}
+
+// 切换屏幕
+void console_select (int idx) {
+    console_t * console = console_buf + idx;
+    if (console->disp_base == 0) {
+        // 如果当前 console 没有被打开
+        console_init(idx);
+    }
+
+    uint16_t pos = idx * console->display_rows * console->display_cols;
+    outb(0x3D4, 0xC);
+    outb(0x3D5, ((uint8_t)(pos >> 8) & 0xFF));
+    outb(0x3D4, 0xD);
+    outb(0x3D5, (uint8_t)(pos & 0xFF));
+
+    // 更新光标的位置
+    update_cursor_pos(console);
+
+    char num = idx + '0';
+    show_char(console, num);
+
+
 }

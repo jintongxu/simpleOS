@@ -6,6 +6,7 @@
 #include "cpu/irq.h"
 
 static tty_t  tty_devs[TTY_NR];
+static int curr_tty = 0;
 
 static tty_t * get_tty (device_t * dev) {
     int tty = dev->minor;
@@ -181,8 +182,8 @@ void tty_close (device_t * dev) {
 
 }
 
-void tty_in(int idx, char ch) {
-    tty_t * tty = tty_devs + idx;
+void tty_in(char ch) {
+    tty_t * tty = tty_devs + curr_tty;
 
     if (sem_count(&tty->isem) >= TTY_IBUF_SIZE) {
         // 说明缓存数据已满
@@ -192,6 +193,14 @@ void tty_in(int idx, char ch) {
     tty_fifo_put(&tty->ififo, ch);
     sem_notify(&tty->isem);
 
+}
+
+// 选择tty
+void tty_select (int tty) {
+    if (tty != curr_tty) {
+        console_select(tty);
+        curr_tty = tty;
+    }
 }
 
 

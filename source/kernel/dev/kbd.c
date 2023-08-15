@@ -96,6 +96,14 @@ static inline int get_key(uint8_t key_code) {
 }
 
 
+static void do_fx_key (int key) {
+    int index = key - KEY_F1;
+    if (kbd_state.lctrl_press || kbd_state.rctrl_press) {
+        tty_select(index);      // 选择一个 tty 设备
+    }
+}
+
+
 // 处理单字符的标准键
 static void do_normal_key (uint8_t raw_code) {
     char key = get_key(raw_code);
@@ -128,6 +136,8 @@ static void do_normal_key (uint8_t raw_code) {
         case KEY_F6:
         case KEY_F7:
         case KEY_F8:
+            do_fx_key(key);
+            break;
         case KEY_F9:
         case KEY_F10:
         case KEY_F11:
@@ -152,7 +162,7 @@ static void do_normal_key (uint8_t raw_code) {
                     }
             }
 
-            tty_in(0, key);
+            tty_in(key);
                 
         }
             break;
