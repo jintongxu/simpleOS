@@ -18,11 +18,22 @@ static int do_help (int argc, char **argv) {
     return 0;
 }
 
+static int do_clear (int argc, char **argv) {
+    printf("%s", ESC_CLEAR_SCREEN);
+    printf("%s", ESC_MOVE_CURSOR(0, 0));    // 移动光标位置 里面是0行0列
+    return 0;
+}
+
 static const cli_cmd_t cmd_list[] = {
     {
         .name = "help",
         .usage = "help -- list supported command",
         .do_func = do_help,
+    },
+    {
+        .name = "clear",
+        .usage = "clear -- clear screen",
+        .do_func = do_clear,
     },
 };
 
@@ -48,8 +59,8 @@ static const cli_cmd_t * find_builtin (const char * name) {
 // 运行内部命令
 static void run_builtin (const cli_cmd_t * cmd, int argc, char ** argv) {
     int ret = cmd->do_func(argc, argv);
-    if (ret) {
-        fprintf(stderr, "error: %d\n", ret);
+    if (ret < 0) {
+        fprintf(stderr, ESC_COLOR_ERROR"error: %d\n"ESC_COLOR_DEFAULT, ret);
     }
 }
 
@@ -111,5 +122,6 @@ int main(int argc, char ** argv) {
         }
 
         // exec
+        fprintf(stderr, ESC_COLOR_ERROR"Unknown command: %s\n"ESC_COLOR_DEFAULT, cli.curr_input);
     }
 }
