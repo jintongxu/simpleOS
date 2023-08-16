@@ -148,6 +148,17 @@ int tty_read (device_t * dev, int addr, char * buf, int size) {
         tty_fifo_get(&tty->ififo, &ch);
         switch (ch)
         {
+        case 0x7F:
+            // 判断是不是退格键
+            // 防止在按下退格键后被终端读取在命令里
+            if (len == 0) {
+                // 如果缓冲区没有数据
+                continue;
+            }
+
+            len--;
+            pbuf--;
+            break;
         case '\n':
             if ((tty->iflags & TTY_INCLR) && (len < size - 1)) {
                 *pbuf++ = '\r';
