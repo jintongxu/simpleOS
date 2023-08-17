@@ -140,6 +140,27 @@ static void cli_init (const char * promot, const cli_cmd_t * cmd_list, int size)
     cli.cmd_end = cmd_list + size;
 }
 
+// 试图运行当前文件
+static void run_exec_file(const char * path, int argc, char **argv) {
+    int pid = fork();
+    if (pid < 0) {
+        fprintf(stderr, "fork failed %s", path);
+    } else if (pid == 0) {
+        // 在子进程中
+        for (int i = 0; i < argc; i++) {
+            msleep(1000);
+            printf("arg %d = %s\n", i, argv[i]);
+        }
+        exit(-1);
+    } else {
+        // 在父进程中
+        int status;
+        int pid = wait(&status);
+        fprintf(stderr, "cmd %s result: %d, pid = %d\n", path, status, pid);
+    }
+}
+
+
 int main(int argc, char ** argv) {
     open(argv[0], 0);           // int fd = 0   stdin 三个都是指向同一个tty设备，tty0，只是在进程的 文件表中，fd不一样。  => tty0
     dup(0);                     // int fd = 1   stdout  => tty0
@@ -189,6 +210,9 @@ int main(int argc, char ** argv) {
             run_builtin(cmd, argc, argv);
             continue;
         }
+
+        // 如果不是系统调用，试图运行当前文件
+        run_exec_file("", argc, argv);
 
         // exec
         fprintf(stderr, ESC_COLOR_ERROR"Unknown command: %s\n"ESC_COLOR_DEFAULT, cli.curr_input);

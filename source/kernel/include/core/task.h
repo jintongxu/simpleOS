@@ -92,6 +92,8 @@ void sys_sleep (uint32_t ms);
 int sys_getpid (void);
 int sys_fork (void);
 int sys_execve (char * name, char **argv, char ** env);
+
 void sys_exit (int status);
+int sys_wait (int * status);
 
 #endif
