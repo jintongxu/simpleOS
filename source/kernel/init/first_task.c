@@ -27,7 +27,7 @@ int first_task_main (void) {
 #endif
     // 创建 8 个进程运行 shell，将 tty 设备号传给shell，
     // 解决其他屏幕不回显问题
-    for (int i = 0; i < TTY_NR; i++) {
+    for (int i = 0; i < 1; i++) {
         int pid = fork();
         if (pid < 0) {
             print_msg("create shell failed.", 0);
