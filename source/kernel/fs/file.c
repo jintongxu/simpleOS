@@ -36,6 +36,15 @@ void file_free (file_t * file) {
     mutex_unlock(&file_alloc_mutex);
 }
 
+
+// 增加file的引用计数
+void file_inc_ref (file_t * file) {
+    mutex_lock(&file_alloc_mutex);
+	file->ref++;
+    mutex_unlock(&file_alloc_mutex);
+}
+
+
 void file_table_init (void) {
     mutex_init(&file_alloc_mutex);
     kernel_memset(file_table, 0, sizeof(file_table));

@@ -52,6 +52,15 @@ static void read_disk(int sector, int sector_count, uint8_t * buf) {
 }
 
 
+static int is_fd_bad (int file) {
+    if ((file < 0) && (file >= TASK_OFILE_NR)) {
+        return 1;
+    }
+
+    return 0;
+}
+
+
 static int is_path_valid (const char * path) {
     if ((path == (const char *)0) || (path[0] == '\0')) {
         return 0;
@@ -90,62 +99,95 @@ const char * path_next_child (const char * path) {
 }
 
 
+// 判断路径是否以xx开头
+int path_begin_with (const char * path, const char * str) {
+    const char * s1 = path, * s2 = str;
+    while(*s1 && *s2 && (*s1 == *s2)) {
+        s1++;
+        s2++;
+    }
+    
+    
+    return *s2 == '\0';
+}
+
+
+// 上锁
+static void fs_protect (fs_t * fs) {
+    if (fs->mutex) {
+        mutex_lock(fs->mutex);
+    }
+}
+
+// 解锁
+static void fs_unprotect (fs_t * fs) {
+    if (fs->mutex) {
+        mutex_unlock(fs->mutex);
+    }
+}
 
 // 文件打开
 int sys_open(const char * name, int flags, ...) {
-    // /dev/tty
-    if (kernel_strncmp(name, "/dev", 3) == 0) {
-        // 如果是以 tty 开头的话
-        if (!is_path_valid(name)) {
-            log_printf("path is not valid");
-            return -1;
-        }
-
-        // 分配文件描述符链接。这个过程中可能会被释放
-        int fd = -1;
-        file_t * file = file_alloc();
-        if (file) {
-            fd = task_alloc_fd(file);
-            if (fd < 0) {
-                goto sys_open_failed;
-            }
-        } else {
-            goto sys_open_failed;
-        }
-
-        name = path_next_child(name);
-        file->dev_id = -1;
-        file->mode = 0;
-        file->pos = 0;
-        file->ref = 1;
-        kernel_strncpy(file->file_name, name, FILE_NAME_SIZE);
-
-
-        int err = devfs_op.open((fs_t *)0, name, file);
-        if (file < 0) {
-            goto sys_open_failed;
-        }
-        return fd;
-
-sys_open_failed:
-        if (file) {
-            file_free(file);
-        }
-
-        if (fd >= 0) {
-            task_remove_fd(fd);
-        }
-        return -1;
-    } else {
-        if (name[0] == '/') {
+    if (kernel_strncmp(name, "/shell.elf", 3) == 0) {
         read_disk(5000, 80, (uint8_t *)TEMP_ADDR);   // 因为将shell放在了磁盘5000的位置
         temp_pos = (uint8_t *)TEMP_ADDR;
         return TEMP_FILE_ID;
+    }
+
+    // /dev/tty
+    // 分配文件描述符链接。这个过程中可能会被释放
+    file_t * file = file_alloc();
+    if (!file) {
+        return -1;
+    }
+        
+    int fd = task_alloc_fd(file);
+    if (fd < 0) {
+        goto sys_open_failed;
+    }
+    
+    // 检查名称是否以挂载点开头，如果没有，则认为name在根目录下
+	// 即只允许根目录下的遍历
+    fs_t * fs = (fs_t *)0;
+    list_node_t * node = list_first(&mounted_list);
+    while(node) {
+        fs_t * curr = list_node_parent(node, fs_t, node);
+        if (path_begin_with(name, curr->mount_point)) {
+            fs = curr;
+            break;
         }
+
+        node = list_node_next(node);
+    }
+
+    if (fs) {
+        name = path_next_child(name);
+    } else {
+
     }
 
 
+    file->mode = flags;
+    file->fs = fs;
+    kernel_strncpy(file->file_name, name, FILE_NAME_SIZE);
+
+    fs_protect(fs);
+    int err = fs->op->open(fs, name, file);
+    if (file < 0) {
+        fs_unprotect(fs);
+        log_printf("open %s failed", name);
+        goto sys_open_failed;
+    }
+    fs_unprotect(fs);
+    return fd;
+
+sys_open_failed:
+    file_free(file);
+    if (fd >= 0) {
+        task_remove_fd(fd);
+    }
     return -1;
+
 }
 
 // 文件读取
@@ -205,7 +247,7 @@ int sys_fstat(int file, struct stat * st) {
 // 复制一个文件描述符
 int sys_dup (int file) {
     // 超出进程所能打开的全部，退出
-    if ((file < 0) && (file >= TASK_OFILE_NR)) {
+    if (is_fd_bad(file)) {
         // 如果 id 无效
         log_printf("file %d is not valid.", file);
         return -1;
@@ -219,7 +261,7 @@ int sys_dup (int file) {
 
     int fd = task_alloc_fd(p_file);     // 新fd指向同一描述符
     if (fd > 0) {
-        p_file->ref++;      // 增加引用
+        file_inc_ref(p_file);    // 增加引用
         return fd;
     }
 
