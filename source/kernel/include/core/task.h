@@ -26,12 +26,14 @@ typedef struct _task_t {
         TASK_SLEEP,
         TASK_READY,
         TASK_WAITTING,   // 等待时间
+        TASK_ZOMBIE,    // 将死状态
     }state;
 
     int pid;
     struct _task_t * parent;
     uint32_t heap_start;    // 堆的起始地址
     uint32_t heap_end;
+    int status;         // 进程执行结果
 
     int sleep_ticks;
     int time_ticks;      // 设置计数器
@@ -90,5 +92,6 @@ void sys_sleep (uint32_t ms);
 int sys_getpid (void);
 int sys_fork (void);
 int sys_execve (char * name, char **argv, char ** env);
+void sys_exit (int status);
 
 #endif

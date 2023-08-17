@@ -162,3 +162,12 @@ int dup (int file) {
   
     return sys_call(&args);
 }
+
+
+void _exit(int status) {
+    syscall_args_t args;
+    args.id = SYS_exit;
+    args.arg0 = (int)status;
+  
+    sys_call(&args);
+}

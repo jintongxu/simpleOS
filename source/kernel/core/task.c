@@ -121,6 +121,7 @@ int task_init (task_t * task, const char * name, int flag ,uint32_t entry, uint3
     task->heap_end = 0;
     task->time_ticks = TASK_TIME_SLICE_DEFAULT;
     task->slice_ticks = task->time_ticks;
+    task->state = 0;
     list_node_init(&task->all_node);
     list_node_init(&task->run_node);
     list_node_init(&task->wait_node);
@@ -302,6 +303,31 @@ int sys_sched_yield() {
     irq_leave_protection(state);
     // 如果就绪队列里面就1个进程。
     return 0;
+}
+
+
+void sys_exit (int status) {
+    task_t * curr_task = task_current();
+
+    // 将打开文件关闭
+    for (int fd = 0; fd < TASK_OFILE_NR; fd++) {
+        file_t * file = curr_task->file_table[fd];
+        if (file) {
+            // 如果文件是打开的就关闭
+            sys_close(fd);
+            curr_task->file_table[fd] = (file_t *)0;
+        }
+    }
+
+    // 保存返回值，进入僵尸状态
+    irq_state_t state = irq_enter_protection();
+    curr_task->status = status;
+    curr_task->state = TASK_ZOMBIE;
+    task_set_block(curr_task);
+    task_dispatch();
+
+
+    irq_leave_protection(state);
 }
 
 
