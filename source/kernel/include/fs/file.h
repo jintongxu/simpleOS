@@ -12,6 +12,7 @@ typedef enum _file_type_t {
     FILE_TTY,
 }file_type_t;
 
+struct _fs_t;
 // 文件描述符
 typedef struct  _file_t {
     char file_name[FILE_NAME_SIZE];     // 文件名
@@ -21,6 +22,8 @@ typedef struct  _file_t {
     int dev_id;                 // 文件所属的设备号 
     int pos;  	                // 当前位置
     int mode;					// 读写模式
+
+    struct _fs_t * fs;
 }file_t;
 
 

@@ -1,7 +1,17 @@
 #include "fs/devfs/devfs.h"
 #include "dev/dev.h"
 #include "fs/file.h"
+#include "tools/klib.h"
+#include "tools/log.h"
 
+
+static devfs_type_t dev_type_list[] = {
+    {
+        .name = "tty",
+        .dev_type = DEV_TTY,
+        .file_type = FILE_TTY,
+    },
+};
 
 // 挂载文件系统
 int devfs_mount (struct _fs_t * fs, int major, int minor) {
@@ -14,6 +24,35 @@ void devfs_unmount (struct _fs_t * fs) {
 }
 
 int devfs_open (struct _fs_t * fs, const char * path, file_t * file) {
+    // tty0, tty1(path)
+    for (int i = 0; i < sizeof(dev_type_list) / sizeof(dev_type_list[0]); i++) {
+        devfs_type_t * type = dev_type_list + i;
+
+        int type_name_len = kernel_strlen(type->name);
+        if (kernel_strncmp(path, type->name, type_name_len) == 0) {
+            int minor;
+            if ((kernel_strlen(path) > type_name_len) && (path_to_num(path + type_name_len, &minor) < 0)) {
+                log_printf("Get device num failed. %s", path);
+                break;
+            }
+
+            int dev_id = dev_open(type->dev_type, minor, (void *)0);
+            if (dev_id < 0) {
+                log_printf("Open device failed: %s", path);
+                break;
+            }
+
+            file->dev_id = dev_id;
+            file->fs = fs;
+            file->pos = 0;
+            file->size = 0;
+            file->type = type->file_type;
+            return 0;
+        }
+
+       
+    }
+
     return 0;
 }
 
