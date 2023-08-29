@@ -2,6 +2,8 @@
 #define DISK_H
 
 #include "comm/types.h"
+#include "ipc/mutex.h"
+#include "ipc/sem.h"
 
 #define DISK_NAME_SIZE  32              // 分区名称
 #define PART_NAME_SIZE  32              // 磁盘名称大小
@@ -90,6 +92,9 @@ typedef struct _disk_t {
     int sector_count;       // 总扇区数量
     partinfo_t partinfo[DISK_PRIMARY_PART_CNT];   // 分区表, 包含一个描述整个磁盘的假分区信息
 
+    
+    mutex_t * mutex;
+    sem_t * op_sem;
 }disk_t;
 
 

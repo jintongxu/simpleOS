@@ -6,8 +6,10 @@
 #include "dev/dev.h"
 #include "cpu/irq.h"
 
-
+static mutex_t mutex;   // 通道信号量
+static sem_t op_sem;    // 通道操作的信号量
 static disk_t disk_buf[DISK_CNT];   // 通道结构
+static int task_on_op;
 
 
 // 发送ata命令，支持多达16位的扇区，对我们目前的程序来书够用了。
@@ -173,12 +175,17 @@ void disk_init (void) {
 
 
     kernel_memset(disk_buf, 0, sizeof(disk_buf));
+
+    mutex_init(&mutex);
+    sem_init(&op_sem, 0);
     for (int i = 0; i < DISK_PER_CHANNEL; i++) {
         disk_t * disk = disk_buf + i;
 
         kernel_sprintf(disk->name, "sd%c", i + 'a');    // 磁盘命名
         disk->drive = (i == 0) ? DISK_MASTER :DISK_SLAVE;
         disk->port_base = IOBASE_PRIMARY;
+        disk->mutex = &mutex;
+        disk->op_sem = &op_sem;
 
 
         int err = identify_disk(disk);
@@ -226,13 +233,79 @@ int disk_open (device_t * dev) {
 
 // 读磁盘
 int disk_read (device_t * dev, int addr, char * buf, int size) {
-    // part = dev->data 分区信息获取
-    return -1;
+    // 取分区信息
+    partinfo_t * part_info = (partinfo_t *)dev->data;
+    if (!part_info) {
+        log_printf("Get part info failed. device: %d", dev->minor);
+    }
+
+    disk_t * disk = part_info->disk;
+    if (disk == (disk_t *)0) {
+        log_printf("No disk. device: %d", dev->minor);
+    }
+
+    mutex_lock(disk->mutex);
+    task_on_op = 1;
+
+    disk_send_cmd(disk, part_info->start_sector + addr, size, DISK_CMD_READ);
+    
+    int cnt = 0;
+    for (cnt = 0; cnt < size; cnt++, buf += disk->sector_size) {
+        // 利用信号量等待中断通知，然后再读取数据
+        sem_wait(disk->op_sem);
+
+        // 这里虽然有调用等待，但是由于已经是操作完毕，所以并不会等
+        int err = disk_wait_data(disk);
+        if (err < 0) {
+            log_printf("disk(%s) read error: start sector %d, count: %d",
+                disk->name, addr, size);
+            break;
+        }
+
+        // 此处再读取数据
+        disk_read_data(disk, buf, disk->sector_size);
+    }
+
+    mutex_unlock(disk->mutex);
+    return cnt;
 }
 
 // 写扇区
 int disk_write (device_t * dev, int addr, char * buf, int size) {
-    return -1;
+    // 取分区信息
+    partinfo_t * part_info = (partinfo_t *)dev->data;
+    if (!part_info) {
+        log_printf("Get part info failed. device: %d", dev->minor);
+    }
+
+    disk_t * disk = part_info->disk;
+    if (disk == (disk_t *)0) {
+        log_printf("No disk. device: %d", dev->minor);
+    }
+
+    mutex_lock(disk->mutex);
+    task_on_op = 1;
+
+    disk_send_cmd(disk, part_info->start_sector + addr, size, DISK_CMD_WRITE);
+    
+    int cnt = 0;
+    for (cnt = 0; cnt < size; cnt++, buf += disk->sector_size) {
+        disk_write_data(disk, buf, disk->sector_size);
+
+        // 利用信号量等待中断通知，然后再读取数据
+        sem_wait(disk->op_sem);
+
+        // 这里虽然有调用等待，但是由于已经是操作完毕，所以并不会等
+        int err = disk_wait_data(disk);
+        if (err < 0) {
+            log_printf("disk(%s) read error: start sector %d, count: %d",
+                disk->name, addr, size);
+            break;
+        }
+    }
+
+    mutex_unlock(disk->mutex);
+    return cnt;
 }
 
 // 向磁盘发命令
@@ -249,6 +322,10 @@ void disk_close (device_t * dev) {
 // 磁盘主通道中断处理
 void do_handler_ide_primary (exception_frame_t * fram) {
     pic_send_eoi(IRQ14_HARDDISK_PRIMARY);
+
+    if (task_on_op) {
+        sem_notify(&op_sem);
+    }
 }
 
 
