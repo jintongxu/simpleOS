@@ -18,8 +18,10 @@
 static list_t mounted_list;
 static fs_t fs_table[FS_TABLE_SIZE];
 static list_t free_list;
+static fs_t * root_fs;				// 根文件系统
 
 extern fs_op_t devfs_op;
+extern fs_op_t fatfs_op;
 
 static uint8_t TEMP_ADDR[100*1024];
 static uint8_t * temp_pos;   // 当前位置指针
@@ -140,7 +142,7 @@ int sys_open(const char * name, int flags, ...) {
     if (fs) {
         name = path_next_child(name);
     } else {
-
+        fs = root_fs;
     }
 
 
@@ -350,6 +352,8 @@ int sys_dup (int file) {
 static fs_op_t * get_fs_op (fs_type_t type, int major) {
     switch (type)
     {
+    case FS_FAT16:
+        return &fatfs_op;
     case FS_DEVFS:
         return &devfs_op;
     default:
@@ -438,4 +442,7 @@ void fs_init (void) {
 
     fs_t * fs = mount(FS_DEVFS, "/dev", 0, 0);
     ASSERT(fs != (fs_t *)0);
+
+    root_fs = mount(FS_FAT16, "/home", ROOT_DEV);
+    ASSERT(root_fs != (fs_t*)0);
 }
