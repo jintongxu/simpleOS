@@ -45,4 +45,22 @@ int dup (int file);
 void _exit(int status);
 int wait (int * status);
 
+
+struct dirent {
+    int index;      // 在目录中的偏移
+    int type;       // 文件或目录的类型
+    char name[255];     // 目录或目录的名称
+    int size;           // 文件大小
+};
+
+typedef struct _DIR {
+    int index;       // 当前遍历的索引
+    struct dirent dirent;
+}DIR;
+
+
+DIR * opendir (const char * path);
+struct dirent * readdir (DIR * dir);
+int closedir (DIR * dir);
+
 #endif

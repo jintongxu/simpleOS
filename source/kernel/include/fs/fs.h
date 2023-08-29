@@ -5,6 +5,7 @@
 #include "tools/list.h"
 #include "ipc/mutex.h"
 #include "fatfs/fatfs.h"
+#include "applib/lib_syscall.h"
 
 /*
     文件读写关
@@ -68,5 +69,9 @@ int sys_fstat(int file, struct stat * st);
 char * sys_sbrk(int incr);
 
 int sys_dup (int file);
+
+int sys_opendir (const char * name, DIR * dir);
+int sys_readdir (DIR * dir, struct dirent * dirent);
+int sys_closedir (DIR * dir);
 
 #endif
