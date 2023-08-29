@@ -4,6 +4,7 @@
 #include "file.h"
 #include "tools/list.h"
 #include "ipc/mutex.h"
+#include "fatfs/fatfs.h"
 
 /*
     文件读写关
@@ -43,6 +44,11 @@ typedef struct _fs_t {
     int dev_id;             // 所属的设备
     list_node_t node;       // 下一结点
     mutex_t * mutex;        // 文件系统操作互斥信号量
+
+    union
+    {
+        fat_t fat_data;
+    };
 
 }fs_t;
 
