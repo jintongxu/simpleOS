@@ -3,6 +3,8 @@
 #include "tools/klib.h"
 #include "comm/cpu_instr.h"
 #include "comm/boot_info.h"
+#include "dev/dev.h"
+#include "cpu/irq.h"
 
 
 static disk_t disk_buf[DISK_CNT];   // 通道结构
@@ -187,3 +189,76 @@ void disk_init (void) {
     }
 
 }
+
+
+// 打开磁盘设备
+int disk_open (device_t * dev) {
+    // 0xa0 -- a 磁盘编号a,b,c  0----分区号  0是整个分区，1是第一个
+    int disk_idx = (dev->minor >> 4) - 0xa;     // 磁盘号
+    int part_idx = dev->minor & 0xF;            // 分区号
+
+
+    if ((disk_idx >= DISK_CNT) || (part_idx >= DISK_PRIMARY_PART_CNT)) {
+        log_printf("device minor error: %d", dev->minor);
+        return -1;
+    }
+
+    
+    disk_t * disk = disk_buf + disk_idx;
+    if (disk->sector_count == 0) {
+        log_printf("disk not exist, device: sd%x", dev->minor);
+        return -1;
+    }
+
+    partinfo_t * part_info = disk->partinfo + part_idx;
+    if (part_info->total_sector == 0) {
+        log_printf("part not exist, device: sd%x", dev->minor);
+        return -1;
+    }
+
+    dev->data = part_info;
+
+    irq_install(IRQ14_HARDDISK_PRIMARY, (irq_handler_t)exception_handler_ide_primary);
+    irq_enable(IRQ14_HARDDISK_PRIMARY);
+
+    return 0;
+}
+
+// 读磁盘
+int disk_read (device_t * dev, int addr, char * buf, int size) {
+    // part = dev->data 分区信息获取
+    return -1;
+}
+
+// 写扇区
+int disk_write (device_t * dev, int addr, char * buf, int size) {
+    return -1;
+}
+
+// 向磁盘发命令
+int disk_control (device_t * dev, int cmd, int arg0, int arg1) {
+    return -1;
+}
+
+// 关闭磁盘
+void disk_close (device_t * dev) {
+
+}
+
+
+// 磁盘主通道中断处理
+void do_handler_ide_primary (exception_frame_t * fram) {
+    pic_send_eoi(IRQ14_HARDDISK_PRIMARY);
+}
+
+
+// 磁盘设备描述表
+dev_desc_t dev_disk_desc = {
+    .name = "disk",
+    .major = DEV_DISK,
+    .open = disk_open,
+    .read = disk_read,
+    .write = disk_write,
+    .control = disk_control,
+    .close = disk_close,
+};

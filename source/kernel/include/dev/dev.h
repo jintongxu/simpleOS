@@ -6,6 +6,7 @@
 enum {
     DEV_UNKNOWN = 0,
     DEV_TTY,
+    DEV_DISK,
 };
 
 // 设备驱动接口

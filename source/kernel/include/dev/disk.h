@@ -96,4 +96,7 @@ typedef struct _disk_t {
 void disk_init (void);  // 磁盘初始化及检测
 
 
+void exception_handler_ide_primary (void);
+
+
 #endif
