@@ -141,13 +141,51 @@ static void read_from_diritem (fat_t * fat, file_t * file, diritem_t * item, int
 
 
 /**
+ * 检查指定簇是否可用，非占用或坏簇
+ */
+int cluster_is_valid (cluster_t cluster) {
+    return (cluster < FAT_CLUSTER_INVALID) && (cluster >= 0x2);
+}
+
+
+/**
+ * 获取指定簇的下一个簇
+ */
+int cluster_get_next (fat_t * fat, cluster_t curr) {
+    if (!cluster_is_valid(curr)) {
+        return FAT_CLUSTER_INVALID;
+    }
+
+    int offset = curr * sizeof(cluster_t);
+    int sector = offset / fat->bytes_per_sec;   // 在 FAT 表上的扇区号
+    int off_sector = offset % fat->bytes_per_sec;       // 在扇区中的偏移
+
+    // 如果超过最大号
+    if (sector >= fat->tbl_sectors) {
+        log_printf("cluster too big: %d", curr);
+        return FAT_CLUSTER_INVALID;
+    }
+
+    int err = bread_sector(fat, fat->tbl_start + sector);
+    if (err < 0) {
+        return FAT_CLUSTER_INVALID;
+    }
+
+    return *(cluster_t *)(fat->fat_buffer + off_sector);
+}
+
+/**
  * @brief 移动文件指针
  */
 static int move_file_pos (file_t * file, fat_t * fat, uint32_t move_bytes, int expand) {
     uint32_t c_offset = file->pos % fat->cluster_byte_size;     // 在簇中的偏移
     // 当前偏移加上读取数据大小 超出 当前簇
     if (c_offset + move_bytes >= fat->cluster_byte_size) {
-        return -1;
+        cluster_t next = cluster_get_next(fat, file->cblk);  // 通过查fat表找到下一个簇
+        if (next == FAT_CLUSTER_INVALID) {
+            return -1;
+        }
+        file->cblk = next;
     }
 
     file->pos += move_bytes;
