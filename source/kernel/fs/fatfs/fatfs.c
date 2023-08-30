@@ -5,8 +5,94 @@
 #include "core/memory.h"
 #include "tools/klib.h"
 
+/**
+ * @brief 缓存读取磁盘数据，用于目录的遍历等
+*/
+static int bread_sector (fat_t * fat, int sector) {
+    if (sector == fat->curr_sector) {
+        return 0;
+    }
 
-// 挂载fat文件系统
+    int cnt = dev_read(fat->fs->dev_id, sector, fat->fat_buffer, 1);
+    if (cnt == 1) {
+        fat->curr_sector = sector;
+        return 0;
+    }
+
+    return -1;
+}
+
+
+/**
+ * @brief 在root目录中读取diritem
+*/
+static diritem_t * read_dir_entry (fat_t * fat, int index) {
+    if ((index < 0) || (index >= fat->root_ent_cnt)) {
+        return (diritem_t *)0;
+    }
+
+    int offset = index * sizeof(diritem_t);     // 在根目录处的字节偏移
+    int sector = fat->root_start + offset / fat->bytes_per_sec; 
+    int err = bread_sector(fat, sector);
+    if (err < 0) {
+        return (diritem_t *)0;
+    }
+
+
+    return (diritem_t *)(fat->fat_buffer + offset % fat->bytes_per_sec);
+
+}
+
+
+/**
+ * @brief 获取文件类型
+ */
+file_type_t diritem_get_type (diritem_t * diritem) {
+    file_type_t type = FILE_UNKNOWN;
+
+    // 长文件名和volum id
+    if (diritem->DIR_Attr & (DIRITEM_ATTR_VOLUME_ID | DIRITEM_ATTR_HIDDEN | DIRITEM_ATTR_SYSTEM)) {
+        return FILE_UNKNOWN;
+    }
+    
+    if ((diritem->DIR_Attr & DIRITEM_ATTR_LONG_NAME) == 0xF) {
+        return FILE_UNKNOWN;
+    }
+
+    return diritem->DIR_Attr & DIRITEM_ATTR_DIRECTORY ? FILE_DIR : FILE_NORMAL;
+    
+}
+
+
+/**
+ * @brief 获取diritem中的名称，转换成合适
+*/
+void diritem_get_name (diritem_t * item, char * dest) {
+    char * c = dest;
+    char * ext = (char *)0;
+
+    kernel_memset(dest, 0, 12);
+    for (int i = 0; i < 11; i++) {
+        if (item->DIR_Name[i] != ' ') {
+            *c++ = item->DIR_Name[i];
+        }
+
+        if (i == 7) {
+            ext = c;
+            *c++ = '.';
+        }
+    }
+
+     // 没有扩展名的情况
+    if (ext && (ext[1] == '\0')) {
+        ext[0] = '\0';
+    }
+}
+
+
+/**
+ * @brief 挂载fat文件系统
+*/
 int fatfs_mount (struct _fs_t * fs, int major, int minor) {
     // 打开设备
     int dev_id = dev_open(major, minor, (void *)0);
@@ -36,12 +122,16 @@ int fatfs_mount (struct _fs_t * fs, int major, int minor) {
     fat->tbl_start = dbr->BPB_RsvdSecCnt;
     fat->tbl_sectors = dbr->BPB_FATSz16;
     fat->tbl_cnt = dbr->BPB_NumFATs;
+    fat->root_ent_cnt = dbr->BPB_RootEntCnt;
     fat->sec_per_cluster = dbr->BPB_SecPerClus;
     fat->root_start = fat->tbl_start + fat->tbl_sectors * fat->tbl_cnt;
     fat->data_start = fat->root_start + fat->root_ent_cnt * 32 / SECTOR_SIZE;
     fat->cluster_byte_size = fat->sec_per_cluster * dbr->BPB_BytsPerSec;
     fat->fs = fs;
+    mutex_init(&fat->mutex);
+    fs->mutex = &fat->mutex;
 
+    fat->curr_sector = -1;
 
     // 简单检查是否是fat16文件系统, 可以在下边做进一步的更多检查。此处只检查做一点点检查
     if (fat->tbl_cnt != 2) {
@@ -110,14 +200,40 @@ int fatfs_opendir (struct _fs_t * fs, const char * name, DIR * dir) {
     return 0;
 }
 
+/**
+ * @brief 读取一个目录项
+ */
 int fatfs_readdir (struct _fs_t * fs, DIR * dir, struct dirent * dirent) {
-    if (dir->index++ < 10) {
-        dirent->type = FILE_NORMAL;
-        dirent->size = 1000;
-        kernel_strncpy(dirent->name, "hello", sizeof(dirent->name));
-        return 0;
-    }
+    fat_t * fat = (fat_t *)fs->data;
 
+    // 做一些简单的判断，检查
+    while (dir->index < fat->root_ent_cnt) 
+    {
+        diritem_t * item = read_dir_entry(fat, dir->index);
+        if (item == (diritem_t *)0) {
+            return -1;
+        }
+
+        // 结束项，不需要再扫描了，同时index也不能往前走
+        if (item->DIR_Name[0] == DIRITEM_NAME_END) {
+            break;
+        }
+
+        // 只显示普通文件和目录，其它的不显示
+        if (item->DIR_Name[0] != DIRITEM_NAME_FREE) {
+            file_type_t type = diritem_get_type(item);
+            if ((type == FILE_NORMAL) || (type == FILE_DIR)) {
+                dirent->size = item->DIR_FileSize;
+                dirent->type = type;
+                diritem_get_name(item, dirent->name);
+                dirent->index = dir->index++;
+                return 0;
+            }
+        }
+
+        dir->index++;
+    }
+    
     return -1;
 }
 
