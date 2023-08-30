@@ -104,6 +104,56 @@ static int do_ls (int argc, char **argv) {
     return 0;
 }
 
+
+static int do_less (int argc, char **argv) {
+    int ch;
+    while ((ch = getopt(argc, argv, "l:h")) != -1) {
+        switch (ch)
+        {
+        case 'h':
+            // 有参数 -h
+            puts("show file content");
+            puts("Usage: less [-l] file");
+            optind = 1;  
+            return 0;
+        case '?':
+            if (optarg) {
+                fprintf(stderr, "Unknown option: -%s\n", optarg);
+            }
+            optind = 1;  
+            return -1;
+        default:
+            break;
+        }
+    }
+
+    if (optind > argc - 1) {
+        fprintf(stderr, "no file\n");
+        optind = 1;  
+        return -1;
+    }
+
+
+    FILE * file = fopen(argv[optind], "r");
+    if (file == NULL) {
+        fprintf(stderr, "open file failed. %s", argv[optind]);
+        optind = 1;
+        return -1;
+    }
+
+    char * buf = (char *)malloc(255);
+    while (fgets(buf, 255, file) != NULL) {
+        fputs(buf, stdout);
+    }
+    free(buf);
+
+    fclose(file);
+    optind = 1;  
+    return 0;
+}
+
+
+
 static const cli_cmd_t cmd_list[] = {
     {
         .name = "help",
@@ -124,6 +174,11 @@ static const cli_cmd_t cmd_list[] = {
         .name = "ls",
         .usage = "ls -- list director",
         .do_func = do_ls,
+    },
+    {
+        .name = "less",
+        .usage = "less [-l] file -- show file",
+        .do_func = do_less,
     },
     {
         .name = "quit",
