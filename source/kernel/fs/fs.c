@@ -23,10 +23,6 @@ static fs_t * root_fs;				// 根文件系统
 extern fs_op_t devfs_op;
 extern fs_op_t fatfs_op;
 
-static uint8_t TEMP_ADDR[100*1024];
-static uint8_t * temp_pos;   // 当前位置指针
-#define TEMP_FILE_ID    100
-
 
 static int is_fd_bad (int file) {
     if ((file < 0) && (file >= TASK_OFILE_NR)) {
@@ -104,15 +100,6 @@ static void fs_unprotect (fs_t * fs) {
 
 // 文件打开
 int sys_open(const char * name, int flags, ...) {
-    if (kernel_strncmp(name, "/shell.elf", 3) == 0) {
-        int dev_id = dev_open(DEV_DISK, 0xa0, (void *)0);
-        dev_read(dev_id, 5000, (uint8_t *)TEMP_ADDR, 80);
-
-        // read_disk(5000, 80, (uint8_t *)TEMP_ADDR);   // 因为将shell放在了磁盘5000的位置
-        temp_pos = (uint8_t *)TEMP_ADDR;
-        return TEMP_FILE_ID;
-    }
-
     // /dev/tty
     // 分配文件描述符链接。这个过程中可能会被释放
     file_t * file = file_alloc();
@@ -171,12 +158,6 @@ sys_open_failed:
 
 // 文件读取
 int sys_read(int file, char * ptr, int len) {
-    if (file == TEMP_FILE_ID) {
-        kernel_memcpy(ptr, temp_pos, len);
-        temp_pos += len;
-        return len;
-    } 
-
     if (is_fd_bad(file) || !ptr || !len) {
         return 0;
     }
@@ -224,11 +205,6 @@ int sys_write(int file, char * ptr, int len) {
 
 // 移动读写的指针
 int sys_lseek(int file, int ptr, int dir) {
-    if (file == TEMP_FILE_ID) {
-        temp_pos = (uint8_t *)(TEMP_ADDR + ptr);
-        return 0;
-    }
-
     if (is_fd_bad(file)) {
         return 0;
     }
@@ -248,10 +224,6 @@ int sys_lseek(int file, int ptr, int dir) {
 }
 
 int sys_close(int file) {
-    if (file == TEMP_FILE_ID) {
-        return 0;
-    }
-
     if (is_fd_bad(file)) {
         log_printf("file error");
         return 0;

@@ -68,6 +68,10 @@ void devfs_close (file_t * file) {
     dev_close(file->dev_id);
 }
 
+
+/**
+ * @brief 文件读写定位
+ */
 int devfs_seek (file_t * file, uint32_t offset, int dir) {
     return -1;
 }
