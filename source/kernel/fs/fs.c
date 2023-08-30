@@ -456,6 +456,27 @@ int sys_opendir (const char * name, DIR * dir) {
     return err;
 }
 
+int sys_ioctl (int file, int cmd, int arg0, int arg1) {
+    // 超出进程所能打开的全部，退出
+    if (is_fd_bad(file)) {
+        // 如果 id 无效
+        log_printf("file %d is not valid.", file);
+        return -1;
+    }
+
+    file_t * p_file = task_file(file);
+    if (!p_file) {
+        log_printf("file not open");
+        return -1;
+    }
+
+    fs_t * fs = p_file->fs;
+    fs_protect(fs);
+    int err = fs->op->ioctl(p_file, cmd, arg0, arg1);
+    fs_unprotect(fs);
+    return err;
+}
+
 int sys_readdir (DIR * dir, struct dirent * dirent) {
     fs_protect(root_fs);
     int err = root_fs->op->readdir(root_fs, dir, dirent);

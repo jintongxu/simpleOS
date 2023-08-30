@@ -34,6 +34,7 @@ int read (int file, char * ptr, int len);   // 文件Id, 读取的位置，读�
 int write (int file, char * ptr, int len);
 int close (int file);
 int lseek (int file, int ptr, int dir);
+int ioctl (int file, int cmd, int arg0, int arg1);
 
 
 int isatty (int file);

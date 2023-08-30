@@ -6,6 +6,7 @@
 #include <getopt.h>
 #include <sys/file.h>
 #include "fs/file.h"
+#include "dev/tty.h"
 
 
 static cli_t cli;
@@ -106,8 +107,12 @@ static int do_ls (int argc, char **argv) {
 
 
 static int do_less (int argc, char **argv) {
+    int line_mode = 0;      // 是否以行查看的标志
+
+
+
     int ch;
-    while ((ch = getopt(argc, argv, "l:h")) != -1) {
+    while ((ch = getopt(argc, argv, "lh")) != -1) {
         switch (ch)
         {
         case 'h':
@@ -116,6 +121,9 @@ static int do_less (int argc, char **argv) {
             puts("Usage: less [-l] file");
             optind = 1;  
             return 0;
+        case 'l':
+            line_mode = 1;
+            break;
         case '?':
             if (optarg) {
                 fprintf(stderr, "Unknown option: -%s\n", optarg);
@@ -142,9 +150,37 @@ static int do_less (int argc, char **argv) {
     }
 
     char * buf = (char *)malloc(255);
-    while (fgets(buf, 255, file) != NULL) {
-        fputs(buf, stdout);
+    // 如果一次性打印所有文件内容
+    if (line_mode == 0) {
+        while (fgets(buf, 255, file) != NULL) {
+            fputs(buf, stdout);
+        }
+    } else {
+        // 不使用缓存，这样能直接立即读取到输入而不用等回车
+        setvbuf(stdin, NULL, _IONBF, 0);
+        ioctl(0, TTY_CMD_ECHO, 0, 0);
+
+        while (1) {
+            char * b = fgets(buf, 255, file);
+            if (b == NULL) {
+                break;
+            }
+
+            fputs(buf, stdout);
+
+            int ch;
+            while ((ch = fgetc(stdin)) != 'n') {
+                if (ch == 'q') {
+                    goto less_quit;
+                }
+            }
+        }
+less_quit:
+        // 恢复为行缓存
+        setvbuf(stdin, NULL, _IOLBF, BUFSIZ);
+        ioctl(0, TTY_CMD_ECHO, 1, 0);
     }
+    
     free(buf);
 
     fclose(file);
