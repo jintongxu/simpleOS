@@ -464,3 +464,12 @@ int sys_closedir (DIR * dir) {
 
     return err;
 }
+
+
+int sys_unlink (const char * path) {
+    fs_protect(root_fs);
+    int err = root_fs->op->unlink(root_fs, path);
+    fs_unprotect(root_fs);
+
+    return err;
+}
