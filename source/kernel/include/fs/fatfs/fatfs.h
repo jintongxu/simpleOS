@@ -3,6 +3,8 @@
 
 #pragma pack(1)
 
+#include "ipc/mutex.h"
+
 #define FAT_CLUSTER_INVALID             0xFFF8              // 无效的簇号
 #define FAT_CLUSTER_FREE                0                   // 空闲或无效的簇号
 

@@ -323,6 +323,7 @@ static void cli_init (const char * promot, const cli_cmd_t * cmd_list, int size)
 
 /**
  * 遍历搜索目录，看看文件是否存在，存在返回文件所在路径
+ * loop.elf loop    cmd.exe  cmd 自动添加后缀
  */
 static const char * find_exec_path (const char * file_name) {
     static char path[255];

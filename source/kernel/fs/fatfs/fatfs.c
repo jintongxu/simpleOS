@@ -531,10 +531,12 @@ int fatfs_open (struct _fs_t * fs, const char * path, file_t * file) {
         }
 
         read_from_diritem(fat, file, &item, p_index);
+        return 0;
+    } else {
+        return -1;
     }
 
-
-    return 0;
+    
 }
 
 int fatfs_read (char * buf, int size, file_t * file) {
