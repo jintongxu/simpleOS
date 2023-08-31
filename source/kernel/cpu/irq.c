@@ -3,6 +3,7 @@
 #include "comm/cpu_instr.h"
 #include "os_cfg.h"
 #include "tools/log.h"
+#include "core/task.h"
 
 #define IDT_TABLE_NR        128
 
@@ -44,6 +45,15 @@ static void do_default_handler (exception_frame_t * frame, char * message) {
 	log_printf("IRQ/Exception happend: %s", message);
 	dump_core_regs(frame);
 
+
+	// CS的最低两位是特权级的，不为0就是用户级
+	if (frame->cs & 0x3) {
+		sys_exit(frame->error_code);
+	} else {
+		while (1) {
+			hlt();
+		}
+	}
 }
 void do_handler_unknown (exception_frame_t * frame) {
     do_default_handler(frame, "unknown exception");        // 默认值放到最后面
@@ -118,9 +128,15 @@ void do_handler_general_protection(exception_frame_t * frame) {
     
     log_printf("segment index: %d", frame->error_code & 0xFFF8);
 	dump_core_regs(frame);
-    while (1) {
-        hlt();
-    }	
+
+    // CS的最低两位是特权级的，不为0就是用户级
+	if (frame->cs & 0x3) {
+		sys_exit(frame->error_code);
+	} else {
+		while (1) {
+			hlt();
+		}
+	}
 }
 
 void do_handler_page_fault(exception_frame_t * frame) {
@@ -148,9 +164,16 @@ void do_handler_page_fault(exception_frame_t * frame) {
 	}
 
     dump_core_regs(frame);
-	while (1) {
-		hlt();
+
+	// CS的最低两位是特权级的，不为0就是用户级
+	if (frame->cs & 0x3) {
+		sys_exit(frame->error_code);
+	} else {
+		while (1) {
+			hlt();
+		}
 	}
+	
 }
 
 void do_handler_fpu_error(exception_frame_t * frame) {
