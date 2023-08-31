@@ -80,8 +80,9 @@ static int tss_init (task_t * task, int flag ,uint32_t entry, uint32_t esp) {
     task->tss.eip = entry;
     task->tss.esp = esp ? esp : kernel_stack + MEM_PAGE_SIZE;
     task->tss.esp0 = kernel_stack + MEM_PAGE_SIZE;
-    task->tss.ss = data_sel;
+    // task->tss.ss = data_sel;
     task->tss.ss0 = KERNEL_SELECTOR_DS;
+     task->tss.eip = entry;
     task->tss.es = task->tss.ds = task->tss.ss = task->tss.fs = task->tss.gs = data_sel;
     task->tss.cs = code_sel;
     task->tss.eflags = EFLGAGS_IF | EFLGAGS_DEFAULT;
@@ -115,7 +116,7 @@ int task_init (task_t * task, const char * name, int flag ,uint32_t entry, uint3
 
     kernel_strncpy(task->name, name, TASK_NAME_SIZE);
     task->state = TASK_CREATED;
-    task->slice_ticks = 0;
+    task->sleep_ticks = 0;
     task->parent = (task_t *)0;
     task->heap_start = 0;
     task->heap_end = 0;
@@ -126,7 +127,7 @@ int task_init (task_t * task, const char * name, int flag ,uint32_t entry, uint3
     list_node_init(&task->run_node);
     list_node_init(&task->wait_node);
 
-    kernel_memset(&task->file_table, 0, sizeof(task->file_table));
+    kernel_memset(task->file_table, 0, sizeof(task->file_table));
 
     irq_state_t state = irq_enter_protection();
     task->pid = (uint32_t)task;
@@ -166,7 +167,7 @@ void task_uninit (task_t * task) {
     }
 
     if (task->tss.esp0) {
-        memory_free_page(task->tss.esp - MEM_PAGE_SIZE);
+        memory_free_page(task->tss.esp0 - MEM_PAGE_SIZE);
     }
 
     if (task->tss.cr3) {
@@ -205,11 +206,13 @@ void task_first_init (void) {
 
 
     memory_alloc_page_for(first_start, alloc_size, PTE_P | PTE_W | PTE_U);
-    kernel_memcpy((void *)first_start,(void *)s_first_task, copy_size);
+    kernel_memcpy((void *)first_start,(void *)&s_first_task, copy_size);
+
+    task_start(&task_manager.first_task);
 
     // 写TR寄存器，指示当前运行的第一个任务
     write_tr(task_manager.first_task.tss_sel);
-    task_start(&task_manager.first_task);
+    
 }
 
 task_t * task_first_task (void) {
@@ -242,14 +245,15 @@ void task_manager_init (void) {
     list_init(&task_manager.ready_list);
     list_init(&task_manager.task_list);
     list_init(&task_manager.sleep_list);
-    task_manager.curr_task = (task_t *)0;
+    
 
     task_init(&task_manager.idle_task, 
         "idle_task",
         TASK_FLAGS_SYSTEM,
         (uint32_t)idle_task_entry,
-        (uint32_t)(idle_task_stack + IDLE_TASK_SIZE)
+        0   // 运行于内核模式，无需指定特权级3的栈
     );
+    task_manager.curr_task = (task_t *)0;
     task_start(&task_manager.idle_task);
 }
 
@@ -380,7 +384,7 @@ void sys_exit (int status) {
 
     task_t * parent = curr_task->parent;
     if (move_child && (parent != &task_manager.first_task)) {
-        if (task_manager.first_task.state = TASK_WAITTING) {
+        if (task_manager.first_task.state == TASK_WAITTING) {
             task_set_ready(&task_manager.first_task);
         }
     }
@@ -408,7 +412,7 @@ void task_dispatch (void) {
 
     task_t * to = task_next_run();
     if (to != task_manager.curr_task) {
-        task_t * from = task_current();
+        task_t * from = task_manager.curr_task;
         task_manager.curr_task = to;
         to->state = TASK_RUNNING;
 
@@ -515,6 +519,22 @@ void sys_sleep (uint32_t ms) {
 }
 
 
+/**
+ * @brief 从当前进程中拷贝已经打开的文件列表
+ */
+static void copy_opened_files(task_t * child_task) {
+    task_t * parent = task_current();
+
+    for (int i = 0; i < TASK_OFILE_NR; i++) {
+        file_t * file = parent->file_table[i];
+        if (file) {
+            file_inc_ref(file);
+            child_task->file_table[i] = parent->file_table[i];
+        }
+    }
+}
+
+
 int sys_getpid (void) {
     task_t * task = task_current();
     return task->pid;
@@ -537,6 +557,9 @@ int sys_fork (void) {
         goto fork_failed;
     }
 
+    // 拷贝打开的文件
+    copy_opened_files(child_task);
+
     tss_t * tss = &child_task->tss;
     tss->eax = 0;
     tss->ebx = frame->ebx;
@@ -556,7 +579,7 @@ int sys_fork (void) {
     child_task->parent = parent_task;
 
     // 页表
-    if ((tss->cr3 = memory_copy_uvm(parent_task->tss.cr3)) < 0) {
+    if ((child_task->tss.cr3 = memory_copy_uvm(parent_task->tss.cr3)) < 0) {
         goto fork_failed;
     }
 
@@ -647,7 +670,7 @@ static uint32_t load_elf_file (task_t * task, const char * name, uint32_t page_d
         
         // 读取程序头表项内容
         cnt = sys_read(file, (char *)&elf_phdr, sizeof(Elf32_Phdr));
-        if (cnt < sizeof(elf_phdr)) {
+        if (cnt < sizeof(Elf32_Phdr)) {
             log_printf("read file failed.");
             goto load_failed;
         }
@@ -687,7 +710,7 @@ static int copy_args(char * to, uint32_t page_dir, int argc, char **argv) {
     task_args.argc = argc;
     task_args.argv = (char **)(to + sizeof(task_args_t));
 
-    char * dest_arg = to + sizeof(task_args_t) + sizeof(char *) * argc;
+    char * dest_arg = to + sizeof(task_args_t) + sizeof(char *) * (argc + 1);
     char ** dest_arg_tb = (char **)memory_get_paddr(page_dir, (uint32_t)(to + sizeof(task_args_t)));
     for (int i = 0; i < argc; i++) {
         char * from = argv[i];
@@ -700,7 +723,12 @@ static int copy_args(char * to, uint32_t page_dir, int argc, char **argv) {
 
     }
 
-    return memory_copy_uvm_data((uint32_t)to, page_dir, (uint32_t)&task_args, sizeof(task_args));      // 从用户虚拟地址中拷贝数据
+    // 可能存在无参的情况，此时不需要写入
+    if (argc) {
+        dest_arg_tb[argc] = '\0';
+    }
+
+    return memory_copy_uvm_data((uint32_t)to, page_dir, (uint32_t)&task_args, sizeof(task_args_t));      // 从用户虚拟地址中拷贝数据
 }
 
 

@@ -16,6 +16,7 @@ static devfs_type_t dev_type_list[] = {
 // 挂载文件系统
 int devfs_mount (struct _fs_t * fs, int major, int minor) {
     fs->type = FS_DEVFS;
+    return 0;
 }   
 
 // 取消文件系统挂载
@@ -31,7 +32,7 @@ int devfs_open (struct _fs_t * fs, const char * path, file_t * file) {
         int type_name_len = kernel_strlen(type->name);
         if (kernel_strncmp(path, type->name, type_name_len) == 0) {
             int minor;
-            if ((kernel_strlen(path) > type_name_len) && (path_to_num(path + type_name_len, &minor) < 0)) {
+            if ((kernel_strlen(path) > type_name_len) && (path_to_num(path + type_name_len, &minor)) < 0){
                 log_printf("Get device num failed. %s", path);
                 break;
             }
@@ -53,7 +54,7 @@ int devfs_open (struct _fs_t * fs, const char * path, file_t * file) {
        
     }
 
-    return 0;
+    return -1;
 }
 
 int devfs_read (char * buf, int size, file_t * file) {

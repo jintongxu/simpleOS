@@ -132,7 +132,7 @@ int diritem_name_match (diritem_t * item, const char * path) {
  */
 static void read_from_diritem (fat_t * fat, file_t * file, diritem_t * item, int index) {
     file->type = diritem_get_type(item);
-    file->size = item->DIR_FileSize;
+    file->size = (int)item->DIR_FileSize;
     file->pos = 0;
     file->p_index = index;
     file->sblk = (item->DIR_FstClusHI << 16) | (item->DIR_FstClusL0);
@@ -287,11 +287,13 @@ int fatfs_open (struct _fs_t * fs, const char * path, file_t * file) {
 
         // 结束项，不需要再扫描了，同时index也不能往前走
         if (item->DIR_Name[0] == DIRITEM_NAME_END) {
+            p_index = i;
             break;
         }
 
         // 只显示普通文件和目录，其它的不显示
         if (item->DIR_Name[0] == DIRITEM_NAME_FREE) {
+            p_index = i;
             continue;
         }
 
@@ -386,7 +388,7 @@ int fatfs_seek (file_t * file, uint32_t offset, int dir) {
     }
 
     fat_t * fat = (fat_t *)file->fs->data;
-    cluster_t current_cluster = file->cblk;
+    cluster_t current_cluster = file->sblk;
     uint32_t curr_pos = 0;
     uint32_t offset_to_move = offset;
 

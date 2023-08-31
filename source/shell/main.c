@@ -257,16 +257,37 @@ static void cli_init (const char * promot, const cli_cmd_t * cmd_list, int size)
     cli.cmd_end = cmd_list + size;
 }
 
+
+/**
+ * 遍历搜索目录，看看文件是否存在，存在返回文件所在路径
+ */
+static const char * find_exec_path (const char * file_name) {
+    static char path[255];
+
+    int fd = open(file_name, 0);
+    if (fd < 0) {
+        sprintf(path, "%s.elf", file_name);
+        fd = open(path, 0);
+        if (fd < 0) {
+            return (const char * )0;
+        }
+        close(fd);
+        return path;
+    } else {
+        close(fd);
+        return file_name;
+    }
+}
+
 // 试图运行当前文件
 static void run_exec_file(const char * path, int argc, char **argv) {
     int pid = fork();
     if (pid < 0) {
         fprintf(stderr, "fork failed %s", path);
     } else if (pid == 0) {
-        // 在子进程中
-        for (int i = 0; i < argc; i++) {
-            msleep(1000);
-            printf("arg %d = %s\n", i, argv[i]);
+        int err = execve(path, argv, (char * const *)0);
+        if (err < 0) {
+            fprintf(stderr, "exec failed: %s", path);
         }
         exit(-1);
     } else {
@@ -328,8 +349,14 @@ int main(int argc, char ** argv) {
             continue;
         }
 
-        // 如果不是系统调用，试图运行当前文件
-        run_exec_file("", argc, argv);
+        const char * path = find_exec_path(argv[0]);        // 看看要运行的文件存不存在
+        if (path) {
+            // 如果不是系统调用，试图运行当前文件
+            run_exec_file(path, argc, argv);
+            continue;
+        }
+
+        
 
         // exec
         fprintf(stderr, ESC_COLOR_ERROR"Unknown command: %s\n"ESC_COLOR_DEFAULT, cli.curr_input);
