@@ -189,6 +189,40 @@ less_quit:
 }
 
 
+static int do_cp (int argc, char **argv) {
+    if (argc < 3) {
+        fprintf(stderr, "no [from] or no [to]");
+        return -1;
+    }
+
+    FILE * from, * to;
+    from = fopen(argv[1], "rb");        // 只读和二进制打开文件
+    to = fopen(argv[2], "wb");
+    if (!from || !to) {
+        fprintf(stderr, "open file failed");
+        goto ls_failed;
+    }
+
+    char * buf = (char *)malloc(255);
+    int size;
+    while((size = fread(buf, 1, 255, from)) > 0) {
+        fwrite(buf, 1, 255, to);
+    }
+    free(buf);
+
+
+ls_failed:
+    if (from) {
+        fclose(from);
+    }
+    
+    if (to) {
+        fclose(to);
+    }
+    return 0;
+}
+
+
 
 static const cli_cmd_t cmd_list[] = {
     {
@@ -215,6 +249,11 @@ static const cli_cmd_t cmd_list[] = {
         .name = "less",
         .usage = "less [-l] file -- show file",
         .do_func = do_less,
+    },
+    {
+        .name = "cp",
+        .usage = "cp src dest",
+        .do_func = do_cp,
     },
     {
         .name = "quit",

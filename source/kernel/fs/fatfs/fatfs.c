@@ -4,6 +4,7 @@
 #include "tools/log.h"
 #include "core/memory.h"
 #include "tools/klib.h"
+#include <sys/fcntl.h>
 
 /**
  * @brief 缓存读取磁盘数据，用于目录的遍历等
@@ -20,6 +21,15 @@ static int bread_sector (fat_t * fat, int sector) {
     }
 
     return -1;
+}
+
+
+/**
+ * @brief 写缓存
+ */
+static int bwrite_sector (fat_t * fat, int sector) {
+    int cnt = dev_write(fat->fs->dev_id, sector, fat->fat_buffer, 1);
+    return (cnt == 1) ? 0 : -1;
 }
 
 
@@ -42,6 +52,30 @@ static diritem_t * read_dir_entry (fat_t * fat, int index) {
     return (diritem_t *)(fat->fat_buffer + offset % fat->bytes_per_sec);
 
 }
+
+
+/**
+ * @brief 写dir目录项
+ */
+static int  write_dir_entry (fat_t * fat, diritem_t * item ,int index) {
+    if ((index < 0) || (index >= fat->root_ent_cnt)) {
+        return -1;
+    }
+
+    int offset = index * sizeof(diritem_t);     // 在根目录处的字节偏移
+    int sector = fat->root_start + offset / fat->bytes_per_sec; 
+    int err = bread_sector(fat, sector);
+    if (err < 0) {
+        return err;
+    }
+
+
+    kernel_memcpy(fat->fat_buffer + offset % fat->bytes_per_sec, item, sizeof(diritem_t));
+
+    return bwrite_sector(fat, sector);
+
+}
+
 
 
 /**
@@ -173,6 +207,28 @@ int cluster_get_next (fat_t * fat, cluster_t curr) {
 
     return *(cluster_t *)(fat->fat_buffer + off_sector);
 }
+
+
+/**
+ * 缺省初始化driitem
+ */
+int diritem_init (diritem_t * item, uint8_t attr, const char * name) {
+    to_sfn((char *)item->DIR_Name, name);
+    item->DIR_FstClusHI = (uint16_t)(FAT_CLUSTER_INVALID >> 16);
+    item->DIR_FstClusL0 = (uint16_t)(FAT_CLUSTER_INVALID & 0xFFFF);
+    item->DIR_FileSize = 0;
+    item->DIR_Attr = attr;
+    item->DIR_NTRes = 0;
+
+    // 时间写固定值，简单方便   目前还不支持从电脑上获取时间
+    item->DIR_CrtTime = 0;
+    item->DIR_CrtDate = 0;
+    item->DIR_WrtDate = 0;      
+    item->DIR_WrtTime = 0;
+    item->DIR_LastAccDate = 0;
+    return 0;
+}
+
 
 /**
  * @brief 移动文件指针
@@ -308,10 +364,22 @@ int fatfs_open (struct _fs_t * fs, const char * path, file_t * file) {
     if (file_item) {
         read_from_diritem(fat, file, file_item, p_index);
         return 0;
+    } else if ((file->mode & O_CREAT) && (p_index >= 0)) {
+        // 创建目标文件
+        diritem_t item;
+        diritem_init(&item, 0, path);       // 0是属性，代表一个普通文件
+
+        int err = write_dir_entry(fat, &item, p_index);
+        if (err < 0) {
+            log_printf("create file failed");
+            return -1;
+        }
+
+        read_from_diritem(fat, file, file_item, p_index);
     }
 
 
-    return -1;
+    return 0;
 }
 
 int fatfs_read (char * buf, int size, file_t * file) {
