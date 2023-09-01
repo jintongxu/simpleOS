@@ -9,10 +9,12 @@
 // bound = 0x0FFF
 // ~(bound - 1) = 0xFFFF1000
 // 0x1010 & 0xFFFF1000 = 0x1000
+// 向下对齐到界边界
 static inline uint32_t down2 (uint32_t size, uint32_t bound) {
     return size & ~(bound - 1);
 }
 
+// 向上对齐到页边界
 static inline uint32_t up2 (uint32_t size, uint32_t bound) {
     return (size + bound - 1) & ~(bound - 1);
 }

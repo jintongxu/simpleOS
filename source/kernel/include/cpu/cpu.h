@@ -1,3 +1,6 @@
+/**
+ * 与x86的体系结构相关的接口及参数
+ */
 #ifndef CPU_H
 #define CPU_H
 
@@ -9,6 +12,10 @@
 
 // GDT表的结构体
 #pragma pack(1)
+
+/**
+ * GDT描述符
+ */
 typedef struct _segment_desc_t {
     uint16_t limit15_0;
     uint16_t base15_0;
@@ -20,6 +27,9 @@ typedef struct _segment_desc_t {
 }segment_desc_t;
 
 
+/*
+ * 调用门描述符
+ */
 typedef struct _gate_desc_t {
     uint16_t offset15_0;
     uint16_t selector;
@@ -27,12 +37,15 @@ typedef struct _gate_desc_t {
     uint16_t offset31_16;
 }gate_desc_t;
 
-#define  GATE_TYPE_INT         (0xE << 8)
-#define GATE_TYPE_SYSCALL       (0xC << 8)
-#define  GATE_P_PRESENT        (1 << 15)     
-#define  GATE_DPL0              (0 << 13)
-#define  GATE_DPL3              (3 << 13)
+#define  GATE_TYPE_INT         (0xE << 8)       // 中断32位门描述符
+#define GATE_TYPE_SYSCALL       (0xC << 8)      // 调用门
+#define  GATE_P_PRESENT        (1 << 15)        // 是否存在
+#define  GATE_DPL0              (0 << 13)       // 特权级0，最高特权级
+#define  GATE_DPL3              (3 << 13)       // 特权级3，最低权限
 
+/**
+ * tss描述符
+ */
 typedef struct _tss_t {
     uint32_t pre_link;  // 没用到
     uint32_t esp0, ss0, esp1, ss1, esp2, ss2;
@@ -46,24 +59,24 @@ typedef struct _tss_t {
 
 #pragma pack()
 
-#define SEG_G       (1 << 15)
-#define SEG_D       (1 << 14)
-#define SEG_P_PRESENT   (1 << 7)
+#define SEG_G       (1 << 15)               // 设置段界限的单位，1-4KB，0-字节
+#define SEG_D       (1 << 14)               // 控制是否是32位、16位的代码或数据段
+#define SEG_P_PRESENT   (1 << 7)            // 段是否存在
 
-#define SEG_DPL0    (0 << 5)
-#define SEG_DPL3    (3 << 5)
+#define SEG_DPL0    (0 << 5)                // 特权级0，最高特权级
+#define SEG_DPL3    (3 << 5)                // 特权级3，最低权限
 
 #define SEG_CPL0    (0 << 0)
 #define SEG_CPL3    (3 << 0)
 
-#define SEG_S_SYSTEM        (0 << 4)
-#define SEG_S_NORMAL        (1 << 4)
+#define SEG_S_SYSTEM        (0 << 4)        // 是否是系统段，如调用门或者中断            
+#define SEG_S_NORMAL        (1 << 4)        // 普通的代码段或数据段
 
-#define SEG_TYPE_CODE       (1 << 3)
-#define SEG_TYPE_DATA       (0 << 3)
-#define SEG_TYPE_TSS        (9 << 0)
+#define SEG_TYPE_CODE       (1 << 3)        // 指定其为代码段
+#define SEG_TYPE_DATA       (0 << 3)        // 数据段
+#define SEG_TYPE_TSS        (9 << 0)        // 32位TSS
 
-#define SEG_TYPE_RW         (1 << 1)
+#define SEG_TYPE_RW         (1 << 1)        // 是否可写可读，不设置为只读
 
 void cpu_init (void);
 void segment_desc_set (int selector, uint32_t base, uint32_t limit, uint16_t attr);

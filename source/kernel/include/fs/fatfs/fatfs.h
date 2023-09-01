@@ -1,7 +1,10 @@
+/**
+ * FAT文件系统结构
+ */
 #ifndef FATFS_H
 #define FATFS_H
 
-#pragma pack(1)
+#pragma pack(1)             // 千万记得加这个  
 
 #include "ipc/mutex.h"
 
@@ -70,7 +73,9 @@ typedef struct _dbr_t {
 #pragma pack()
 
 
-// fat结构
+/**
+ * fat结构
+ */
 typedef struct _fat_t {
     // fat文件系统本身信息
     uint32_t tbl_start;                     // FAT表起始扇区号

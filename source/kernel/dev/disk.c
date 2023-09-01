@@ -1,3 +1,8 @@
+/**
+ * 磁盘驱动
+ * 磁盘依次从sda,sdb,sdc开始编号，分区则从0开始递增
+ * 其中0对应的分区信息为整个磁盘的信息
+ */
 #include "dev/disk.h"
 #include "tools/log.h"
 #include "tools/klib.h"
@@ -12,7 +17,9 @@ static disk_t disk_buf[DISK_CNT];   // 通道结构
 static int task_on_op;
 
 
-// 发送ata命令，支持多达16位的扇区，对我们目前的程序来书够用了。
+/**
+ * 发送ata命令，支持多达16位的扇区，对我们目前的程序来书够用了。
+ */
 static void disk_send_cmd (disk_t * disk, uint32_t start_sector, uint32_t sector_count, int cmd) {
     outb(DISK_DRIVE(disk), DISK_DRIVE_BASE | disk->drive);		// 使用LBA寻址，并设置驱动器
 
@@ -31,7 +38,9 @@ static void disk_send_cmd (disk_t * disk, uint32_t start_sector, uint32_t sector
 }
 
 
-// 读取ATA数据端口
+/**
+ * 读取ATA数据端口
+ */
 static void disk_read_data (disk_t * disk, void * buf, int size) {
     uint16_t * c = (uint16_t *)buf;
 
@@ -43,7 +52,9 @@ static void disk_read_data (disk_t * disk, void * buf, int size) {
 }
 
 
-// 读取ATA数据端口
+/**
+ * 读取ATA数据端口
+ */
 static void disk_write_data (disk_t * disk, void * buf, int size) {
     uint16_t * c = (uint16_t *)buf;
 
@@ -53,7 +64,9 @@ static void disk_write_data (disk_t * disk, void * buf, int size) {
 	
 }
 
-// 等待磁盘有数据到达
+/**
+ * @brief 等待磁盘有数据到达
+ */
 static int disk_wait_data (disk_t * disk) {
     uint8_t status;
 
@@ -71,7 +84,9 @@ static int disk_wait_data (disk_t * disk) {
 }
 
 
-// 打印磁盘信息
+/**
+ * @brief 打印磁盘信息
+ */
 static void print_disk_info (disk_t * disk) {
     log_printf("%s", disk->name);
     log_printf("  port base: %x", disk->port_base);
@@ -89,9 +104,9 @@ static void print_disk_info (disk_t * disk) {
     }
 }
 
- /*
-    获取指定序号的分区信息
-    注意，该操作依赖物理分区分配，如果设备的分区结构有变化，则序号也会改变，得到的结果不同
+/**
+ * 获取指定序号的分区信息
+ * 注意，该操作依赖物理分区分配，如果设备的分区结构有变化，则序号也会改变，得到的结果不同
  */
 static int detect_part_info (disk_t * disk) {
     mbr_t mbr;
@@ -126,7 +141,9 @@ static int detect_part_info (disk_t * disk) {
 }
 
 
-// 检测磁盘相关的信息
+/**
+ * @brief 检测磁盘相关的信息
+ */
 static int identify_disk (disk_t * disk) {
     disk_send_cmd(disk, 0, 0, DISK_CMD_IDENTIFY);
 
@@ -168,26 +185,32 @@ static int identify_disk (disk_t * disk) {
 }
 
 
-// 磁盘初始化及检测
-// 以下只是将相关磁盘相关的信息给读取到内存中
+/**
+ * @brief 磁盘初始化及检测
+ * 以下只是将相关磁盘相关的信息给读取到内存中
+ */
 void disk_init (void) {
     log_printf("Check disk...");
 
-
+    // 清空所有disk，以免数据错乱。不过引导程序应该有清0的，这里为安全再清一遍
     kernel_memset(disk_buf, 0, sizeof(disk_buf));
 
+    // 信号量和锁
     mutex_init(&mutex);
-    sem_init(&op_sem, 0);
+    sem_init(&op_sem, 0);       // 没有操作完成
+
+    // 检测各个硬盘, 读取硬件是否存在，有其相关信息
     for (int i = 0; i < DISK_PER_CHANNEL; i++) {
         disk_t * disk = disk_buf + i;
 
+        // 先初始化各字段
         kernel_sprintf(disk->name, "sd%c", i + 'a');    // 磁盘命名
         disk->drive = (i == 0) ? DISK_MASTER :DISK_SLAVE;
         disk->port_base = IOBASE_PRIMARY;
         disk->mutex = &mutex;
         disk->op_sem = &op_sem;
 
-
+        // 识别磁盘，有错不处理，直接跳过
         int err = identify_disk(disk);
         if (err == 0) {
             print_disk_info (disk);
@@ -198,7 +221,9 @@ void disk_init (void) {
 }
 
 
-// 打开磁盘设备
+/**
+ * @brief 打开磁盘设备
+ */
 int disk_open (device_t * dev) {
     // 0xa0 -- a 磁盘编号a,b,c  0----分区号  0是整个分区，1是第一个
     int disk_idx = (dev->minor >> 4) - 0xa;     // 磁盘号
@@ -223,15 +248,17 @@ int disk_open (device_t * dev) {
         return -1;
     }
 
+    // 磁盘存在，建立关联
     dev->data = part_info;
-
     irq_install(IRQ14_HARDDISK_PRIMARY, (irq_handler_t)exception_handler_ide_primary);
     irq_enable(IRQ14_HARDDISK_PRIMARY);
 
     return 0;
 }
 
-// 读磁盘
+/**
+ * @brief 读磁盘
+ */
 int disk_read (device_t * dev, int addr, char * buf, int size) {
     // 取分区信息
     partinfo_t * part_info = (partinfo_t *)dev->data;
@@ -272,7 +299,9 @@ int disk_read (device_t * dev, int addr, char * buf, int size) {
     return cnt;
 }
 
-// 写扇区
+/**
+ * @brief 写扇区
+ */
 int disk_write (device_t * dev, int addr, char * buf, int size) {
     // 取分区信息
     partinfo_t * part_info = (partinfo_t *)dev->data;
@@ -312,18 +341,26 @@ int disk_write (device_t * dev, int addr, char * buf, int size) {
     return cnt;
 }
 
-// 向磁盘发命令
+/**
+ * @brief 向磁盘发命令
+ *
+ */
 int disk_control (device_t * dev, int cmd, int arg0, int arg1) {
     return -1;
 }
 
-// 关闭磁盘
+/**
+ * @brief 关闭磁盘
+ *
+ */
 void disk_close (device_t * dev) {
 
 }
 
 
-// 磁盘主通道中断处理
+/**
+ * @brief 磁盘主通道中断处理
+ */
 void do_handler_ide_primary (exception_frame_t * fram) {
     pic_send_eoi(IRQ14_HARDDISK_PRIMARY);
 

@@ -1,15 +1,20 @@
+/**
+ * 设备接口
+ */
 #ifndef DEV_H
 #define DEV_H
 
-#define DEV_NAME_SIZE      32
+#define DEV_NAME_SIZE      32            // 设备名称长度
 
 enum {
-    DEV_UNKNOWN = 0,
-    DEV_TTY,
-    DEV_DISK,
+    DEV_UNKNOWN = 0,        // 未知类型
+    DEV_TTY,                // TTY设备
+    DEV_DISK,               // 磁盘设备
 };
 
-// 设备驱动接口
+/**
+ * @brief 设备驱动接口
+ */
 struct _dev_desc_t;
 typedef struct _device_t {
     struct _dev_desc_t * desc;  // 设备特性描述符
@@ -21,7 +26,9 @@ typedef struct _device_t {
 
 }device_t;
 
-// 设备描述结构
+/**
+ * @brief 设备描述结构
+ */
 typedef struct _dev_desc_t {
     char name[DEV_NAME_SIZE];   // 设备名称
     int major;                  // 主设备号

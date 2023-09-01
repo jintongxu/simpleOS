@@ -1,3 +1,7 @@
+/**
+ * 系统调用接口
+ *
+ */
 #ifndef LIB_SYSCALL_H
 #define LIB_SYSCALL_H
 

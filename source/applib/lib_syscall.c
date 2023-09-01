@@ -1,7 +1,15 @@
+/**
+ * 系统调用接口
+ *
+ */
 #include "lib_syscall.h"
 #include <stdlib.h>
 #include <string.h>
 
+
+/**
+ * 执行系统调用
+ */
 int sys_call (syscall_args_t * args) {
     // 使用特权级0,其实比3高即可，偏移量不需要，填0即可。类似于far_jump函数的实现
 	uint32_t addr[] = {0, SELECTOR_SYSCALL | 0};
@@ -132,6 +140,9 @@ int lseek (int file, int ptr, int dir) {
 }
 
 
+/**
+ * 判断文件描述符与tty关联
+ */
 int isatty (int file) {
     syscall_args_t args;
     args.id = SYS_isatty;
@@ -140,6 +151,9 @@ int isatty (int file) {
     return sys_call(&args);
 }
 
+/**
+ * 获取文件的状态
+ */
 int fstat (int file, struct stat * st) {
     syscall_args_t args;
     args.id = SYS_fstat;

@@ -1,11 +1,17 @@
+/**
+ * 位图数据结构
+ */
 #ifndef BITMAP_H
 #define BITPAM_H
 
 #include "comm/types.h"
 
+/**
+ * @brief 位图数据结构
+ */
 typedef struct _bitmap_t {
-    int bit_count;
-    uint8_t * bits;
+    int bit_count;      // 位的数据
+    uint8_t * bits;     // 位空间
 
 }bitmap_t;
 

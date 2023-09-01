@@ -17,7 +17,10 @@
         "kbd.h": "c",
         "irq.h": "c",
         "tty.h": "c",
-        "boot_info.h": "c"
+        "boot_info.h": "c",
+        "bitmap.h": "c",
+        "memory.h": "c",
+        "sem.h": "c"
     },
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "aiXcoder.showTrayIcon": true,

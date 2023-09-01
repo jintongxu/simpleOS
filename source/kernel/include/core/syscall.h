@@ -1,3 +1,6 @@
+/**
+ * 系统调用实现
+ */
 #ifndef SYSCALL_H
 #define SYSCALL_H
 
@@ -29,8 +32,12 @@
 
 #define   SYS_printmsg  100
 
-#define SYSCALL_PARAM_COUNT         5
+#define SYSCALL_PARAM_COUNT         5               // 系统调用最大支持的参数
 
+
+/**
+ * 系统调用的栈信息
+ */
 typedef struct _syscall_frame_t {
     int eflags;
     int gs, fs, es, ds;
@@ -40,6 +47,6 @@ typedef struct _syscall_frame_t {
     int esp, ss;
 }syscall_frame_t;
 
-void exception_handler_syscall (void);
+void exception_handler_syscall (void);      // syscall处理
 
 #endif

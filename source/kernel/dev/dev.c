@@ -2,7 +2,7 @@
 #include "cpu/irq.h"
 #include "tools/klib.h"
 
-#define DEV_TABLE_SIZE      128
+#define DEV_TABLE_SIZE      128         // 支持的设备数量
 
 extern dev_desc_t dev_tty_desc;
 extern dev_desc_t dev_disk_desc;
@@ -31,7 +31,9 @@ static int is_devid_bad (int dev_id) {
 }
 
 
-// 打开指定的设备
+/**
+ * @brief 打开指定的设备
+ */
 int dev_open (int major, int minor, void * data) {
     irq_state_t state = irq_enter_protection();
 
@@ -80,7 +82,9 @@ int dev_open (int major, int minor, void * data) {
 }
 
 
-// 读取指定字节的数据
+/**
+ * @brief 读取指定字节的数据
+ */
 int dev_read (int dev_id, int addr, char * buf, int size) {
     // 检查 dev_id 是否合法
     if (is_devid_bad(dev_id)) {
@@ -91,7 +95,9 @@ int dev_read (int dev_id, int addr, char * buf, int size) {
     return dev->desc->read(dev, addr, buf, size);
 }
 
-// 写指定字节的数据
+/**
+ * @brief 写指定字节的数据
+ */
 int dev_write (int dev_id, int addr, char * buf, int size) {
     // 检查 dev_id 是否合法
     if (is_devid_bad(dev_id)) {
@@ -102,7 +108,9 @@ int dev_write (int dev_id, int addr, char * buf, int size) {
     return dev->desc->write(dev, addr, buf, size);
 }
 
-// 发送控制命令
+/**
+ * @brief 发送控制命令
+ */
 int dev_control (int dev_id, int cmd, int arg0, int arg1) {
     // 检查 dev_id 是否合法
     if (is_devid_bad(dev_id)) {
@@ -113,7 +121,9 @@ int dev_control (int dev_id, int cmd, int arg0, int arg1) {
     return dev->desc->control(dev, cmd,arg0, arg1);
 }
 
-// 关闭设备
+/**
+ * @brief 关闭设备
+ */
 void dev_close (int dev_id) {
     // 检查 dev_id 是否合法
     if (is_devid_bad(dev_id)) {

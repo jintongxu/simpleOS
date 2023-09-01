@@ -1,3 +1,6 @@
+/**
+ * 磁盘驱动
+ */
 #ifndef DISK_H
 #define DISK_H
 
@@ -12,7 +15,8 @@
 #define DISK_PER_CHANNEL            2   // 每通道磁盘数量
 #define MBR_PRIMARY_PART_NR     4       // 4个分区表
 
-// 只考虑支持主总线primary bus
+// https://wiki.osdev.org/ATA_PIO_Mode#IDENTIFY_command
+// 只考虑支持主总结primary bus
 #define IOBASE_PRIMARY              0x1F0
 #define	DISK_DATA(disk)				(disk->port_base + 0)		// 数据寄存器
 #define	DISK_ERROR(disk)			(disk->port_base + 1)		// 错误寄存器
@@ -30,7 +34,7 @@
 #define DISK_STATUS_DF              (1 << 5)    // 驱动错误
 #define DISK_STATUS_BUSY            (1 << 7)    // 正忙
 
-#define DISK_DRIVE_BASE             0xE0
+#define DISK_DRIVE_BASE             0xE0        // 驱动器号基础值:0xA0 + LBA
 
 // ATA命令
 #define DISK_CMD_IDENTIFY   0xEC        // IDENTIFY命令
@@ -39,7 +43,11 @@
 
 
 #pragma pack(1)
-// MBR的分区表项类型
+
+
+/**
+ * MBR的分区表项类型
+ */
 typedef struct _part_item_t {
     uint8_t boot_active;               // 分区是否活动
 	uint8_t start_header;              // 起始header
@@ -54,19 +62,24 @@ typedef struct _part_item_t {
 }part_item_t;
 
 
-// MBR区域描述结构
+/**
+ * MBR区域描述结构
+ */
 typedef struct _mbr_t {
-    uint8_t code[446];
+    uint8_t code[446];                              // 引导代码区
     part_item_t part_item[MBR_PRIMARY_PART_NR];
-    uint8_t boot_sig[2];
+    uint8_t boot_sig[2];                            // 引导标志    
 }mbr_t;
 #pragma pack()
 
-// 分区类型
+/**
+ * @brief 分区类型
+ */
 typedef struct _partinfo_t {
-    char name[PART_NAME_SIZE];
-     struct _disk_t * disk;      // 所属的磁盘
+    char name[PART_NAME_SIZE];   // 分区名称          
+    struct _disk_t * disk;      // 所属的磁盘
 
+    // https://www.win.tue.nl/~aeb/partitions/partition_types-1.html
     enum {
         FS_INVALID = 0x00,  // 无效文件系统类型
         FS_FAT16_0 = 0x6,   // FAT16文件系统类型
@@ -77,7 +90,9 @@ typedef struct _partinfo_t {
     int total_sector;   // 总扇区
 }partinfo_t;
 
-
+/**
+ * @brief 磁盘结构
+ */
 typedef struct _disk_t {
     char name[DISK_NAME_SIZE];  // 磁盘名称
 
@@ -93,8 +108,8 @@ typedef struct _disk_t {
     partinfo_t partinfo[DISK_PRIMARY_PART_CNT];   // 分区表, 包含一个描述整个磁盘的假分区信息
 
     
-    mutex_t * mutex;
-    sem_t * op_sem;
+    mutex_t * mutex;        // 访问该通知的互斥信号量
+    sem_t * op_sem;         // 读写命令操作的同步信号量
 }disk_t;
 
 

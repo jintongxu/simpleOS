@@ -1,3 +1,6 @@
+/**
+ * 汇编指令的封装
+ */
 #ifndef CPU_INSTR_H
 #define CPU_INSTR_H
 

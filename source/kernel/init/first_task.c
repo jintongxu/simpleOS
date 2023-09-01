@@ -1,3 +1,6 @@
+/**
+ * 内核初始化以及测试代码
+ */
 #include "core/task.h"
 #include "tools/log.h"
 #include "applib/lib_syscall.h"
@@ -33,6 +36,7 @@ int first_task_main (void) {
             print_msg("create shell failed.", 0);
             break;
         } else if (pid == 0) {
+            // 子进程
             char tty_num[] = "/dev/tty?";
             tty_num[sizeof(tty_num) - 2] = i + '0';
             char * argv[] = {tty_num, (char *)0, NULL};
@@ -48,6 +52,7 @@ int first_task_main (void) {
     for(;;) {
         // print_msg("task id=%d", pid);
         // sys_sleep(1000);
+        // 不断收集孤儿进程
         int status;
         wait(&status);
 

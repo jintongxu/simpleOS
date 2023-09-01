@@ -1,14 +1,19 @@
+/**
+ * 系统调用实现
+ */
 #include "core/syscall.h"
 #include "core/task.h"
 #include "tools/log.h"
 #include "fs/fs.h"
 
+// 系统调用处理函数类型
 typedef int (*syscall_handler_t)(uint32_t arg0, uint32_t arg1, uint32_t arg2, uint32_t arg3);
 
 void sys_print_msg (char * fmt, int arg) {
     log_printf(fmt, arg);
 }
 
+// 系统调用表
 static const syscall_handler_t sys_table[] = {
 	[SYS_sleep] = (syscall_handler_t)sys_sleep,
     [SYS_getpid] = (syscall_handler_t)sys_getpid,
@@ -38,6 +43,9 @@ static const syscall_handler_t sys_table[] = {
 	
 };
 
+/**
+ * 处理系统调用。该函数由系统调用函数调用
+ */
 void do_handler_syscall (syscall_frame_t * frame) {
 	// 超出边界，返回错误
     if (frame->func_id < sizeof(sys_table) / sizeof(sys_table[0])) {

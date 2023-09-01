@@ -1,3 +1,6 @@
+/**
+ * 文件系统相关接口的实现
+ */
 #ifndef FS_H
 #define FS_H
 
@@ -17,7 +20,9 @@ struct stat;
 
 struct _fs_t;
 
-// 文件系统操作接口
+/**
+ * @brief 文件系统操作接口
+ */
 typedef struct _fs_op_t {
     int (*mount)(struct _fs_t * fs, int major, int minor);      // 挂载文件系统
     void (*unmount)(struct _fs_t * fs);      // 取消文件系统挂载
@@ -37,6 +42,7 @@ typedef struct _fs_op_t {
 
 #define FS_MOUNTP_SIZE      512
 
+// 文件系统类型
 typedef enum _fs_type_t {
     FS_FAT16,
     FS_DEVFS,
@@ -52,9 +58,11 @@ typedef struct _fs_t {
     list_node_t node;       // 下一结点
     mutex_t * mutex;        // 文件系统操作互斥信号量
 
+    // 目前暂时这样设计，可能看起来不好，但是是最简单的方法
+    // 这样就不用考虑内存分配的问题
     union
     {
-        fat_t fat_data;
+        fat_t fat_data;     // 文件系统相关数据             
     };
 
 }fs_t;

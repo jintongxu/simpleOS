@@ -1,3 +1,7 @@
+/**
+ * 终端tty
+ * 目前只考虑处理cooked模式的处理
+ */
 #include "dev/tty.h"
 #include "dev/dev.h"
 #include "tools/log.h"
@@ -8,6 +12,10 @@
 static tty_t  tty_devs[TTY_NR];
 static int curr_tty = 0;
 
+
+/**
+ * @brief 判断tty是否有效
+ */
 static tty_t * get_tty (device_t * dev) {
     int tty = dev->minor;
     if ((tty < 0) || (tty >= TTY_NR) || (!dev->open_count)) {
@@ -19,7 +27,9 @@ static tty_t * get_tty (device_t * dev) {
 }
 
 
-// FIFO初始化
+/**
+ * @brief FIFO初始化
+ */
 void tty_fifo_init (tty_fifo_t * fifo, char * buf, int size) {
     fifo->buf = buf;
     fifo->count = 0;
@@ -27,7 +37,9 @@ void tty_fifo_init (tty_fifo_t * fifo, char * buf, int size) {
     fifo->read = fifo->write = 0;
 }
 
-// 往buf中写一字节数据
+/**
+ * @brief 往buf中写一字节数据
+ */
 int tty_fifo_put (tty_fifo_t *fifo, char c) {
     irq_state_t state = irq_enter_protection();
     if (fifo->count >= fifo->size) {
@@ -48,7 +60,9 @@ int tty_fifo_put (tty_fifo_t *fifo, char c) {
 
 }
 
-// 从buf中读取
+/**
+ * @brief 取一字节数据 从 buf 中读取
+ */
 int tty_fifo_get (tty_fifo_t *fifo, char * c) {
     irq_state_t state = irq_enter_protection();
     if (fifo->count <= 0) {
@@ -67,6 +81,10 @@ int tty_fifo_get (tty_fifo_t *fifo, char * c) {
     return 0;
 }
 
+
+/**
+ * @brief 打开tty设备
+ */
 int tty_open (device_t * dev) {
     int idx = dev->minor;
     if ((idx < 0) || (idx >= TTY_NR)) {
@@ -90,6 +108,10 @@ int tty_open (device_t * dev) {
     return 0;
 }
 
+
+/**
+ * @brief 向tty写入数据
+ */
 int tty_write (device_t * dev, int addr, char * buf, int size) {
     if (size < 0) {
         return -1;
@@ -101,9 +123,12 @@ int tty_write (device_t * dev, int addr, char * buf, int size) {
     }
 
     int len = 0;
+
+    // 先将所有数据写入缓存中
     while(size) {
         char c = *buf++;
 
+        // 如果遇到\n，根据配置决定是否转换成\r\n
         if ((c == '\n') && (tty->oflags & TTY_OCRLF)) {
             // 将回车转换为换行加回车，在汇编中 \n 是当前位置的下一行，并不是下一行的开头。
             sem_wait(&tty->osem);
@@ -113,6 +138,7 @@ int tty_write (device_t * dev, int addr, char * buf, int size) {
             }
         }
 
+        // 写入当前字符
         sem_wait(&tty->osem);
         int err = tty_fifo_put(&tty->ofifo, c);
         if (err < 0) {
@@ -122,6 +148,7 @@ int tty_write (device_t * dev, int addr, char * buf, int size) {
         len++;
         size--;
 
+        // 启动输出, 这里是直接由console直接输出，无需中断
         console_write(tty);
 
     }
@@ -129,6 +156,10 @@ int tty_write (device_t * dev, int addr, char * buf, int size) {
     return len;
 }
 
+
+/**
+ * @brief 从tty读取数据
+ */
 int tty_read (device_t * dev, int addr, char * buf, int size) {
     if (size < 0) {
         return -1;
@@ -188,7 +219,9 @@ int tty_read (device_t * dev, int addr, char * buf, int size) {
 }
 
 
-
+/**
+ * @brief 向tty设备发送命令
+ */
 int tty_control (device_t * dev, int cmd, int arg0, int arg1) {
     tty_t * tty = get_tty(dev);
     switch (cmd) 
@@ -207,24 +240,34 @@ int tty_control (device_t * dev, int cmd, int arg0, int arg1) {
     return 0;
 }
 
+/**
+ * @brief 关闭tty设备
+ */
 void tty_close (device_t * dev) {
 
 }
 
+/**
+ * @brief 输入tty字符
+ */
 void tty_in(char ch) {
     tty_t * tty = tty_devs + curr_tty;
 
+    // 辅助队列要有空闲空间可代写入
     if (sem_count(&tty->isem) >= TTY_IBUF_SIZE) {
         // 说明缓存数据已满
         return;
     }
 
+    // 写入辅助队列，通知数据到达
     tty_fifo_put(&tty->ififo, ch);
     sem_notify(&tty->isem);
 
 }
 
-// 选择tty
+/**
+ * @brief 选择tty
+ */
 void tty_select (int tty) {
     if (tty != curr_tty) {
         console_select(tty);

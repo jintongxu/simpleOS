@@ -1,12 +1,17 @@
+/**
+ * 文件管理
+ */
 #ifndef FILE_H
 #define FILE_H
 
 #include "comm/types.h"
 
-#define FILE_NAME_SIZE      32
-#define FILE_TABLE_SIZE     2048
+#define FILE_NAME_SIZE      32               // 文件名称大小   
+#define FILE_TABLE_SIZE     2048             // 可打开的文件数量
 
-// 文件类型
+/**
+ * 文件类型
+ */
 typedef enum _file_type_t {
     FILE_UNKNOWN = 0,
     FILE_TTY,
@@ -15,7 +20,11 @@ typedef enum _file_type_t {
 }file_type_t;
 
 struct _fs_t;
-// 文件描述符
+
+
+/**
+ * 文件描述符
+ */
 typedef struct  _file_t {
     char file_name[FILE_NAME_SIZE];     // 文件名
     file_type_t type;           // 文件类型
@@ -28,7 +37,7 @@ typedef struct  _file_t {
     int sblk;           // 内部起始块位置 起始簇
     int cblk;           // 当前块 当前簇
     int p_index;        // 在父目录中的索引
-    struct _fs_t * fs;
+    struct _fs_t * fs;  // 所在的文件系统
 }file_t;
 
 

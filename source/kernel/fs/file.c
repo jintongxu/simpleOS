@@ -1,3 +1,6 @@
+/**
+ * 文件系统相关接口的实现
+ */
 #include "fs/file.h"
 #include "ipc/mutex.h"
 #include "tools/klib.h"
@@ -5,7 +8,9 @@
 static file_t file_table[FILE_TABLE_SIZE];
 static mutex_t file_alloc_mutex;
 
-// 分配一个文件描述符
+/**
+ * @brief 分配一个文件描述符
+ */
 file_t * file_alloc (void) {
     file_t * file = (file_t *)0;
 
@@ -25,7 +30,9 @@ file_t * file_alloc (void) {
     return file;
 }
 
-// 释放文件描述符
+/**
+ * @brief 释放文件描述符
+ */
 void file_free (file_t * file) {
     mutex_lock(&file_alloc_mutex);
 
@@ -37,14 +44,18 @@ void file_free (file_t * file) {
 }
 
 
-// 增加file的引用计数
+/**
+ * @brief 增加file的引用计数
+ */
 void file_inc_ref (file_t * file) {
     mutex_lock(&file_alloc_mutex);
 	file->ref++;
     mutex_unlock(&file_alloc_mutex);
 }
 
-
+/**
+ * @brief 文件表初始化
+ */
 void file_table_init (void) {
     // 文件描述符表初始化
 	kernel_memset(&file_table, 0, sizeof(file_table));

@@ -1,3 +1,6 @@
+/**
+ * 中断处理
+ */
 #include "cpu/irq.h"
 #include "cpu/cpu.h"
 #include "comm/cpu_instr.h"
@@ -12,6 +15,7 @@ void exception_handler_unknown (void);
 static gate_desc_t idt_table[IDT_TABLE_NR];
 
 static void dump_core_regs (exception_frame_t * frame) {
+	// 打印CPU寄存器相关内容
 	uint32_t ss, esp;
 	if (frame->cs & 0x3) {
 		ss = frame->ss3;
@@ -198,22 +202,40 @@ void do_handler_virtual_exception(exception_frame_t * frame) {
 
 
 static void init_pic (void) {
+	 // 边缘触发，级联，需要配置icw4, 8086模式
 	outb(PIC0_ICW1, PIC_ICW1_ALWAYS_1 | PIC_ICW1_ICW4);
+
+	// 对应的中断号起始序号0x20
 	outb(PIC0_ICW2, IRQ_PIC_START);
+
+	// 主片IRQ2有从片
 	outb(PIC0_ICW3, 1 << 2);
+
+	// 普通全嵌套、非缓冲、非自动结束、8086模式
 	outb(PIC0_ICW4, PIC_ICW4_8086);
 
-
+	// 边缘触发，级联，需要配置icw4, 8086模式
 	outb(PIC1_ICW1, PIC_ICW1_ALWAYS_1 | PIC_ICW1_ICW4);
+
+	// 起始中断序号，要加上8
 	outb(PIC1_ICW2, IRQ_PIC_START + 8);
+
+	// 没有从片，连接到主片的IRQ2上
 	outb(PIC1_ICW3, 2);
+
+	// 普通全嵌套、非缓冲、非自动结束、8086模式
 	outb(PIC1_ICW4, PIC_ICW4_8086);
 
+	// 禁止所有中断, 允许从PIC1传来的中断
 	outb(PIC0_IMR, 0xFF & ~(1 << 2));  // 不禁止来自第二芯片的中断信号
 	outb(PIC1_IMR, 0xff); 
 
 }
 
+
+/**
+ * @brief 中断和异常初始化
+ */
 void irq_init (void) {
     for (uint32_t i = 0; i < IDT_TABLE_NR; i ++ ) {
         gate_desc_set(idt_table + i, KERNEL_SELECTOR_CS, (uint32_t)exception_handler_unknown, 
@@ -244,9 +266,14 @@ void irq_init (void) {
 
     lidt((uint32_t)idt_table, sizeof(idt_table));
 
+	// 初始化pic 控制器
 	init_pic();
 }
 
+
+/**
+ * @brief 安装中断或异常处理程序
+ */
 int irq_install (int irq_num, irq_handler_t handler) {
     if (irq_num >= IDT_TABLE_NR) {
         return -1;
@@ -305,6 +332,8 @@ void irq_enable_global (void) {
 
 void pic_send_eoi (int irq_num) {
 	irq_num -= IRQ_PIC_START;
+
+	// 从片也可能需要发送EOI
 	if (irq_num >= 8) {
 		outb(PIC1_OCW2, PIC_OCW2_EOI);
 	}
@@ -313,14 +342,18 @@ void pic_send_eoi (int irq_num) {
 }
 
 
-// 进入临界区保护
+/**
+ * @brief 进入中断保护
+ */
 irq_state_t irq_enter_protection (void) {
 	irq_state_t state = read_eflags();
 	irq_disable_global();
 	return state;
 }
 
-// 退出临界区保护
+/**
+ * @brief 退出中断保护
+ */
 void irq_leave_protection (irq_state_t state) {
 	write_eflags(state);
 }

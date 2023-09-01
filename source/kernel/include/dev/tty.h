@@ -1,3 +1,6 @@
+/**
+ * 终端tty
+ */
 #ifndef TTY_H
 #define TTY_H
 
@@ -21,18 +24,21 @@ typedef struct _tty_fifo_t {
 #define TTY_INCLR   (1 << 0)        // 将\n转成\r\n
 #define TTY_IECHO   (1 << 1)        // 是否回显
 
-// tty设备
+
+/**
+ * tty设备
+ */
 typedef struct _tty_t {
     char obuf[TTY_OBUF_SIZE];
-    tty_fifo_t ofifo;
-    sem_t osem;     // 输出信号量
+    tty_fifo_t ofifo;               // 输出队列
+    sem_t osem;                     // 输出信号量
     char ibuf[TTY_IBUF_SIZE];
-    tty_fifo_t ififo;
+    tty_fifo_t ififo;               // 输入处理后的队列
     sem_t isem;
 
-    int iflags;
-    int oflags;
-    int console_idx;
+    int iflags;                     // 输入标志
+    int oflags;                     // 输出标志
+    int console_idx;                // 控制台索引号
 }tty_t;
 
 int tty_fifo_put (tty_fifo_t *fifo, char c);

@@ -1,9 +1,14 @@
+/**
+ * 一些字符串的处理函数
+ */
 #include "comm/types.h"
 #include "tools/klib.h"
 #include "tools/log.h"
 #include "comm/cpu_instr.h"
 
-// 计算参数个数
+/**
+ * @brief 计算字符串的数量
+ */
 int strings_count (char ** start) {
     int count = 0;
 
@@ -19,13 +24,18 @@ int strings_count (char ** start) {
 
 // 获取路径中文件名
 // 例如 /a/c/c/d 取d
+/**
+ * @brief 从路径中解释文件名
+ */
 char * get_file_name (char * name) {
     char * s = name;
 
+    // 定位到结束符
     while(*s != '\0') {
         s ++;
     }
 
+    // 反向搜索，直到找到反斜杆或者到文件开头
     while((*s != '/') && (*s != '\\') && (s >= name)) {
         s--;
     }
@@ -68,7 +78,10 @@ void kernel_strncpy(char * dest, const char * src, int size) {
 
 }
 
-// 字符串比较
+/**
+ * 比较两个字符串，最多比较size个字符
+ * 如果某一字符串提前比较完成，也算相同
+ */
 int kernel_strncmp(const char * s1, const char * s2, int size) {
     if (!s1 || !s2) {
         return -1;

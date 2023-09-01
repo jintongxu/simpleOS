@@ -1,19 +1,34 @@
+/**
+ * 计数信号量
+ */
 #include "ipc/sem.h"
 #include "core/task.h"
 #include "cpu/irq.h"
 
+/**
+ * 计数信号量
+ *
+ * 作者：李述铜
+ * 联系邮箱: 527676163@qq.com
+ */
+/**
+ * 信号量初始化
+ */
 void sem_init (sem_t * sem, int init_count) {
     sem->count = init_count;
     list_init(&sem->wait_list);
 }
 
-// 等信号
+/**
+ * 申请信号量
+ */
 void sem_wait (sem_t * sem) {
     irq_state_t state = irq_enter_protection();
 
     if (sem->count > 0) {
         sem->count--;
     } else {
+        // 从就绪队列中移除，然后加入信号量的等待队列
         task_t * curr = task_current();
         task_set_block(curr);
         list_insert_last(&sem->wait_list, &curr->wait_node);
@@ -23,7 +38,9 @@ void sem_wait (sem_t * sem) {
     irq_leave_protection(state);
 }
 
-// 发信号
+/**
+ * 释放信号量
+ */
 void sem_notify (sem_t * sem) {
 
     irq_state_t state = irq_enter_protection();
@@ -41,6 +58,9 @@ void sem_notify (sem_t * sem) {
     irq_leave_protection(state);
 }
 
+/**
+ * 获取信号量的当前值
+ */
 int sem_count (sem_t * sem) {
 
     irq_state_t state = irq_enter_protection();

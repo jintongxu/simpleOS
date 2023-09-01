@@ -1,3 +1,6 @@
+/**
+ * 简单的FAT文件系统结构
+ */
 #include "fs/fs.h"
 #include "fs/fatfs/fatfs.h"
 #include "dev/dev.h"
@@ -106,7 +109,7 @@ void diritem_get_name (diritem_t * item, char * dest) {
     char * c = dest;
     char * ext = (char *)0;
 
-    kernel_memset(dest, 0, 12);
+    kernel_memset(dest, 0, 12);         // 最多11个字符
     for (int i = 0; i < 11; i++) {
         if (item->DIR_Name[i] != ' ') {
             *c++ = item->DIR_Name[i];
@@ -131,12 +134,13 @@ void diritem_get_name (diritem_t * item, char * dest) {
 static void to_sfn (char * dest, const char * src) {
     kernel_memset(dest, ' ', 11);
 
-    char * curr = dest;
+    // 不断生成直到遇到分隔符和写完缓存
+    char * curr = dest; 
     char * end = dest + 11;
     while (*src && (curr < end)) {
         char c = *src++;
         switch (c) {
-            case '.':
+            case '.':       // 隔附，跳到扩展名区，不写字符
                 curr = dest + 8;
                 break;
             default:
@@ -191,6 +195,7 @@ int cluster_get_next (fat_t * fat, cluster_t curr) {
         return FAT_CLUSTER_INVALID;
     }
 
+    // 取fat表中的扇区号和在扇区中的偏移
     int offset = curr * sizeof(cluster_t);
     int sector = offset / fat->bytes_per_sec;   // 在 FAT 表上的扇区号
     int off_sector = offset % fat->bytes_per_sec;       // 在扇区中的偏移
@@ -201,6 +206,7 @@ int cluster_get_next (fat_t * fat, cluster_t curr) {
         return FAT_CLUSTER_INVALID;
     }
 
+    // 读扇区，然后取其中簇数据
     int err = bread_sector(fat, fat->tbl_start + sector);
     if (err < 0) {
         return FAT_CLUSTER_INVALID;
@@ -327,6 +333,7 @@ static int expand_file(file_t * file, int inc_bytes) {
             return 0;
         }
 
+        // 不够，则分配新簇用来放额外的空间
         cluster_cnt = up2(inc_bytes - cfree, fat->cluster_byte_size) / fat->cluster_byte_size;
         if (cluster_cnt == 0) {
             cluster_cnt = 1;
@@ -380,6 +387,7 @@ int diritem_init (diritem_t * item, uint8_t attr, const char * name) {
 static int move_file_pos (file_t * file, fat_t * fat, uint32_t move_bytes, int expand) {
     uint32_t c_offset = file->pos % fat->cluster_byte_size;     // 在簇中的偏移
     // 当前偏移加上读取数据大小 超出 当前簇
+    // 跨簇，则调整curr_cluster。注意，如果已经是最后一个簇了，则curr_cluster不会调整
     if (c_offset + move_bytes >= fat->cluster_byte_size) {
         cluster_t next = cluster_get_next(fat, file->cblk);  // 通过查fat表找到下一个簇
         if ((next == FAT_CLUSTER_INVALID) && expand) {
@@ -468,7 +476,9 @@ mount_failed:
     return -1;
 }
 
-// 卸载fatfs文件系统
+/**
+ * @brief 卸载fatfs文件系统
+ */
 void fatfs_unmount (struct _fs_t * fs) {
     fat_t * fat = (fat_t *)fs->data;
 
@@ -477,7 +487,9 @@ void fatfs_unmount (struct _fs_t * fs) {
 }
 
 
-// 打开指定的文件
+/**
+ * @brief 打开指定的文件
+ */
 int fatfs_open (struct _fs_t * fs, const char * path, file_t * file) {
     fat_t * fat = (fat_t *)fs->data;
     diritem_t * file_item = (diritem_t *)0;
@@ -521,6 +533,7 @@ int fatfs_open (struct _fs_t * fs, const char * path, file_t * file) {
         return 0;
     } else if ((file->mode & O_CREAT) && (p_index >= 0)) {
         // 创建目标文件
+        // 创建一个空闲的diritem项
         diritem_t item;
         diritem_init(&item, 0, path);       // 0是属性，代表一个普通文件
 
@@ -539,10 +552,14 @@ int fatfs_open (struct _fs_t * fs, const char * path, file_t * file) {
     
 }
 
+
+/**
+ * @brief 读了文件
+ */
 int fatfs_read (char * buf, int size, file_t * file) {
     fat_t * fat = (fat_t *)file->fs->data;
 
-
+    // 调整读取量，不要超过文件总量
     uint32_t nbytes = size;
     if (file->pos + nbytes > file->size) {
         nbytes = file->size - file->pos;
@@ -556,6 +573,7 @@ int fatfs_read (char * buf, int size, file_t * file) {
         uint32_t start_sector = fat->data_start + (file->cblk - 2) * fat->sec_per_cluster;  // 当前的扇区号
 
         // 在这个簇的开头开始读并且当前读取的数据量正好是一个簇
+        // 如果是整簇, 只读一簇
         if ((cluster_offset == 0) && (nbytes == fat->cluster_byte_size)) {
             int err = dev_read(fat->fs->dev_id, start_sector, buf, fat->sec_per_cluster);
             if (err < 0) {
@@ -566,10 +584,12 @@ int fatfs_read (char * buf, int size, file_t * file) {
             curr_read = fat->cluster_byte_size;
         } else {
             // 判断读取数据是否超过当前簇
+            // 如果跨簇，只读第一个簇内的一部分
             if (cluster_offset + curr_read > fat->cluster_byte_size) {
                 curr_read = fat->cluster_byte_size - cluster_offset;
             }
-
+            
+            // 读取整个簇，然后从中拷贝
             fat->curr_sector = -1;
             int err = dev_read(fat->fs->dev_id, start_sector, fat->fat_buffer, fat->sec_per_cluster);
             if (err < 0) {
@@ -584,6 +604,7 @@ int fatfs_read (char * buf, int size, file_t * file) {
         total_read += curr_read;
 
 
+        // 前移文件指针
         int err = move_file_pos(file, fat, curr_read, 0);
         if (err < 0) {
             return total_read;
@@ -733,6 +754,9 @@ int fatfs_stat (file_t * file, struct stat *st) {
 }
 
 
+/**
+ * @brief 打开目录。只是简单地读取位置重设为0
+ */
 int fatfs_opendir (struct _fs_t * fs, const char * name, DIR * dir) {
     dir->index = 0;
     return 0;
@@ -775,6 +799,9 @@ int fatfs_readdir (struct _fs_t * fs, DIR * dir, struct dirent * dirent) {
     return -1;
 }
 
+/**
+ * @brief 关闭文件扫描读取
+ */
 int fatfs_closedir (struct _fs_t * fs, DIR * dir) {
     return 0;
 }
@@ -808,6 +835,7 @@ int fatfs_unlink (struct _fs_t * fs, const char * path) {
             int cluster = (item->DIR_FstClusHI << 16) | item->DIR_FstClusL0;
             cluster_free_chain(fat, cluster);   // 释放簇链
 
+            // 写diritem项
             diritem_t item;
             kernel_memset(&item, 0, sizeof(diritem_t));
             return write_dir_entry(fat, &item, i);

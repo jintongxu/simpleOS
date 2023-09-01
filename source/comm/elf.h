@@ -1,3 +1,6 @@
+/**
+ * ELF相关头文件及配置
+ */
 #ifndef OS_ELF_H
 #define OS_ELF_H
 

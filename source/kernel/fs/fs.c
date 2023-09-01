@@ -1,3 +1,6 @@
+/**
+ * 文件系统相关接口的实现
+ */
 #include "core/task.h"
 #include "comm/cpu_instr.h"
 #include "tools/klib.h"
@@ -13,17 +16,19 @@
 #include <sys/file.h>
 #include "dev/disk.h"
 
-#define FS_TABLE_SIZE   10
+#define FS_TABLE_SIZE   10      // 文件系统表数量
 
-static list_t mounted_list;
-static fs_t fs_table[FS_TABLE_SIZE];
-static list_t free_list;
+static list_t mounted_list;                 // 已挂载的文件系统
+static fs_t fs_table[FS_TABLE_SIZE];        // 空闲文件系统列表大小
+static list_t free_list;                    // 空闲fs列表
 static fs_t * root_fs;				// 根文件系统
 
 extern fs_op_t devfs_op;
 extern fs_op_t fatfs_op;
 
-
+/**
+ * @brief 判断文件描述符是否正确
+ */
 static int is_fd_bad (int file) {
     if ((file < 0) && (file >= TASK_OFILE_NR)) {
         return 1;
@@ -42,7 +47,9 @@ static int is_path_valid (const char * path) {
 }
 
 
-// 转换目录为数字
+/**
+ * @brief 转换目录为数字
+ */
 int path_to_num(const char * path, int * num) {
     // 0, 1, "10"
     // 没检查非法字符串
@@ -60,7 +67,9 @@ int path_to_num(const char * path, int * num) {
 }
 
 
-// 获取下一级子目录
+/**
+ * @brief 获取下一级子目录
+ */
 const char * path_next_child (const char * path) {
     // /dev/tty0
     const char * c = path;
@@ -71,7 +80,9 @@ const char * path_next_child (const char * path) {
 }
 
 
-// 判断路径是否以xx开头
+/**
+ * @brief 判断路径是否以xx开头
+ */
 int path_begin_with (const char * path, const char * str) {
     const char * s1 = path, * s2 = str;
     while(*s1 && *s2 && (*s1 == *s2)) {
@@ -98,7 +109,9 @@ static void fs_unprotect (fs_t * fs) {
     }
 }
 
-// 文件打开
+/**
+ * 打开文件
+ */
 int sys_open(const char * name, int flags, ...) {
     // /dev/tty
     // 分配文件描述符链接。这个过程中可能会被释放
@@ -156,7 +169,9 @@ sys_open_failed:
 
 }
 
-// 文件读取
+/**
+ * 读取文件api
+ */
 int sys_read(int file, char * ptr, int len) {
     if (is_fd_bad(file) || !ptr || !len) {
         return 0;
@@ -173,6 +188,7 @@ int sys_read(int file, char * ptr, int len) {
         return -1;
     }
 
+    // 读取文件
     fs_t * fs = p_file->fs;
     fs_protect(fs);
     int err = fs->op->read(ptr, len, p_file);
@@ -180,6 +196,10 @@ int sys_read(int file, char * ptr, int len) {
     return err;
 }
 
+
+/**
+ * 写文件
+ */
 int sys_write(int file, char * ptr, int len) {
     if (is_fd_bad(file) || !ptr || !len) {
         return 0;
@@ -196,6 +216,7 @@ int sys_write(int file, char * ptr, int len) {
         return -1;
     }
 
+    // 写入文件
     fs_t * fs = p_file->fs;
     fs_protect(fs);
     int err = fs->op->write(ptr, len, p_file);
@@ -203,7 +224,9 @@ int sys_write(int file, char * ptr, int len) {
     return err;
 }
 
-// 移动读写的指针
+/**
+ * 文件访问位置定位
+ */
 int sys_lseek(int file, int ptr, int dir) {
     if (is_fd_bad(file)) {
         return 0;
@@ -215,14 +238,19 @@ int sys_lseek(int file, int ptr, int dir) {
         return -1;
     }
 
-
+    // 写入文件
     fs_t * fs = p_file->fs;
+
     fs_protect(fs);
     int err = fs->op->seek(p_file, ptr, dir);
     fs_unprotect(fs);
     return err;
 }
 
+
+/**
+ * 关闭文件
+ */
 int sys_close(int file) {
     if (is_fd_bad(file)) {
         log_printf("file error");
@@ -253,7 +281,9 @@ int sys_close(int file) {
 }
 
 
-// 判断文件描述符与tty关联
+/**
+ * 判断文件描述符与tty关联
+ */
 int sys_isatty(int file) {
     if (is_fd_bad(file)) {
         return 0;
@@ -269,7 +299,9 @@ int sys_isatty(int file) {
 }
 
 
-// 获取文件状态
+/**
+ * @brief 获取文件状态
+ */
 int sys_fstat(int file, struct stat * st) {
     if (is_fd_bad(file)) {
         return 0;
@@ -293,7 +325,9 @@ int sys_fstat(int file, struct stat * st) {
 }
 
 
-// 复制一个文件描述符
+/**
+ * 复制一个文件描述符
+ */
 int sys_dup (int file) {
     // 超出进程所能打开的全部，退出
     if (is_fd_bad(file)) {
@@ -320,7 +354,9 @@ int sys_dup (int file) {
 }
 
 
-// 获取指定文件系统的操作接口
+/**
+ * @brief 获取指定文件系统的操作接口
+ */
 static fs_op_t * get_fs_op (fs_type_t type, int major) {
     switch (type)
     {
@@ -334,7 +370,9 @@ static fs_op_t * get_fs_op (fs_type_t type, int major) {
 }
 
 
-// 挂载文件系统
+/**
+ * @brief 挂载文件系统
+ */
 static fs_t * mount (fs_type_t type, char * mount_point, int dev_major, int dev_minor) {
     fs_t * fs = (fs_t *)0;
 
@@ -369,7 +407,7 @@ static fs_t * mount (fs_type_t type, char * mount_point, int dev_major, int dev_
         goto mount_failed;
     }
 
-
+    // 给定数据一些缺省的值
     kernel_memset(fs, 0, sizeof(fs_t));
     kernel_strncpy(fs->mount_point, mount_point, FS_MOUNTP_SIZE);
     fs->op = op;
@@ -392,6 +430,9 @@ mount_failed:
 }
 
 
+/**
+ * @brief 初始化挂载列表
+ */
 static void mount_list_init (void) {
     list_init(&free_list);
     for (int i = 0; i < FS_TABLE_SIZE; i++) {
@@ -405,16 +446,21 @@ static void mount_list_init (void) {
 
 
 
-// 文件系统的初始化操作
+/**
+ * @brief 文件系统初始化
+ */
 void fs_init (void) {
     mount_list_init();
     file_table_init();
 
+    // 磁盘检查
     disk_init();
 
+    // 挂载设备文件系统，待后续完成。挂载点名称可随意
     fs_t * fs = mount(FS_DEVFS, "/dev", 0, 0);
     ASSERT(fs != (fs_t *)0);
 
+    // 挂载根文件系统
     root_fs = mount(FS_FAT16, "/home", ROOT_DEV);
     ASSERT(root_fs != (fs_t*)0);
 }
@@ -428,6 +474,10 @@ int sys_opendir (const char * name, DIR * dir) {
     return err;
 }
 
+
+/**
+ * @brief IO设备控制
+ */
 int sys_ioctl (int file, int cmd, int arg0, int arg1) {
     // 超出进程所能打开的全部，退出
     if (is_fd_bad(file)) {
