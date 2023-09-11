@@ -119,9 +119,7 @@ void enable_page_mode(void) {
     uint32_t cr4 = read_cr4();
     write_cr4(cr4 | CR4_PSE);
 
-    // 设置页表地址 *
- * 作者：李述铜
- * 联系邮箱: 527676163@qq.com
+    // 设置页表地址 
     write_cr3((uint32_t)page_dir);
 
     // 开启分页机制

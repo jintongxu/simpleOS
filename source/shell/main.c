@@ -453,9 +453,7 @@ int main(int argc, char ** argv) {
         // 将输入的命令和参数，按空格分割开
         // 提取出命令，找命令表
         const char * space = " ";   // 字符分割器
-        char * token = strtok(cli.cur *
- * 作者：李述铜
- * 联系邮箱: 527676163@qq.comr_input, space);
+        char * token = strtok(cli.curr_input, space);
         while(token) {
             // 记录参数
             argv[argc++] = token;

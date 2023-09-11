@@ -8,9 +8,7 @@
 /**
  * 锁初始化
  */
-void mutex_init (mu *
- * 作者：李述铜
- * 联系邮箱: 527676163@qq.comtex_t * mutex) {
+void mutex_init (mutex_t * mutex) {
     mutex->locked_count = 0;
     mutex->owner = (task_t *)0;
     list_init(&mutex->wait_list);
