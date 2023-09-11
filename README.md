@@ -2,12 +2,6 @@
 
 SimilarLinux0.11项目是一个简单版的32位操作系统，支持8个终端页面，实现了一下简单的系统调用命令（ls，echo等等）。项目通过qemu来模拟32位操作系统运行所需要的硬件环境。本项目用作学习使用。
 
-[TOC]
-
-
-
-
-
 ## 一、最终成果展示
 
 shell功能
@@ -29,7 +23,7 @@ shell功能
 
 **boot**只占据第0个扇区，大小只有512字节。让系统支持多进程，同时并发去运行。开启了分页机制，将进程与进程之间进行隔离。 
 
-![](https://img.ricemoon.cn/images/f7cab05d1a1cf7c8b4d099aa5158c214.1%C3%A6%C2%93%C2%8D%C3%A4%C2%BD%C2%9C%C3%A7%C2%B3%C2%BB%C3%A7%C2%BB%C2%9F%C3%A8%C2%AE%C2%BE%C3%A8%C2%AE%C2%A1%C3%A7%C2%BB%C2%93%C3%A6%C2%9E%C2%84.webp)
+![](https://img.ricemoon.cn/images/6d3f155d1b977391d593fb0a5a4a00ca.%C3%A6%C2%93%C2%8D%C3%A4%C2%BD%C2%9C%C3%A7%C2%B3%C2%BB%C3%A7%C2%BB%C2%9F%C3%A8%C2%AE%C2%BE%C3%A8%C2%AE%C2%A1%C3%A7%C2%BB%C2%93%C3%A6%C2%9E%C2%84.webp)
 
 ### 中断管理
 
