@@ -4,7 +4,7 @@
 
 ## 前期准备
 
-这里用到的虚拟机软件是**VMware**，如果没有安装的可以在百度网盘上下载：https://pan.baidu.com/s/1mDlmSEfLLC2BU9_0DllEhQ?pwd=sq9m 。提取码：sq9m 。**VMware激活密钥：**NZ4RR-FTK5H-H81C1-Q30QH-1V2LA
+这里用到的虚拟机软件是**VMware**，如果没有安装的可以在百度网盘上下载：https://pan.baidu.com/s/1mDlmSEfLLC2BU9_0DllEhQ?pwd=sq9m 。提取码：sq9m 。**VMware激活密钥：** NZ4RR-FTK5H-H81C1-Q30QH-1V2LA
 
 **我的系统镜像**可以从百度网盘上下载。百度网盘[链接](https://pan.baidu.com/s/1YDQgjFz3LheZ_9zl7BrTkg?pwd=xwh5)：https://pan.baidu.com/s/1YDQgjFz3LheZ_9zl7BrTkg?pwd=xwh5 ，提取码：xwh5 。
 

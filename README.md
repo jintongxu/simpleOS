@@ -6,9 +6,7 @@ SimilarLinux0.11项目是一个简单版的32位操作系统，支持8个终端�
 
 shell功能
 
-- 内部命令：help、clear、echo、ls、less、cp、rm。（**这里的命令实现，不像Linux那么多的参数，只实现了一些参数**）
-
-命令使用教程看[这里](./command.md)。
+- 内部命令：help、clear、echo、ls、less、cp、rm。命令使用教程看[这里](./command.md)。
 
 - 支持加载磁盘上的文件执行。
 
