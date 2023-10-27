@@ -12,34 +12,34 @@
 
 1，打开vmware页面，然后点击打开虚拟机。
 
-![](https://img.xujintong.com/images/2e20f2e1edbaf2ba68d5e93e07f1b470.1.webp)
+![](https://img.xujintong.com/-hx73wLSvgL/2e20f2e1edbaf.webp)
 
 2，然后找到下载的系统文件中的OS_Li.vmx，然后选中打开这个虚拟系统就ok了。
 
-![](https://img.xujintong.com/images/9dc2ddc91d972d9ee27790e3fbe1f098.2.webp)
+![](https://img.xujintong.com/-uZ98kAKECu/9dc2ddc91d972d9.webp)
 
 3，输入密码：**hellolinux**
 
-![](https://img.xujintong.com/images/9f57fc855574118c4694952768f4fa79.3.webp)
+![](https://img.xujintong.com/-MmUUREZQWL/9f57fc8555741.webp)
 
 4，然后在终端输入``code``，打开**VSCode**。
 
 5，项目的文件放在**home**目录下了，在VSCode中打开项目文件夹。
 
-![](https://img.xujintong.com/images/407a4a396bb5bed9fe1ad6dbdfe1a18f.5.webp)
+![](https://img.xujintong.com/-tFiuBeaNpB/407a4a396bb.webp)
 
 6，按图进行操作。此时会生成一个``build``文件夹，如果编译失败，可以将build文件夹删除，然后重新生成。
 
-![](https://img.xujintong.com/images/a79f2b23622a272b562f9a15ea7c8fb7.6.webp)
+![](https://img.xujintong.com/-hUouu9i4m2/a79f2b23622a27.webp)
 
 构建成功
 
-![](https://img.xujintong.com/images/7689c46a612dd0ba576db4056613768c.7.webp)
+![](https://img.xujintong.com/-SAanSVECHM/7689c46a612dd0b.webp)
 
 7， 按一下**F5**进入调试页面。
 
-![](https://img.xujintong.com/images/4a7e5bdab0edc553283a9379d2bb46b8.8.webp)
+![](https://img.xujintong.com/-ySR74hKYPL/4a7e5bdab0edc55.webp)
 
 8，再按一次**F5**，中间的黄条没了就，点击左边的那个软件图标，就打开shell面板了。就可以输入命令进行愉快的玩耍了。
 
-![](https://img.xujintong.com/images/d1081042005a9c29e22f51af73557365.9.webp)
+![](https://img.xujintong.com/-xPdcWpCqkx/d10810420.webp)
