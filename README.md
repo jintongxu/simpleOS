@@ -26,11 +26,11 @@ simpleOS项目是一个简单版的32位操作系统，支持8个终端页面，
 
 进程管理相关的接口实现了9个，文件系统相关的接口实现了13个。
 
-![](https://img.xujintong.com/-kdvGT7h8aA/9e7796e75d0ff58348d6825ed7376517.zhongduan.webp)
+![](https://img.xujintong.com/2023/10/29/9e7796e75d0ff58348d6825ed7376517.zhongduan.webp)
 
 
 
-![](https://img.xujintong.com/-6iKvRy4Zyu/49db39c594fb3aa1f2b403a63b3a50fb.ls.webphttps://img.xujintong.com/images/49db39c594fb3aa1f2b403a63b3a50fb.ls.webp)
+![](https://img.xujintong.com/2023/10/29/49db39c594fb3aa1f2b403a63b3a50fb.ls.webp)
 
 ## 二，项目部署
 
@@ -42,13 +42,13 @@ simpleOS项目是一个简单版的32位操作系统，支持8个终端页面，
 
 **boot**只占据第0个扇区，大小只有512字节。让系统支持多进程，同时并发去运行。开启了分页机制，将进程与进程之间进行隔离。 
 
-![](https://img.xujintong.com/-DzVmmUuZqp/6d3f155d1b977391d593fb0a5a4a00ca.%C3%A6__%C3%A4%C2%BD_%C3%A7%C2%B3%C2%BB%C3%A7%C2%BB_%C3%A8%C2%AE%C2%BE%C3%A8%C2%AE%C2%A1%C3%A7%C2%BB_%C3%A6__.webp)
+![](https://img.xujintong.com/2023/10/29/6d3f155d1b977391d593fb0a5a4a00ca.%C3%A6__%C3%A4%C2%BD_%C3%A7%C2%B3%C2%BB%C3%A7%C2%BB_%C3%A8%C2%AE%C2%BE%C3%A8%C2%AE%C2%A1%C3%A7%C2%BB_%C3%A6__.webp)
 
 ### 3.2、中断管理
 
 利用了CPU的IDT表进行管理，外部硬件用两块8259芯片，对键盘的事件进行相关的处理。
 
-![](https://img.xujintong.com/-NvChrLYdyv/aab8752c12.webp)
+![](https://img.xujintong.com/2023/10/29/aab8752c12.webp)
 
 ### 3.3、多进程
 
@@ -56,55 +56,55 @@ simpleOS项目是一个简单版的32位操作系统，支持8个终端页面，
 
 给每个进程定义了一个``task_t``的结构，在里面增加了一个TSS的描述符，用TSS进行进程切换。
 
-![](https://img.xujintong.com/-NsbGAWgbzU/9082f.webp)
+![](https://img.xujintong.com/2023/10/29/9082f.webp)
 
 展示了如何手动切换进程。
 
 保存相关寄存器到当前任务的栈，然后通过栈切换实现手动切换进程。
 
-![](https://img.xujintong.com/-FzGgJQRRsq/b1c6ce.webp)
+![](https://img.xujintong.com/2023/10/29/b1c6ce.webp)
 
 允许系统中同时存在许多进程，不同进程间采用时间片调试算法进行管理。
 
 定义一个链表，将进行按先进先出的方式插入到链表中，每100ms切换进程运行。
 
-![](https://img.xujintong.com/-rVsu2WJF6P/e1950.webp)
+![](https://img.xujintong.com/2023/10/29/e1950.webp)
 
 ### 3.4、进程同步
 
 使用**计数信号量**解决行为同步的问题。对于多个进程访问共享资源，我们用**互斥锁**保证同一时间只有一个进程访问临界区。
 
-![](https://img.xujintong.com/-viGK8GzVz2/b433.webp)
+![](https://img.xujintong.com/2023/10/29/b433.webp)
 
 ### 3.5、内存管理
 
 操作系统开启了分页机制，应用访问的线性内存需要通过转换表转换成对应的物理地址。（**注意： 内核空间的内存不进行分页**）
 
-![](https://img.xujintong.com/-dvRat3NUkR/daaaaf4c.webp)
+![](https://img.xujintong.com/2023/10/29/daaaaf4c.webp)
 
 利用分页机制，让操作系统占用0x80000000以下的区域（内核空间空间），进程则占用以上的区域（用户空间）。通过让每个进程都拥有自己的页表实现进程隔离。（事实上，实际32位操作系统是将高的1G作为内核空间，低的4G作为用户空间）
 
 实际上，程序员只能使用虚拟地址。系统中每个进程有各自的私有用户空间（0~3G），这个空间对系统中的其他进程是不可见的，而内核空间则是各个进程共享的。
 
-![](https://img.xujintong.com/-iaTkzKwhBo/68f15e9688c.webp)
+![](https://img.xujintong.com/2023/10/29/68f15e9688c.webp)
 
 ### 3.6、权限管理
 
 操作系统运行于特权级0，应用进程运行于特权级3。还通过分页机制对某些页做了特权处理，应用程序不能运行于特权级0的地址空间。
 
-![](https://img.xujintong.com/-m6ij9CnSfD/1f6dff30d737706.webp)
+![](https://img.xujintong.com/2023/10/29/1f6dff30d737706.webp)
 
 ### 3.7、系统调用
 
 使用**调用门**提供相应的系统调用接口来给应用程序使用。
 
-![](https://img.xujintong.com/-oCkAc8DGgy/0f42cc2a3230f33367ac.webp)
+![](https://img.xujintong.com/2023/10/29/0f42cc2a3230f33367ac.webp)
 
 ### 3.8、ELF文件加载
 
 解析ELF头，再解析表，提取出对应的数据拷贝到相对应的进程地址空间。
 
-![](https://img.xujintong.com/-J8xses5EEo/2c85647c2cc.webp)
+![](https://img.xujintong.com/2023/10/29/2c85647c2cc.webp)
 
 ### 3.9、设备管理
 
@@ -112,13 +112,13 @@ simpleOS项目是一个简单版的32位操作系统，支持8个终端页面，
 
 将所有不同的设备统一抽象成统一的接口，使操作系统内核只需要统一的操作接口就能实现设备的访问。
 
-![](https://img.xujintong.com/-3xDDLu9gaD/08683786206822fc6e0d.webp)
+![](https://img.xujintong.com/2023/10/29/08683786206822fc6e0d.webp)
 
 ### 3.10、文件系统
 
-![](https://img.xujintong.com/-hYqmm7ZcVu/c80975b895df7.webp)
+![](https://img.xujintong.com/2023/10/29/c80975b895df7.webp)
 
-![](https://img.xujintong.com/-S3AxzmEBVs/112222222222.webp)
+![](https://img.xujintong.com/2023/10/29/112222222222.webp)
 
 ### 3.11、shell
 
@@ -126,7 +126,7 @@ Shell俗称壳，即命令行解释器，它允许用户交互式的输入命令
 
 Shell支持应用从磁盘中加载程序进行运行。
 
-![](https://img.xujintong.com/-wuaV6gwhkY/064b2ee4.webp)
+![](https://img.xujintong.com/2023/10/29/064b2ee4.webp)
 
 ## 四、不足和展望
 
